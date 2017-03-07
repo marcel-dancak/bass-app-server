@@ -1,0 +1,4 @@
+Django>=1.10.0,<1.11
+django-cors-headers>=2.0,<2.1
+psycopg2>=2.6,<2.7
+git+https://github.com/marcel-dancak/lz-string-python
