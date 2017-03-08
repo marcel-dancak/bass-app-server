@@ -11,8 +11,12 @@
 
     <md-table-body>
       <md-table-row v-for="(item, index) in projects" :key="item.project">
-        <md-table-cell class="title">{{ item.title }}</md-table-cell>
-        <md-table-cell>{{ item.author }}</md-table-cell>
+        <md-table-cell class="title">
+          <router-link :to="{ name: 'detail', params: { id: item.id }}">
+            {{ item.title }}
+          </router-link>
+        </md-table-cell>
+        <md-table-cell>{{ item.author.name }}</md-table-cell>
         <md-table-cell>
           <a v-if="item.youtube_link"
             v-bind:href="'https://www.youtube.com/watch?v='+item.youtube_link">
@@ -44,6 +48,7 @@ export default {
 }
 .title {
   font-weight: bold;
+  color: #333;
 }
 .fa {
   font-size: 28px;

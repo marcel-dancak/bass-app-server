@@ -1,215 +1,126 @@
 <template>
   <div class="container">
-  <div style="position: relative;">
-    <md-sidenav
-      ref="sidenav"
-      class="main-sidebar md-left md-fixed">
-      <md-toolbar xclass="md-large">
-        <div class="md-toolbar-container">
-          <h3 class="md-title">Menu</h3>
+    <div style="position: relative;">
+
+      <md-sidenav
+        ref="sidenav"
+        class="main-sidebar md-left md-fixed">
+
+          <md-card class="my-card md-accent">
+            <md-card-header>
+              <md-card-header-text>
+                <div class="md-title">{{ user.username }}</div>
+                <div class="md-subhead">Full Name</div>
+              </md-card-header-text>
+              <md-card-media>
+                <md-icon class="md-size-3x">face</md-icon>
+              </md-card-media>
+            </md-card-header>
+          </md-card>
+
+        <div class="main-sidebar-links">
+          <md-list>
+            <template v-if="user.username">
+              <md-list-item @click.native="logout">
+                <md-icon>account_circle</md-icon> <span>Logout</span>
+              </md-list-item>
+            </template>
+            <template v-else>
+              <md-list-item @click.native="login">
+                <md-icon>account_circle</md-icon> <span>Login</span>
+              </md-list-item>
+            </template>
+            <md-divider></md-divider>
+
+            <!-- My projects -->
+
+            <md-list-item>
+              <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
+              <router-link :to="{ path: '/all'}">
+                <md-icon>restore</md-icon> <span>All</span>
+              </router-link>
+            </md-list-item>
+            <md-list-item>
+              <router-link :to="{ path: '/favourite' }">
+                <md-icon>start</md-icon> <span>Favourite</span>
+              </router-link>
+            </md-list-item>
+            <md-list-item>
+              <router-link :to="{ path: '/liked' }">
+                <md-icon>thumb_up</md-icon> <span>Most liked</span>
+              </router-link>
+            </md-list-item>
+          </md-list>
         </div>
-      </md-toolbar>
+      </md-sidenav>
 
-      <div class="main-sidebar-links">
-        <md-list>
-          <!-- My projects -->
-          <!-- Most rated -->
+      <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
 
-          <md-list-item @click.native="filterNew">
-            <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
-            <md-icon>restore</md-icon> <span>New</span>
-          </md-list-item>
-          <md-list-item @click.native="filterFavourite">
-            <md-icon>start</md-icon> <span>Favourite</span>
-          </md-list-item>
-          <md-list-item @click.native="filterFavourite">
-            <md-icon>thumb_up</md-icon> <span>Most liked</span>
-          </md-list-item>
-          <md-divider></md-divider>
-          <md-list-item @click.native="login">
-            <md-icon>account_circle</md-icon> <span>Login</span>
-          </md-list-item>
-        </md-list>
-      </div>
-    </md-sidenav>
+      <login-dialog ref="login"></login-dialog>
 
-    <transition name="slide-fade-reverse">
-      <div v-if="mode === 'list'">
-        <md-toolbar class="md-warn main">
-          <md-button class="menu md-icon-button" @click.native="$refs.sidenav.toggle()">
-            <md-icon>menu</md-icon>
-          </md-button>
-          <h1 class="md-title">Catalog</h1>
-
-          <div style="flex: 1"></div>
-
-          <md-input-container style="flex: 1">
-            <md-input
-              type="text"
-              placeholder="Search"
-              v-model="query"
-              @keyup.enter.native="search">
-            </md-input>
-          </md-input-container>
-
-          <md-button
-            class="md-icon-button"
-            @click.native="search">
-            <md-icon>search</md-icon>
-          </md-button>
-        </md-toolbar>
-
-        <projects-list
-          :projects="projects"
-          :toggleFavourite="toggleFavourite">
-        </projects-list>
-        <!-- <projects-table :projects="projects"></projects-table> -->
-      </div>
-    </transition>
-    <transition name="slide-fade">
-      <detail
-        v-if="mode === 'detail'"
-        :project="selected"
-        :toggleLike="toggleLike"
-        :toggleFavourite="toggleFavourite"
-        :toggleSubscription="toggleSubscription">
-      </detail>
-    </transition>
-
-    <!-- <img src="./assets/logo.png"> -->
-    <!-- <hello></hello> -->
     </div>
   </div>
 </template>
 
 <script>
-import ProjectsList from './components/ProjectsList'
-import ProjectsTable from './components/ProjectsTable'
-import Detail from './components/Detail'
+import LoginDialog from './components/Login'
 
 export default {
   name: 'app',
-  components: {
-    Detail,
-    ProjectsList,
-    ProjectsTable
-  },
   data () {
     return {
-      mode: 'list',
       query: '',
-      user: null,
-      projects: [],
-      selected: {}
+      user: this.$root.$data.user,
+      projects: []
     }
   },
+  components: {
+    LoginDialog
+  },
   created () {
-    console.log('created')
-    console.log(this.user)
-    this.$http.post(
-      'login/',
-      {
-        username: 'Marcel',
-        password: 'qq'
-      }
-    ).then(response => {
-      console.log('logged in')
-      console.log(response.data)
-      this.user = response.data
-      this.search()
-      this.route(location.hash.replace('#', ''))
-    })
-    window.addEventListener("hashchange", function(evt) {
-      const hash = evt.newURL.split('#')[1]
-      this.route(hash);
-    }.bind(this))
+    setTimeout(this.getUserProfile, 1000)
+    // this.getUserProfile()
   },
   methods: {
-    route(hash) {
-      if (hash && hash.startsWith('detail')) {
-        this.mode = 'detail'
-        const selectedId = hash.slice(7)
-        console.log(hash)
-        this.selected = this.projects.find((item) => {
-          return item.id === selectedId
-        }) || {}
-      } else {
-        this.mode = 'list'
-      }
-    },
-    fetchProjects(query) {
-      this.$http.get(
-        'projects/',
-        {
-          params: query
+    updateUser(data) {
+      Object.assign(this.$root.$data.user, data)
+      Object.keys(this.$root.$data.user).forEach(function(key) {
+        if (!data[key]) {
+          delete this.$root.$data.user[key]
         }
-      ).then(response => {
-            // get body data
-            // let projects = 
-            let projects = response.data;
-            projects.forEach(function(item) {
-              item.starred = this.user.favourites.indexOf(item.id) !== -1
-              item.liked = this.user.likes.indexOf(item.id) !== -1
-              item.author.subscribed = this.user.likes.indexOf(item.author.id) !== -1
-            }, this)
-            this.projects = projects
-          }, response => {
-            // error callback
+      }, this)
+    },
+    getUserProfile() {
+      this.$http.get('profile/')
+        .then(response => {
+          console.log('Profile')
+          console.log(response.data)
+          // this.$root.$data.user = response.data
+          this.updateUser(response.data)
+          // this.$router.push({name: currentRoute.name, query: currentRoute.query})
+          // this.$router.push({name: 'list'})
         })
     },
-    search(evt) {
-      this.fetchProjects({
-        q: this.query
-      });
+    login() {
+      this.$http.post(
+        'login/',
+        {
+          username: 'Marcel',
+          password: 'qq'
+        }
+      ).then(response => {
+        console.log('logged in')
+        this.$root.$data.user = response.data
+      }, response => {
+        console.log('failed to login')
+      })
     },
-    filterNew() {
-      this.fetchProjects({});
-    },
-    filterFavourite() {
-      this.fetchProjects({filter: 'favourite'});
-    },
-    toggleFavourite(project) {
-      console.log('toggleFavourite')
-      this.$http
-        .post('star/', {project: project.id, value: !project.starred})
-        .then(response => {
-            project.starred = !project.starred
-            if (project.starred) {
-              this.user.favourites.push(project.id)
-            } else {
-              this.user.favourites.splice(this.user.favourites.indexOf(project.id), 1)
-            }
-          }, response => {
-
-          })
-    },
-    toggleLike(project) {
-      console.log('toggleLike')
-      this.$http
-        .post('like/', {project: project.id, value: !project.liked})
-        .then(response => {
-            project.liked = !project.liked
-            if (project.liked) {
-              this.user.likes.push(project.id)
-              project.likes++
-            } else {
-              this.user.likes.splice(this.user.likes.indexOf(project.id), 1)
-              project.likes--
-            }
-          }, response => {
-
-          })
-    },
-    toggleSubscription(author) {
-      console.log('toggle Subscription')
-      this.$http
-        .post('subscribe/', {author: author.id, value: !author.subscribed})
-        .then(response => {
-            author.subscribed = !author.subscribed
-            
-          }, response => {
-
-          })
+    logout() {
+      this.$refs.login.open()
+      return
+      this.$http.get('logout/').then(response => {
+        this.$router.go(0)
+      })
     }
   }
 }
@@ -219,13 +130,34 @@ export default {
   @import 'variables.scss';
   $sizebar-size: 280px;
 
+.r-pad {
+  padding-right: 16px;
+}
+.my-card.md-card {
+  border-radius: 0;
+  background-color: red;
+  .md-card-header {
+    margin: 0;
+  }
+}
+i.fa {
+  font-size: 28px;
+  line-height: 28px;
+}
 /*
 .active {
   color: #3f51b5;
 }*/
 .md-button.icon-text {
+  min-width: 64px;
   i.md-icon {
     padding-bottom: 4px;
+  }
+  i.fa {
+    font-size: 22px;
+    vertical-align: middle;
+    padding-bottom: 4px;
+    width: 24px;
   }
   /*
   &.active .md-icon {
