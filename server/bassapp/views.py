@@ -59,22 +59,13 @@ def client_logout(request):
     return HttpResponse(" ", status=200)
 
 
-@login_required
 def user_profile(request):
-    pass
+    if request.user and request.user.is_authenticated():
+        return JsonResponse(get_user_profile(request.user))
+    return HttpResponse(status=401)
 
 
-@login_required
-def projects(request):
-    queryset = Project.objects.all()
-    if 'q' in request.GET:
-        queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
-
-    if 'filter' in request.GET:
-        f = request.GET['filter']
-        if f == 'favourite':
-            queryset = queryset.filter(pk__in=request.user.favourites)
-
+def get_projects_data(queryset):
     projects = []
     for project in queryset:
         projects.append({
@@ -91,7 +82,26 @@ def projects(request):
             'tags': project.tags,
             'likes': project.likes
         })
-    return JsonResponse(projects, safe=False)
+    return projects
+
+
+def user_projects(request, author):
+    queryset = Project.objects.filter(user=author)
+    if 'q' in request.GET:
+        queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
+
+    return JsonResponse(get_projects_data(queryset), safe=False)
+
+
+def projects(request, filter=None):
+    queryset = Project.objects.all()
+    if 'q' in request.GET:
+        queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
+
+    if filter == 'favourite':
+        queryset = queryset.filter(pk__in=request.user.favourites)
+
+    return JsonResponse(get_projects_data(queryset), safe=False)
 
 
 @csrf_exempt
@@ -189,6 +199,10 @@ def subscribe(request):
             author = form.cleaned_data['author']
             value = form.cleaned_data['value']
             print(author, value)
+            if value:
+                request.user.subscribers.add(author)
+            else:
+                request.user.subscribers.remove(author)
     return HttpResponse("ok")
 
 

@@ -4,8 +4,10 @@ from bassapp import views
 
 
 urlpatterns = [
+    url(r"^profile/$", views.user_profile, name="user_profile"),
     url(r"^project/$", views.project, name="project"),
-    url(r"^projects/$", views.projects, name="projects"),
+    url(r"^projects/author/([0-9]+)/$", views.user_projects, name="user_projects"),
+    url(r"^projects/((?P<filter>[\w-]+)/)?$", views.projects, name="projects"),
     url(r"^star/$", views.star, name="star"),
     url(r"^like/$", views.like, name="like"),
     url(r"^subscribe/$", views.subscribe, name="subscribe"),

@@ -17,4 +17,4 @@ class ProjectAdmin(admin.ModelAdmin):
 	list_display = ('title', 'artist', 'genres', 'playing_styles', 'timestamp')
 	exclude = ('id',)
 	search_fields = ('title', 'artist', 'genres', 'playing_styles', 'user__username')
-	list_filter = ('user__username', )
+	list_filter = ('user', )
