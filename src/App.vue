@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <login-dialog ref="login" @login="onLogin"></login-dialog>
     <div style="position: relative;">
 
       <md-sidenav
@@ -26,7 +27,7 @@
               </md-list-item>
             </template>
             <template v-else>
-              <md-list-item @click.native="login">
+              <md-list-item @click.native="$refs.login.open">
                 <md-icon>account_circle</md-icon> <span>Login</span>
               </md-list-item>
             </template>
@@ -56,8 +57,6 @@
 
       <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
 
-      <login-dialog ref="login"></login-dialog>
-
     </div>
   </div>
 </template>
@@ -78,8 +77,8 @@ export default {
     LoginDialog
   },
   created () {
-    setTimeout(this.getUserProfile, 1000)
-    // this.getUserProfile()
+    // setTimeout(this.getUserProfile, 1000)
+    this.getUserProfile()
   },
   methods: {
     updateUser(data) {
@@ -94,30 +93,17 @@ export default {
       this.$http.get('profile/')
         .then(response => {
           console.log('Profile')
-          console.log(response.data)
-          // this.$root.$data.user = response.data
           this.updateUser(response.data)
           // this.$router.push({name: currentRoute.name, query: currentRoute.query})
           // this.$router.push({name: 'list'})
         })
     },
-    login() {
-      this.$http.post(
-        'login/',
-        {
-          username: 'Marcel',
-          password: 'qq'
-        }
-      ).then(response => {
-        console.log('logged in')
-        this.$root.$data.user = response.data
-      }, response => {
-        console.log('failed to login')
-      })
+    onLogin(profile) {
+      console.log('Login Successful')
+      this.updateUser(profile)
+      this.$forceUpdate()
     },
     logout() {
-      this.$refs.login.open()
-      return
       this.$http.get('logout/').then(response => {
         this.$router.go(0)
       })

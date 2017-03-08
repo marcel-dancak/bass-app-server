@@ -54,7 +54,22 @@ export default {
     },
     login() {
       console.log(`login: ${this.username} ${this.password}`)
+      this.$http.post(
+        'login/',
+        {
+          username: this.username,
+          password: this.password
+        }
+      ).then(response => {
+        console.log('logged in')
+        // this.$root.$data.user = response.data
+        this.close()
+        this.$emit('login', response.data)
+      }, response => {
+        console.log('failed to login')
+      })
     }
   }
 }
+
 </script>
