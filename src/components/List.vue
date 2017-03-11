@@ -1,5 +1,7 @@
 <template>
-  <transition name="slide-fade-reverse">
+  <!-- <transition name="slide"> -->
+  <!-- <transition name="slide-fade-reverse"> -->
+  <!-- <transition :name="transition"> -->
     <div>
       <md-toolbar class="md-warn main">
         <md-button
@@ -7,9 +9,8 @@
           @click.native="toggleMenu">
           <md-icon>menu</md-icon>
         </md-button>
-        <h1 class="md-title">Catalog</h1>
+        <h1 class="md-title">{{ title }}</h1>
 
-        <div style="flex: 1"></div>
 
         <md-input-container style="flex: 1">
           <md-input
@@ -31,7 +32,7 @@
       <!-- <projects-table :projects="projects"></projects-table> -->
 
     </div>
-  </transition>
+  <!-- </transition> -->
 </template>
 
 <script>
@@ -48,27 +49,41 @@ export default {
     q: String,
     filter: String
   },
+  beforeCreate() {
+  },
   data () {
     return {
+      title: 'Catalog',
       query: '',
       projects: [],
+      transition: 'slide-fade-reverse'
     }
   },
   watch: {
     '$route' (to, from) {
       console.log('** Route changed **')
-      this.fetchProjects(to.path, to.query)
+      this.route(to)
     }
   },
   created () {
-    console.log('List created')
     this.query = this.q
-    this.fetchProjects(this.$router.currentRoute.path, this.$router.currentRoute.query)
+    this.route(this.$router.currentRoute)
   },
   methods: {
+    route(to) {
+      if (to.path === '/favourite') {
+        this.title = 'Favourite'
+      } else if (to.path === '/liked') {
+        this.title = 'Most Liked'
+      } else if (to.path.startsWith('/author/')) {
+        this.title = `Author's Projects`
+      } else {
+        this.title = 'All Projects'
+      }
+      this.fetchProjects(to.path, to.query)
+    },
     fetchProjects(path, query) {
-      console.log('fetching projects')
-      console.log(path+' '+JSON.stringify(query))
+      // console.log(path+' '+JSON.stringify(query))
       this.$http.get(
         'projects'+path,
         {params: query}
@@ -80,8 +95,8 @@ export default {
           projects.forEach(function(item) {
             item.starred = user.favourites.indexOf(item.id) !== -1
             item.liked = user.likes.indexOf(item.id) !== -1
-            // item.author.subscribed = user.subscribers.indexOf(item.author.id) !== -1
           }, this)
+
           this.projects = projects
           this.$root.$data.projects = projects
         }, response => {

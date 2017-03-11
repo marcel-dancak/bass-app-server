@@ -1,6 +1,7 @@
 import App from './App'
 import Detail from './components/Detail'
 import List from './components/List'
+import AuthorProjects from './components/AuthorProjects'
 
 export default [
     {
@@ -9,7 +10,8 @@ export default [
       children: [{
           name: 'author',
           path: 'author/:id',
-          component: List,
+          component: AuthorProjects,
+          props: true
         }, {
           path: '',
           alias: ['all/', 'favourite/', 'liked/'],

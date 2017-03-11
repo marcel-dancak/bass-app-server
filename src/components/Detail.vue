@@ -1,5 +1,5 @@
 <template>
-  <transition name="slide-fade">
+  <!-- <transition name="slide-fade"> -->
   <div>
 <!--     <md-toolbar class="md-warn main">
       <md-button @click.native="back">
@@ -7,8 +7,8 @@
       </md-button>
     </md-toolbar> -->
     
-    <md-card class="project">
-      <md-layout xxmd-column-xsmall>
+    <md-card class="detail">
+      <md-layout>
         <div class="header-section">
 
           <md-card-header>
@@ -51,7 +51,6 @@
           </md-avatar>
 
           <md-card-actions>
-
             <md-button
               class="icon-text"
               @click.native="toggleSubscription(project.author)">
@@ -69,47 +68,49 @@
 
       <md-card-content>
 
-      <md-layout md-row md-column-xsmall>
-        <md-layout md-flex="70" md-column>
-          <md-layout md-row class="actions-toolbar">
-            <md-button class="back md-icon-button md-fab md-raised md-clean" @click.native="back">
-              <md-icon>arrow_back</md-icon>
-            </md-button>
-            <md-layout md-flex="true"></md-layout>
-            <md-button class="fa icon-button md-raised">
-              <i class="fa fa-youtube"></i>
-            </md-button>
-            <md-button class="md-accent md-raised open">OPEN</md-button>
+        <md-layout md-row md-column-xsmall>
+          <md-layout md-flex="70" md-column>
+            <md-layout md-row class="actions-toolbar">
+              <md-button class="back md-icon-button md-fab md-clean" @click.native="back">
+                <md-icon>arrow_back</md-icon>
+              </md-button>
+              <md-layout md-flex="true"></md-layout>
+              <md-button
+                v-if="project.youtube_link"
+                class="fa icon-button md-raised">
+                <i class="fa fa-youtube"></i>
+              </md-button>
+              <md-button class="md-accent md-raised open">OPEN</md-button>
+            </md-layout>
+
+            <p class="r-pad">
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            </p>
+
           </md-layout>
 
-          <p class="r-pad">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-          </p>
+          <md-layout md-flex="30">
 
+            <md-card class="subcard">
+              <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
+              <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
+              <p>
+                <label>Tracks: </label>&nbsp;&nbsp;
+                <img
+                  v-for="track in project.tracks"
+                  class="md-icon md-size-1x"
+                  :src="loadImg(track)">
+              </p>
+            </md-card>
+
+          </md-layout>
         </md-layout>
-
-        <md-layout md-flex="30">
-
-          <md-card class="subcard">
-            <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
-            <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
-            <p>
-              <label>Tracks: </label>&nbsp;&nbsp;
-              <img class="md-icon md-size-1x" src="../assets/drums.svg">
-              <img class="md-icon md-size-1x" src="../assets/percussions.svg">
-              <img class="md-icon md-size-1x" src="../assets/bass.svg">
-              <img class="md-icon md-size-1x" src="../assets/piano.svg">
-            </p>
-          </md-card>
-
-        </md-layout>
-      </md-layout>
 
       </md-card-content>
 
     </md-card>
   </div>
-  </transition>
+  <!-- </transition> -->
 </template>
 
 <script>
@@ -135,12 +136,10 @@
       }
     },
     created() {
-      console.log('Detail Created')
       var id = this.id;
       let project = this.$root.$data.projects.find(item => {return item.id === id})
       if (project) {
         const subscribers = this.$root.$data.user.subscribers || []
-        console.log(subscribers)
         this.subscribed = subscribers.indexOf(project.author.id) !== -1
         this.project = project
       } else {
@@ -148,6 +147,9 @@
       }
     },
     methods: {
+      loadImg(name) {
+         return require(`../assets/${name}.svg`)
+      },
       back() {
         this.$router.go(-1)
       },
@@ -204,7 +206,7 @@
     padding-left: 6px;
     padding-right: 4px;
   }
-  .md-card.project {
+  .md-card.detail {
     .header-section {
       background-color: #eee;
       flex: 1 0 auto;

@@ -40,6 +40,9 @@ export default {
 <style lang="scss" scoped>
 .md-list.projects {
   .md-list-item {
+    .md-list-item-container {
+      min-height: 56px;
+    }
     .md-icon {
       margin: 0 8px;
     }
