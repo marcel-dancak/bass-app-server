@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <login-dialog ref="login" @login="onLogin"></login-dialog>
-    <div style="position: relative;">
+    <div style="position: relative">
 
       <md-sidenav
         ref="sidenav"
@@ -10,11 +10,19 @@
           <md-card class="my-card md-accent">
             <md-card-header>
               <md-card-header-text>
-                <div class="md-title">{{ user.username }}</div>
-                <div class="md-subhead">Full Name</div>
+                <div class="md-title">
+                  <router-link :to="{ path: '/profile' }">
+                    {{ user.username }}
+                  </router-link>
+                </div>
+                <div class="md-subhead">{{ user.first_name}} {{ user.last_name }}</a></div>
               </md-card-header-text>
               <md-card-media>
-                <md-icon class="md-size-3x">face</md-icon>
+                <md-avatar v-if="user.avatar" class="md-large">
+                  <img :src="$http.options.root+user.avatar">
+                </md-avatar>
+                <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
+                <md-icon v-else class="md-size-3x">face</md-icon>
               </md-card-media>
             </md-card-header>
           </md-card>
@@ -43,12 +51,12 @@
             </md-list-item>
             <md-list-item>
               <router-link :to="{ path: '/favourite' }">
-                <md-icon>start</md-icon> <span>Favourite</span>
+                <md-icon>start</md-icon> <span>Bookmarked</span>
               </router-link>
             </md-list-item>
             <md-list-item>
               <router-link :to="{ path: '/liked' }">
-                <md-icon>thumb_up</md-icon> <span>Most liked</span>
+                <md-icon>thumb_up</md-icon> <span>Highest Rated</span>
               </router-link>
             </md-list-item>
           </md-list>
@@ -84,6 +92,12 @@ export default {
     // setTimeout(this.getUserProfile, 1000)
     this.getUserProfile()
     this._historyStack = [this.$router.currentRoute.fullPath]
+    let onResize = e => {
+      const offset = Math.round(Math.max((window.innerWidth - 1600)/2, 0))
+      document.body.style.transform = `translate3d(${offset}px, 0, 0)`
+    }
+    window.addEventListener('resize', onResize)
+    onResize()
   },
   watch: {
     '$route' (to, from) {
@@ -107,26 +121,18 @@ export default {
     }
   },
   methods: {
-    updateUser(data) {
-      Object.assign(this.$root.$data.user, data)
-      Object.keys(this.$root.$data.user).forEach(function(key) {
-        if (!data[key]) {
-          delete this.$root.$data.user[key]
-        }
-      }, this)
-    },
     getUserProfile() {
       this.$http.get('profile/')
         .then(response => {
-          console.log('Profile')
-          this.updateUser(response.data)
+          this.$root.updateUser(response.data)
+          this.$forceUpdate()
           // this.$router.push({name: currentRoute.name, query: currentRoute.query})
           // this.$router.push({name: 'list'})
         })
     },
     onLogin(profile) {
       console.log('Login Successful')
-      this.updateUser(profile)
+      this.$root.updateUser(profile)
       this.$forceUpdate()
     },
     logout() {
@@ -142,8 +148,19 @@ export default {
   @import 'variables.scss';
   $sizebar-size: 280px;
 
+  .md-subhead {
+    white-space:nowrap;
+  }
   .r-pad {
     padding-right: 16px;
+  }
+  .md-card.md-accent {
+    a:not(.md-button) {
+      color: #eee;
+      &:hover {
+        color: #fff;
+      }
+    }
   }
   .my-card.md-card {
     border-radius: 0;
@@ -278,7 +295,9 @@ export default {
   @media (min-width: 1601px) {
     body {
       margin-right: auto;
+      border-left: 1px solid #ccc;
       border-right: 1px solid #ccc;
+      transform: translateX(150px);
     }
   }
 

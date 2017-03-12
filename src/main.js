@@ -31,5 +31,15 @@ window.app = new Vue({
     user: {likes: [], favourites: []},
     projects: []
   },
+  methods: {
+    updateUser(data) {
+      Object.assign(this.user, data)
+      Object.keys(this.user).forEach(function(key) {
+        if (!data[key]) {
+          delete this.user[key]
+        }
+      }, this)
+    }
+  },
   router: new VueRouter({routes})
 })

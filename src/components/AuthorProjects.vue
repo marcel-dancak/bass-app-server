@@ -4,15 +4,19 @@
       <md-card class="author detail">
 
         <md-card-header>
-          <md-icon class="avatar">face</md-icon>
+          <img
+            v-if="author.avatar"
+            class="md-avatar avatar"
+            :src="$http.options.root+author.avatar">
+          <md-icon v-else class="avatar">face</md-icon>
           <md-card-header-text>
             <div class="md-title">{{ author.username }}</div>
-            <div class="md-subhead">Full Name</div>
+            <div class="md-subhead">{{ author.first_name }} {{ author.last_name }}</div>
           </md-card-header-text>
           <div style="flex: 1"></div>
 <!--           <md-card-header-text>
             <div class="md-title">&nbsp</div>
-            <div class="md-subhead" style="white-space:nowrap">Joined: {{ author.date_joined }}</div>
+            <div class="md-subhead">Joined: {{ author.date_joined }}</div>
           </md-card-header-text> -->
           <div class="icon-links">
             <md-button href="#" class="md-icon-button">
@@ -38,7 +42,7 @@
               Subscribe
           </md-button>
           <div style="flex: 1"></div>
-          <div class="md-subhead" style="white-space:nowrap">Joined: {{ author.date_joined }}</div>
+          <div class="md-subhead">Joined: {{ author.date_joined }}</div>
 
 <!--           <md-button href="#" class="md-icon-button">
             <i class="fa fa-youtube"></i>
@@ -185,7 +189,7 @@ export default {
       display: flex;
       .avatar {
         margin-left: 0;
-        margin-right: 8px;
+        margin-right: 10px;
         width: 72px;
         height: 72px;
         font-size: 72px;
@@ -203,7 +207,7 @@ export default {
       }
     }
     .md-card-actions {
-      padding: 10px 8px!important;
+      padding: 11px 8px!important;
     }
     .md-card-content {
       padding-bottom: 16px;

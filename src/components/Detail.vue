@@ -46,7 +46,10 @@
               {{ project.author.name }}
             </router-link>
           </div>
-          <md-avatar class="md-avatar-icon md-accent">
+          <md-avatar v-if="project.author.avatar" class="md-avatar-icon md-accent">
+            <img :src="$http.options.root+project.author.avatar">
+          </md-avatar>
+          <md-avatar v-else class="md-avatar-icon md-accent">
             <md-icon>face</md-icon>
           </md-avatar>
 
