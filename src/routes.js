@@ -2,6 +2,7 @@ import App from './App'
 import Detail from './components/Detail'
 import List from './components/List'
 import AuthorProjects from './components/AuthorProjects'
+import UserProfile from './components/UserProfile'
 
 export default [
     {
@@ -18,10 +19,15 @@ export default [
           name: 'list',
           component: List
         }, {
-        name: 'detail',
-        path: 'detail/:id',
-        component: Detail,
-        props: true
-      }]
+          name: 'detail',
+          path: 'detail/:id',
+          component: Detail,
+          props: true
+        }, {
+          name: 'profile',
+          path: 'profile/',
+          component: UserProfile,
+        }
+      ]
     }
 ]
