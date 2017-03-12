@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model
 from django.core import serializers
 
 from bassapp import forms
@@ -25,6 +26,8 @@ def get_user_profile(user):
         'username': user.username,
         'first_name': user.first_name,
         'last_name': user.last_name,
+        'email': user.email,
+        'avatar': user.avatar.url if user.avatar else '',
         'favourites': user.favourites,
         'likes': user.likes,
         'subscribers': list(user.subscribers.values_list('pk', flat=True))
@@ -59,9 +62,23 @@ def client_logout(request):
     return HttpResponse(" ", status=200)
 
 
+@csrf_exempt
 def user_profile(request):
     if request.user and request.user.is_authenticated():
-        return JsonResponse(get_user_profile(request.user))
+
+        if request.method == 'POST':
+            # data = json.loads(request.body.decode('utf-8'))
+            form = forms.UserProfileForm(request.POST, request.FILES, instance=request.user)
+            if form.is_valid():
+                print (form.cleaned_data)
+                user = form.save()
+                return JsonResponse(get_user_profile(user))
+            else:
+                print(form.errors)
+                raise Http404
+        else:
+            return JsonResponse(get_user_profile(request.user))
+
     return HttpResponse(status=401)
 
 
@@ -76,11 +93,14 @@ def get_projects_data(queryset):
             'author': {
                 'id': project.user.pk,
                 'name': project.user.username,
+                'avatar': project.user.avatar.url if project.user.avatar else ''
             },
             'playing_styles': project.playing_styles,
             'genres': project.genres,
+            'tracks': project.tracks,
             'tags': project.tags,
-            'likes': project.likes
+            'likes': project.likes,
+            'created': project.timestamp # TODO
         })
     return projects
 
@@ -90,7 +110,18 @@ def user_projects(request, author):
     if 'q' in request.GET:
         queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
 
-    return JsonResponse(get_projects_data(queryset), safe=False)
+    author = get_user_model().objects.get(id=author)
+    data = {
+        'profile': {
+            'username': author.username,
+            'first_name': author.first_name,
+            'last_name': author.last_name,
+            'date_joined': author.date_joined,
+            'avatar': author.avatar.url if author.avatar else ''
+        },
+        'projects': get_projects_data(queryset)
+    }
+    return JsonResponse(data)
 
 
 def projects(request, filter=None):
@@ -100,6 +131,9 @@ def projects(request, filter=None):
 
     if filter == 'favourite':
         queryset = queryset.filter(pk__in=request.user.favourites)
+
+    if filter == 'liked':
+        queryset = queryset.order_by('-likes')
 
     return JsonResponse(get_projects_data(queryset), safe=False)
 
@@ -133,7 +167,7 @@ def project(request):
     else:
         form = forms.GetProjectForm(request.GET)
         if form.is_valid():
-            project = form.cleaned_data["id"]
+            project = form.cleaned_data['id']
             data = project.data
             # data = LZString.decompressFromBase64(project.data)
             response = HttpResponse(data, content_type='application/json')
@@ -146,7 +180,6 @@ def project(request):
 def star(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        print(data)
         form = forms.ProjectVoteForm(data)
         if form.is_valid():
             project = form.cleaned_data['project']
@@ -155,11 +188,8 @@ def star(request):
             if value and project.pk not in request.user.favourites:
                 request.user.favourites.append(project.pk)
             elif not value:
-                print('remove', project.pk)
                 request.user.favourites.remove(project.pk)
-            # request.user.favourites = []
             request.user.save()
-            print(request.user.favourites)
             return HttpResponse("ok")
         else:
             print(form.errors)
@@ -204,47 +234,3 @@ def subscribe(request):
             else:
                 request.user.subscribers.remove(author)
     return HttpResponse("ok")
-
-
-
-@csrf_exempt
-def drawing(request):
-    if request.method == "POST":
-        form = forms.DrawingRecordForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse("")
-    else:
-        form = forms.DrawingHistoryForm(request.GET)
-        if form.is_valid():
-            user = form.cleaned_data["USER"]
-            project = form.cleaned_data["PROJECT"]
-            start = form.cleaned_data["START"] or 0
-            limit = form.cleaned_data["LIMIT"] or 20
-            page = int(start/limit)+1
-            if project:
-                query = Drawing.objects.filter(user=user, project=project)
-            else:
-                query = Drawing.objects.filter(user=user)
-            paginator = Paginator(query , limit)
-            try:
-                drawings = paginator.page(page)
-            except EmptyPage:
-                page = paginator.num_pages
-                drawings = paginator.page(page)
-            drawings_data = []
-            for drawing in drawings:
-                drawings_data .append({
-                    'title': drawing.title,
-                    'project': drawing.project,
-                    'time': int(drawing.timestamp.strftime("%s")), #print time.mktime(drawing.timestamp.timetuple())
-                    'drawing': drawing.ball_id,
-                    'permalink': drawing.permalink,
-                    'statistics': drawing.statistics
-                })
-            data = {
-                'drawings': drawings_data,
-                'count': paginator.count,
-            }
-            return HttpResponse(json.dumps(data), content_type='application/json')
-    raise Http404

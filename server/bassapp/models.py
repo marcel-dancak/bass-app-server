@@ -10,7 +10,13 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    youtube_username = models.CharField("youtube username", max_length=100, blank=True)
+    # youtube_username = models.CharField("youtube username", max_length=100, blank=True)
+    avatar = models.ImageField(
+        'profile picture',
+        upload_to='static/media/images/avatars/',
+        null=True,
+        blank=True
+    )
     likes = ArrayField(
         models.CharField(max_length=8),
         blank=True,
@@ -21,7 +27,7 @@ class User(AbstractUser):
         blank=True,
         default=[]
     )
-    subscribers = models.ManyToManyField("self", blank=True) 
+    subscribers = models.ManyToManyField("self", blank=True)
 
 """
 class Profile(models.Model):
@@ -37,6 +43,12 @@ class Profile(models.Model):
 """
 
 class Project(models.Model):
+    INSTRUMENTS_CHOICES = (
+        ('bass', 'Bass'),
+        ('drums', 'Dass'),
+        ('percussions', 'Percussions'),
+        ('piano', 'Piano')
+    )
     id = models.CharField(
         "id",
         max_length=8,
@@ -53,7 +65,7 @@ class Project(models.Model):
     description = models.TextField("description", blank=True)
     youtube_link = models.CharField("youtube hash", max_length=100, blank=True)
     data = models.TextField("data")
-    data_public = models.TextField("public version")
+    data_public = models.TextField("public version", blank=True)
     timestamp = models.DateTimeField("time stamp", auto_now_add=True)
 
     # rename to genres
@@ -68,7 +80,10 @@ class Project(models.Model):
         blank=True
     )
     tracks = ArrayField(
-        models.CharField(max_length=16, blank=True),
+        models.CharField(
+            max_length=16,
+            choices=INSTRUMENTS_CHOICES,
+            blank=True),
         blank=True
     )
     tags = ArrayField(

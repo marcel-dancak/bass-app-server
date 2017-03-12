@@ -9,16 +9,23 @@ class LoginForm(forms.Form):
     password = forms.CharField(required=False)
 
 
+class ProjectDataForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        exclude = ('id', 'user', 'likes', 'data_public')
+
+
 class GetProjectForm(forms.Form):
     id = forms.ModelChoiceField(
         queryset=Project.objects.all(),
-        help_text=u"Project ID"
+        help_text="Project ID"
     )
+
 
 class ProjectVoteForm(forms.Form):
     project = forms.ModelChoiceField(
         queryset=Project.objects.all(),
-        help_text=u"Project ID"
+        help_text="Project ID"
     )
     value = forms.BooleanField(required=False)
 
@@ -26,14 +33,19 @@ class ProjectVoteForm(forms.Form):
 class SubscribeForm(forms.Form):
     author = forms.ModelChoiceField(
         queryset=get_user_model().objects.all(),
-        help_text=u"user ID"
+        help_text="User ID"
     )
     value = forms.BooleanField(required=False)
 
 
-class ProjectDataForm(forms.ModelForm):
+class UserProjectsForm(forms.Form):
+    author = forms.ModelChoiceField(
+        queryset=get_user_model().objects.all(),
+        help_text="User ID"
+    )
 
+
+class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = Project
-        exclude = ['id', 'user']
-
+        model = get_user_model()
+        fields = ('first_name', 'last_name', 'email', 'avatar')
