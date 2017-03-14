@@ -8,7 +8,7 @@
         class="main-sidebar md-left md-fixed">
 
           <md-card class="my-card md-accent">
-            <md-card-header>
+            <md-card-header v-if="user.username">
               <md-card-header-text>
                 <div class="md-title">
                   <router-link :to="{ path: '/profile' }">
@@ -25,11 +25,24 @@
                 <md-icon v-else class="md-size-3x">face</md-icon>
               </md-card-media>
             </md-card-header>
+            <md-divider></md-divider>
+            <md-card-actions>
+              <template v-if="user.username">
+                <md-button @click.native="logout">
+                  <md-icon>account_circle</md-icon> <span>Logout</span>
+                </md-button>
+              </template>
+              <template v-else>
+                <md-button @click.native="$refs.login.open">
+                  <md-icon>account_circle</md-icon> <span>Login</span>
+                </md-button>
+              </template>
+            </md-card-actions>
           </md-card>
 
         <div class="main-sidebar-links">
           <md-list>
-            <template v-if="user.username">
+<!--             <template v-if="user.username">
               <md-list-item @click.native="logout">
                 <md-icon>account_circle</md-icon> <span>Logout</span>
               </md-list-item>
@@ -39,7 +52,7 @@
                 <md-icon>account_circle</md-icon> <span>Login</span>
               </md-list-item>
             </template>
-            <md-divider></md-divider>
+            <md-divider></md-divider> -->
 
             <!-- My projects -->
 
@@ -166,6 +179,24 @@ export default {
     border-radius: 0;
     .md-card-header {
       margin: 0;
+      padding-bottom: 0;
+    }
+    .md-card-actions {
+      padding: 6px;
+      justify-content: flex-start;
+      .md-button {
+        padding: 0 10px;
+        text-transform: none;
+        width: 100%;
+        text-align: left;
+      }
+      .md-icon {
+        margin-right: 26px;
+      }
+    }
+    .md-divider {
+      margin: 0 8px;
+      opacity: 0.55;
     }
   }
   i.fa {
@@ -289,7 +320,6 @@ export default {
   }
 
   body {
-    display: flex;
     max-width: 1600px;
   }
   @media (min-width: 1601px) {
@@ -356,5 +386,15 @@ export default {
     transform: translate3D(0, 0, 0);
     transition: $swift-ease-out;
     transition-delay: .2s;
+  }
+
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+    }
+  }
+  @page {
+    size: 1740px 820px;
+    margin: 0;
   }
 </style>

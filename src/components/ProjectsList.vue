@@ -12,12 +12,29 @@
           <span>{{ item.artist }}</span>
         </div>
 
-        <a v-if="item.youtube_link"
+        <div class="right-section2">
+          <span class="md-title">{{ item.author.name }}</span>
+          <div class="rating" v-if="item.likes">
+            <md-icon>favorite</md-icon>
+            <span>{{ item.likes | positive}}</span>
+          </div>
+          <p class="md-subhead">{{ item.created | timediff }}</p>
+        </div>
+
+<!--         <div class="right-section">
+          <div class="rating">
+            <md-icon>favorite</md-icon>
+            <span>{{ item.likes | positive}}</span>
+          </div>
+          <p class="md-subhead">{{ item.created | timediff }}</p>
+        </div> -->
+
+<!--         <a v-if="item.youtube_link"
           class="youtube-link"
           v-bind:href="'https://www.youtube.com/watch?v='+item.youtube_link">
           <i class="fa fa-youtube"></i>
           <p>{{ item.author.name }}</p>
-        </a>
+        </a> -->
       </router-link>
 
     </md-list-item>
@@ -46,6 +63,70 @@ export default {
     .md-icon {
       margin: 0 8px;
     }
+    .right-section2 {
+      text-align: right;
+      line-height: 26px;
+      .rating {
+        display: inline-block;
+        line-height: 18px;
+        .md-icon {
+          font-size: 19px;
+          min-width: 17px;
+          width: 17px;
+          min-height: 19px;
+          height: 19px;
+          margin: 0;
+        }
+        &:before {
+          content: "/";
+          color: #aaa;
+          padding: 0 2px;
+        }
+        span {
+          font-size: 13px;
+        }
+      }
+      .md-title {
+        margin: 0;
+        font-size: 15px;
+        line-height: 20px;
+        color: #444;
+      }
+      .md-subhead {
+        margin: 0;
+        color: #888;
+        font-size: 13px;
+        line-height: 20px;
+      }
+    }
+    .right-section {
+      text-align: right;
+      .md-subhead {
+        margin: 0;
+        color: #888;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      .rating {
+        display: inline-block;
+        position: relative;
+        .md-icon {
+          font-size: 36px;
+          width: 36px;
+          margin: 0;
+        }
+        span {
+          position: absolute;
+          display: inline-block;
+          right: 0;
+          width: 36px;
+          text-align: center;
+          bottom: 0;
+          font-size: 12px;
+          color: #fff;
+        }
+      }
+    }
   }
 }
 
@@ -56,9 +137,26 @@ export default {
   margin: 0 16px;
   background-color: #ddd;
 }
+.md-list-item:hover {
+  &:before {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: #ddd;
+  }
+  &:after {
+    margin: 0;
+  }
+}
+
 .num {
-  background-color: #333;
+  background-color: #444;
   color: #fff;
+  zborder-bottom: 1px solid #ccc;
   width: 36px;
   height: 36px;
   line-height: 36px;

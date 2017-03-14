@@ -74,10 +74,12 @@
         <md-layout md-row md-column-xsmall>
           <md-layout md-flex="70" md-column>
             <md-layout md-row class="actions-toolbar">
-              <md-button class="back md-icon-button md-fab md-clean" @click.native="back">
+              <md-button class="back md-icon-button xmd-fab md-clean" @click.native="back">
                 <md-icon>arrow_back</md-icon>
               </md-button>
-              <md-layout md-flex="true"></md-layout>
+              <p class="md-subhead">Created: {{ project.created | todate }}</p>
+              <div style="flex: 1"></div>
+              <!-- <md-layout md-flex="true"></md-layout> -->
               <md-button
                 v-if="project.youtube_link"
                 class="fa icon-button md-raised">
@@ -263,6 +265,9 @@
         &.open {
           padding: 0 70px;
         }
+      }
+      p {
+        margin: auto 0;
       }
     }
     .md-card-content {
