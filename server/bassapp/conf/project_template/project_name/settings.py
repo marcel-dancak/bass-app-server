@@ -1,5 +1,5 @@
 """
-Django settings for ???.
+Django settings for BassApp
 """
 
 import os
@@ -14,7 +14,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bass',                      
+        'NAME': 'bass',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
@@ -98,5 +98,11 @@ WSGI_APPLICATION = '{{ project_name }}.wsgi.application'
 
 AUTH_USER_MODEL = 'bassapp.User'
 
+
+### CUSTOM SETTINGS
+try:
+    from {{ project_name }}.settings_custom import *
+except ImportError:
+    pass
 
 # vim: set ts=8 sts=4 sw=4 et:
