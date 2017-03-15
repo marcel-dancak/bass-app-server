@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="author-detail">
     <md-card class="author detail">
       <md-layout>
         <div class="main-section">
@@ -25,25 +25,24 @@
                 </i>
                 Subscribe
             </md-button>
-            <div class="icon-links">
-              <md-button href="#" class="md-icon-button">
-                <i class="fa fa-youtube"></i>
-              </md-button>
-              <md-button href="#" class="md-icon-button">
-                <i class="fa fa-facebook"></i>
-              </md-button>
-              <md-button href="#" class="md-icon-button">
-                <i class="fa fa-twitter"></i>
-              </md-button>
-            </div>
-
+            <label>Uploads: {{ author.projects_count }}</label>
             <!-- <div class="md-subhead">Joined: {{ author.date_joined | todate }}</div> -->
           </md-card-actions>
         </div>
         <div style="flex: 1"></div>
         <div class="right-section">
           <h4>Joined: {{ author.date_joined | todate }}</h4>
-          <h3>Uploads: {{ author.projects_count }}</h3>
+          <div class="icon-links">
+            <md-button href="#" class="md-icon-button">
+              <i class="fa fa-youtube"></i>
+            </md-button>
+            <md-button href="#" class="md-icon-button">
+              <i class="fa fa-facebook"></i>
+            </md-button>
+            <md-button href="#" class="md-icon-button">
+              <i class="fa fa-twitter"></i>
+            </md-button>
+          </div>
           <!-- <div class="md-subhead">Uploads: {{ author.projects_count }}</div> -->
         </div>
       </md-layout>
@@ -193,28 +192,24 @@ export default {
     .md-card-actions {
       padding-top: 12px!important;
       padding-bottom: 4px!important;
+      justify-content: flex-start;
       .md-button {
         padding-left: 8px;
       }
-      .icon-links {
-        margin-left: 16px;
-        padding-left: 8px;
+      label {
+        margin: 10px 16px;
+        opacity: 0.74;
         position: relative;
+        padding-left: 14px;
+        font-weight: 500;
         &:before {
           content: "";
           position: absolute;
           left: 0;
-          top: 6px;
-          bottom: 6px;
+          top: 2px;
+          bottom: 2px;
           width: 1px;
           background-color: #bbb;
-        }
-        .md-button {
-          padding: 4px;
-        }
-        i {
-          font-size: 24px;
-          color: #333;
         }
       }
     }
@@ -223,7 +218,7 @@ export default {
       background-color: #fff;
     }
     .right-section {
-      margin: 16px 16px 0px 8px;
+      margin: 16px 16px 10px 8px;
       text-align: right;
       display: flex;
       flex-direction: column;
@@ -233,9 +228,16 @@ export default {
         color: #777;
         font-weight: 500;
       }
-      h3 {
-        margin: 12px 0;
-        color: #444;
+      .icon-links {
+        margin-left: 16px;
+        opacity: 0.75;
+        .md-button {
+          padding: 4px;
+          margin: 0;
+        }
+        i {
+          font-size: 24px;
+        }
       }
       .md-subhead {
         line-height: 30px;
@@ -256,4 +258,14 @@ export default {
       }
     }
   }
-</style>
+  </style>
+  <style lang="scss">
+  .author-detail .md-list.projects {
+    .author {
+      visibility: hidden;
+    }
+    .rating:before {
+      display: none;
+    }
+  }
+  </style>
