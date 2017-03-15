@@ -3,9 +3,10 @@
     <md-list-item
       v-for="(item, index) in projects" :key="item.project">
       <router-link :to="{ name: 'detail', params: { id: item.id }}">
-        <span class="num">{{ index+1 }}</span>
-
-        <md-icon>{{ item.starred? 'star' : 'star_border' }}</md-icon>
+        <div class="left-section">
+          <div class="num">{{ index+1 }}</div>
+          <md-icon>{{ item.starred? 'star' : 'star_border' }}</md-icon>
+        </div>
 
         <div class="md-list-text-container">
           <span class="title">{{ item.title }}</span>
@@ -13,7 +14,7 @@
         </div>
 
         <div class="right-section2">
-          <span class="md-title">{{ item.author.name }}</span>
+          <span class="author">{{ item.author.name }}</span>
           <div class="rating" v-if="item.likes">
             <md-icon>favorite</md-icon>
             <span>{{ item.likes | positive}}</span>
@@ -63,6 +64,26 @@ export default {
     .md-icon {
       margin: 0 8px;
     }
+    .left-section {
+      margin-right: 8px;
+      .num {
+        display: inline-block;
+        display: none;
+        font-weight: bold;
+        background-color: transparent;
+        color: #999;
+        width: 18px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 18px;
+      }
+      .md-icon {
+        margin-left: 0;
+        font-size: 20px;
+        display: inline-block;
+        xdisplay: none;
+      }
+    }
     .right-section2 {
       text-align: right;
       line-height: 26px;
@@ -86,10 +107,11 @@ export default {
           font-size: 13px;
         }
       }
-      .md-title {
+      .author {
         margin: 0;
         font-size: 15px;
         line-height: 20px;
+        font-weight: 500;
         color: #444;
       }
       .md-subhead {
@@ -156,7 +178,6 @@ export default {
 .num {
   background-color: #444;
   color: #fff;
-  zborder-bottom: 1px solid #ccc;
   width: 36px;
   height: 36px;
   line-height: 36px;

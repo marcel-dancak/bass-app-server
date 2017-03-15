@@ -1,0 +1,66 @@
+  .slide-enter-active {
+    transition: all .45s ease;
+    position: absolute;
+    width: 100%;
+    top: 0;
+  }
+  .slide-leave-active {
+    transition: all .45s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .slide-enter {
+    transform: translateX(200px);
+    opacity: 0;
+  }
+  .slide-leave-to {
+    transform: translateX(-200px);
+    opacity: 0;
+  }
+
+  .slide-inverse-enter-active {
+    transition: all .45s ease;
+    position: absolute;
+    width: 100%;
+    top: 0;
+  }
+  .slide-inverse-leave-active {
+    transition: all .45s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .slide-inverse-enter {
+    transform: translateX(-200px);
+    opacity: 0;
+  }
+  .slide-inverse-leave-to {
+    transform: translateX(200px);
+    opacity: 0;
+  }
+
+
+/*
+  .slide-fade-enter-active {
+    transition: all .45s ease;
+    position: absolute;
+    width: 100%;
+    top: 0;
+  }
+  .slide-fade-leave-active {
+    transition: all .45s linear;
+    position: absolute;
+    width: 100%;
+    top: 0;
+  }
+  .slide-fade-enter, .slide-fade-leave-to {
+    transform: translateX(300px);
+    opacity: 0;
+  }
+
+  .slide-fade-reverse-enter-active {
+    transition: all .35s ease;
+  }
+  .slide-fade-reverse-leave-active {
+    transition: all .45s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .slide-fade-reverse-enter, .slide-fade-reverse-leave-to {
+    transform: translateX(-300px);
+    opacity: 0;
+  }
+*/

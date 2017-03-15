@@ -1,5 +1,5 @@
 <template>
-  <!-- <transition name="slide-fade"> -->
+<md-theme md-name="detail">
   <div>
 <!--     <md-toolbar class="md-warn main">
       <md-button @click.native="back">
@@ -7,7 +7,7 @@
       </md-button>
     </md-toolbar> -->
     
-    <md-card class="detail">
+    <md-card class="header md-warn">
       <md-layout>
         <div class="header-section">
 
@@ -16,24 +16,51 @@
             <div class="md-subhead">{{ project.artist || '-'}}</div>
           </md-card-header>
           <md-card-actions>
-            <md-button
+<!--             <md-button
               class="icon-text"
               @click.native="toggleFavourite(project)">
               <md-icon v-if="project.starred">star</md-icon>
               <md-icon v-else>star_border</md-icon>
               Bookmark
+            </md-button> -->
+            <md-button
+              class="icon-text"
+              :class="{'md-primary': project.starred}"
+              @click.native="toggleFavourite(project)">
+              <md-icon>star</md-icon>
+              Bookmark
+              <!-- &nbsp;<span style="color:#fff">Bookmark</span> -->
             </md-button>
 
-            <span class="counter">{{ project.likes }}</span>
+            <!-- <span class="counter">{{ project.likes }}</span> -->
+
+<!--             <md-button
+              class="icon-text"
+              @click.native="toggleLike(project)">
+              {{ project.likes }}
+              <md-icon v-if="project.liked">favorite</md-icon>
+              <md-icon v-else>favorite_border</md-icon>
+              Like
+            </md-button> -->
 
             <md-button
+              class="icon-text"
+              :class="{'md-primary': project.liked}"
+              @click.native="toggleLike(project)">
+              {{ project.likes }}
+              <md-icon>thumb_up</md-icon>
+              Like
+              <!-- &nbsp;<span style="color:#fff">Like</span> -->
+            </md-button>
+
+<!--             <md-button
               class="icon-text"
               @click.native="toggleLike(project)">
                 <i
                   class="fa"
                   :class="[project.liked? 'fa-thumbs-up' : 'fa-thumbs-o-up']">
                 </i> Like
-            </md-button>
+            </md-button> -->
 
           </md-card-actions>
         </div>
@@ -46,31 +73,40 @@
               {{ project.author.name }}
             </router-link>
           </div>
-          <md-avatar v-if="project.author.avatar" class="md-avatar-icon md-accent">
+          <md-avatar v-if="project.author.avatar" class="md-avatar-icon">
             <img :src="$http.options.root+project.author.avatar">
           </md-avatar>
-          <md-avatar v-else class="md-avatar-icon md-accent">
+          <md-avatar v-else class="md-avatar-icon">
             <md-icon>face</md-icon>
           </md-avatar>
 
           <md-card-actions>
-            <md-button
+            <!-- <span class="counter">2</span> -->
+<!--             <md-button
               class="icon-text"
               @click.native="toggleSubscription(project.author)">
                 <i
                   class="fa"
                   :class="[subscribed? 'fa-eye-slash' : 'fa-eye']">
                 </i> Subscribe
+            </md-button> -->
+
+            <md-button
+              class="icon-text"
+              :class="{'md-primary': subscribed}"
+              @click.native="toggleSubscription(project.author)">
+                <i class="fa fa-eye"></i> Subscribe
             </md-button>
+
           </md-card-actions>
 
         </div>
       </md-layout>
+    </md-card>
+    <md-divider></md-divider>
 
-      <md-divider></md-divider>
-
+    <md-card class="detail md-transparent">
       <md-card-content>
-
         <md-layout md-row md-column-xsmall>
           <md-layout md-flex="70" md-column>
             <md-layout md-row class="actions-toolbar">
@@ -85,7 +121,7 @@
                 class="fa icon-button md-raised">
                 <i class="fa fa-youtube"></i>
               </md-button>
-              <md-button class="md-accent md-raised open">OPEN</md-button>
+              <md-button class="md-primary md-raised open">OPEN</md-button>
             </md-layout>
 
             <p class="r-pad">
@@ -95,8 +131,8 @@
           </md-layout>
 
           <md-layout md-flex="30">
-
             <md-card class="subcard">
+              <p><label>Category: </label> Cover</p>
               <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
               <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
               <p>
@@ -107,15 +143,14 @@
                   :src="loadImg(track)">
               </p>
             </md-card>
-
           </md-layout>
+
         </md-layout>
-
       </md-card-content>
-
     </md-card>
+
   </div>
-  <!-- </transition> -->
+</md-theme>
 </template>
 
 <script>
@@ -130,9 +165,9 @@
         project: {
           title: 'Title',
           artist: 'Artist',
-          id: 'xyz',
+          id: '',
           author: {
-            name: 'Name'
+            name: 'Author'
           },
           genres: [],
           playing_styles: []
@@ -148,7 +183,7 @@
         this.subscribed = subscribers.indexOf(project.author.id) !== -1
         this.project = project
       } else {
-        // TODO fetch
+        this.fetchData()
       }
     },
     methods: {
@@ -157,6 +192,15 @@
       },
       back() {
         this.$router.go(-1)
+      },
+      fetchData() {
+        this.$http
+          .get('project/', { params: {id: this.id} })
+          .then(response => {
+            console.log(response.data)
+            this.project = response.data
+          })
+
       },
       toggleFavourite(project) {
         console.log('toggleFavourite')
@@ -211,9 +255,9 @@
     padding-left: 6px;
     padding-right: 4px;
   }
-  .md-card.detail {
+  .md-card.header {
+    border-radius: 0;
     .header-section {
-      background-color: #eee;
       flex: 1 0 auto;
       .md-card-actions {
         justify-content: flex-start;
@@ -224,7 +268,6 @@
     }
     .author-section {
       padding: 16px 0 0 16px;
-      background-color: #eee;
       flex: 0 0 auto;
       .text {
         text-align: right;
@@ -249,7 +292,29 @@
         width: 100%;
       }
     }
+  }
+  .md-card.detail {
+    box-shadow: none;
+    .md-card-content {
+      img.md-icon {
+        margin-right: 5px;
+      }
+      .video-link {
+        float: right;
+        font-size: 28px;
+      }
+      .subcard {
+        padding: 6px 16px;
+        width: 100%;
+      }
+    }
+    label {
+      font-weight: bold;
+      color: #444;
+      margin-right: 5px;
+    }
     .actions-toolbar {
+      max-height: 42px;
       .back.md-button {
         width: 36px;
       }
@@ -269,24 +334,6 @@
       p {
         margin: auto 0;
       }
-    }
-    .md-card-content {
-      img.md-icon {
-        margin-right: 5px;
-      }
-      .video-link {
-        float: right;
-        font-size: 28px;
-      }
-      .subcard {
-        padding: 6px 16px;
-        width: 100%;
-      }
-    }
-    label {
-      font-weight: bold;
-      color: #444;
-      margin-right: 5px;
     }
   }
 </style>

@@ -159,6 +159,8 @@ export default {
 
 <style lang="scss">
   @import 'variables.scss';
+  @import 'animations.scss';
+
   $sizebar-size: 280px;
 
   .md-subhead {
@@ -177,6 +179,8 @@ export default {
   }
   .my-card.md-card {
     border-radius: 0;
+    border-right: 1px solid #666;
+    xbox-shadow: none;
     .md-card-header {
       margin: 0;
       padding-bottom: 0;
@@ -196,7 +200,7 @@ export default {
     }
     .md-divider {
       margin: 0 8px;
-      opacity: 0.55;
+      /*opacity: 0.55;*/
     }
   }
   i.fa {
@@ -224,72 +228,6 @@ export default {
     }*/
   }
 
-  .slide-enter-active {
-    transition: all .45s ease;
-    position: absolute;
-    width: 100%;
-    top: 0;
-  }
-  .slide-leave-active {
-    transition: all .45s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-  }
-  .slide-enter {
-    transform: translateX(200px);
-    opacity: 0;
-  }
-  .slide-leave-to {
-    transform: translateX(-200px);
-    opacity: 0;
-  }
-
-  .slide-inverse-enter-active {
-    transition: all .45s ease;
-    position: absolute;
-    width: 100%;
-    top: 0;
-  }
-  .slide-inverse-leave-active {
-    transition: all .45s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-  }
-  .slide-inverse-enter {
-    transform: translateX(-200px);
-    opacity: 0;
-  }
-  .slide-inverse-leave-to {
-    transform: translateX(200px);
-    opacity: 0;
-  }
-
-
-/*
-  .slide-fade-enter-active {
-    transition: all .45s ease;
-    position: absolute;
-    width: 100%;
-    top: 0;
-  }
-  .slide-fade-leave-active {
-    transition: all .45s linear;
-    position: absolute;
-    width: 100%;
-    top: 0;
-  }
-  .slide-fade-enter, .slide-fade-leave-to {
-    transform: translateX(300px);
-    opacity: 0;
-  }
-
-  .slide-fade-reverse-enter-active {
-    transition: all .35s ease;
-  }
-  .slide-fade-reverse-leave-active {
-    transition: all .45s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-  }
-  .slide-fade-reverse-enter, .slide-fade-reverse-leave-to {
-    transform: translateX(-300px);
-    opacity: 0;
-  }
-*/
 
   .md-toolbar.main {
     h1 {
@@ -327,7 +265,6 @@ export default {
       margin-right: auto;
       border-left: 1px solid #ccc;
       border-right: 1px solid #ccc;
-      transform: translateX(150px);
     }
   }
 
@@ -355,7 +292,8 @@ export default {
         top: 0;
         pointer-events: auto;
         transform: translate3d(0, 0, 0)!important;
-        box-shadow: $material-shadow-2dp;
+        box-shadow: $material-shadow-10dp;
+        /* border-right: 1px solid #bbb; */
       }
     }
     .md-backdrop {
@@ -368,6 +306,7 @@ export default {
     .main-sidebar-links {
       overflow: auto;
       flex: 1;
+      border-right: 1px solid #bbb;
       .md-inset .md-list-item-container {
         padding-left: 36px;
       }

@@ -22,6 +22,61 @@ Vue.http.interceptors.push((request, next) => {
     next();
 })
 Vue.material.inkRipple = false
+Vue.material.registerTheme({
+  'default': {
+    primary: 'blue',
+    accent: 'blue-grey',
+    warn: {
+      color: 'blue-grey',
+      hue: 800
+    }
+  },
+  author: {
+    accent: {
+      color: 'blue',
+      hue: 200
+    },
+    // warn: {
+    //   color: 'blue',
+    //   hue: 300
+    // },
+    warn: {
+      color: 'blue-grey',
+      hue: 600
+    },
+    primary: {
+      color: 'blue-grey',
+      hue: 800
+    }
+  },
+  detail: {
+    primary: 'blue',
+    accent: 'white',
+    warn: {
+      color: 'blue-grey',
+      hue: 800
+    }
+  }
+})
+
+import differenceInMinutes from 'date-fns/difference_in_minutes'
+import differenceInDays from 'date-fns/difference_in_days'
+import differenceInWeeks from 'date-fns/difference_in_weeks'
+import format from 'date-fns/format'
+
+Vue.filter('positive', function(value) {
+  return value > 0? value : ''
+})
+
+Vue.filter('timediff', function(value) {
+  const time = new Date(value)
+  return differenceInDays(new Date(), time)+' days ago'
+})
+
+Vue.filter('todate', function(value) {
+  const time = new Date(value)
+  return format(time, 'MMM D, YYYY')
+})
 
 
 window.app = new Vue({

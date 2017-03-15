@@ -1,6 +1,7 @@
 <template>
+<md-theme md-name="author">
   <div class="author-detail">
-    <md-card class="author detail">
+    <md-card class="author detail md-primary xmd-warn">
       <md-layout>
         <div class="main-section">
           <md-card-header>
@@ -25,7 +26,7 @@
                 </i>
                 Subscribe
             </md-button>
-            <label>Uploads: {{ author.projects_count }}</label>
+            <div class="md-subhead">Uploads: {{ author.projects_count }}</div>
             <!-- <div class="md-subhead">Joined: {{ author.date_joined | todate }}</div> -->
           </md-card-actions>
         </div>
@@ -43,66 +44,39 @@
               <i class="fa fa-twitter"></i>
             </md-button>
           </div>
-          <!-- <div class="md-subhead">Uploads: {{ author.projects_count }}</div> -->
         </div>
       </md-layout>
-
-      <md-toolbar class="main xmd-transparent">
-        <md-button
-          @click.native="back"
-          class="back md-icon-button xmd-raised">
-          <md-icon>arrow_back</md-icon>
-        </md-button>
-          <h2 class="md-title">Projects</h2>
-
-          <md-input-container style="flex: 1 0">
-            <md-input
-              type="text"
-              placeholder="Search"
-              v-model="query"
-              @keyup.enter.native="search">
-            </md-input>
-          </md-input-container>
-
-          <md-button
-            class="md-icon-button"
-            @click.native="search">
-            <md-icon>search</md-icon>
-          </md-button>
-      </md-toolbar>
-
-<!--         <md-layout md-row md-column-xsmall>
-        <md-layout md-row class="actions-toolbar md-toolbar main">
-          <md-button
-            @click.native="back"
-            class="back md-icon-button md-fab md-raised md-clean">
-            <md-icon>arrow_back</md-icon>
-          </md-button>
-          <h1>Projects</h1>
-
-          <md-input-container style="flex: 1">
-            <md-input
-              type="text"
-              placeholder="Search"
-              v-model="query"
-              @keyup.enter.native="search">
-            </md-input>
-          </md-input-container>
-
-          <md-button
-            class="md-icon-button"
-            @click.native="search">
-            <md-icon>search</md-icon>
-          </md-button>
-        </md-layout>
-      </md-layout> -->
-
     </md-card>
+
+    <md-toolbar class="main md-warn">
+      <md-button
+        @click.native="back"
+        class="back md-icon-button xmd-raised">
+        <md-icon>arrow_back</md-icon>
+      </md-button>
+      <h2 class="md-title">Projects</h2>
+
+      <md-input-container style="flex: 1 0" class="md-primary">
+        <md-input
+          type="text"
+          placeholder="Search"
+          v-model="query"
+          @keyup.enter.native="search">
+        </md-input>
+      </md-input-container>
+
+      <md-button
+        class="md-icon-button"
+        @click.native="search">
+        <md-icon>search</md-icon>
+      </md-button>
+    </md-toolbar>
 
     <projects-list :projects="projects"></projects-list>
     <!-- <projects-table :projects="projects"></projects-table> -->
 
   </div>
+</md-theme>
 </template>
 
 <script>
@@ -167,8 +141,6 @@ export default {
 </script>
 <style lang="scss">
   .md-card.author {
-    background-color: #FFF9C4!important;
-    xbackground-color: #8D6E63!important;
     box-shadow: none;
     border-radius: 0;
 
@@ -191,13 +163,13 @@ export default {
     }
     .md-card-actions {
       padding-top: 12px!important;
-      padding-bottom: 4px!important;
+      padding-bottom: 8px!important;
       justify-content: flex-start;
       .md-button {
         padding-left: 8px;
       }
-      label {
-        margin: 10px 16px;
+      .md-subhead {
+        margin-left: 16px;
         opacity: 0.74;
         position: relative;
         padding-left: 14px;
@@ -209,13 +181,12 @@ export default {
           top: 2px;
           bottom: 2px;
           width: 1px;
-          background-color: #bbb;
+          background-color: #555;
         }
       }
     }
     .md-card-content {
       padding-bottom: 16px;
-      background-color: #fff;
     }
     .right-section {
       margin: 16px 16px 10px 8px;
@@ -225,12 +196,12 @@ export default {
       xjustify-content: flex-end;
       justify-content: space-between;
       h4 {
-        color: #777;
+        opacity: 0.55;
         font-weight: 500;
       }
       .icon-links {
         margin-left: 16px;
-        opacity: 0.75;
+        opacity: 0.8;
         .md-button {
           padding: 4px;
           margin: 0;
@@ -245,13 +216,6 @@ export default {
       }
     }
     .md-toolbar {
-      background-color: #A1887F;
-      /*
-      background-color: #fff!important;
-      border-top: 1px solid rgba(180,180,180,0.45);
-      border-bottom: 1px solid #ccc;
-      opacity: 0.75;
-      */
       .back.md-button {
         margin-left: 4px;
         margin-right: 12px;
