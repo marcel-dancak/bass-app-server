@@ -14,21 +14,30 @@
         </md-table-head>
         <md-table-head>Genre
           <md-chips
+            class="capitalize"
             v-model="filter.genres"
             :md-input-placeholder="filter.genres.length? ' ' : 'Genre filter'"
             @change="updateFilter">
-            <template scope="chip">{{ chip.value }}</template>
+            <template scope="chip">{{ chip.value | lowercase }}</template>
           </md-chips>
         </md-table-head>
         <md-table-head>Playing style
           <md-chips
+            class="capitalize"
             v-model="filter.styles"
             :md-input-placeholder="filter.styles.length? ' ' : 'Style filter'"
             @change="updateFilter">
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
         </md-table-head>
-        <md-table-head>Author</md-table-head>
+        <md-table-head>Author
+          <md-chips
+            v-model="filter.authors"
+            :md-input-placeholder="filter.authors.length? ' ' : 'Author filter'"
+            @change="updateFilter">
+            <template scope="chip">{{ chip.value }}</template>
+          </md-chips>
+        </md-table-head>
         <md-table-head class="icon"><md-icon>thumb_up</md-icon></md-table-head>
       </md-table-row>
     </md-table-header>
@@ -44,8 +53,8 @@
             <div class="md-subhead">{{ item.artist }}</div>
           </router-link>
         </md-table-cell>
-        <md-table-cell>{{ item.genres.join(', ') }}</md-table-cell>
-        <md-table-cell>{{ item.playing_styles.join(', ') }}</md-table-cell>
+        <md-table-cell>{{ item.genres | capitalize-list }}</md-table-cell>
+        <md-table-cell>{{ item.playing_styles | capitalize-list }}</md-table-cell>
         <md-table-cell class="author">
           <div class="md-title">{{ item.author.name }}</div>
           <div class="md-subhead">{{ item.created | timediff }}</div>
@@ -73,7 +82,8 @@ export default {
       filter: {
         artists: [],
         genres: [],
-        styles: []
+        styles: [],
+        authors: []
       }
     }
   },
@@ -85,13 +95,27 @@ export default {
       for (let key in this.filter) {
         const values = this.filter[key]
         if (values.length) {
-          query[key] = values.join(',')
+          query[key] = values.join(',').toLowerCase()
         }
       }
       this.$router.push({
         path: current.path,
         query: query
       })
+    },
+    syncWithRoute(route) {
+      for (let key in this.filter) {
+        this.filter[key] = route.query[key]? route.query[key].split(',') : []
+      }
+    }
+  },
+  created() {
+    this.syncWithRoute(this.$router.currentRoute)
+  },
+  watch: {
+    '$route' (to, from) {
+      console.log('## Route changed ##')
+      this.syncWithRoute(to)
     }
   }
 }
@@ -100,12 +124,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .md-table {
+  .md-table-row:hover .md-table-cell {
+    background-color: #FFF9C4!important;
+  }
   .md-table-header {
-    background-color: #EEEEEE;
     tr {
       border-bottom: 1px solid #ccc;
     }
   }
+
   .md-table-head.icon {
     min-width: 24px;
     width: 24px;
@@ -113,6 +140,7 @@ export default {
   .md-table-head {
     height: 80px;
     .md-table-head-container {
+      background-color: #EEEEEE!important;
       height: 80px;
       padding: 8px 0;
     }
@@ -139,6 +167,9 @@ export default {
     .md-table-head-text {
       height: auto;
       font-size: 14px;
+      .md-chips.capitalize {
+        text-transform: capitalize;
+      }
       /*
       position: relative;
       width: 100%;
@@ -167,6 +198,10 @@ export default {
     &.icon {
       .md-table-cell-container {
         padding: 0 15px;
+        opacity: 0.75;
+        .md-icon {
+          font-size: 20px;
+        }
       }
     }
     &.title {
@@ -196,9 +231,6 @@ export default {
         color: #888;
       }
     }
-  }
-  .md-table-row:hover .md-table-cell {
-    background-color: #FFF9C4!important;
   }
 }
 </style>

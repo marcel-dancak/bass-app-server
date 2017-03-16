@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <login-dialog ref="login" @login="onLogin"></login-dialog>
-    <div style="position: relative">
+    <div class="page-wrapper">
 
       <md-sidenav
         ref="sidenav"
@@ -76,7 +76,6 @@
         </div>
       </md-sidenav>
 
-      <!-- <transition name="slide"> -->
       <transition :name="transition">
         <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
       </transition>
@@ -169,7 +168,7 @@ export default {
   .r-pad {
     padding-right: 16px;
   }
-  .md-card.md-accent {
+  .md-card.md-accent, .md-card.md-warn {
     a:not(.md-button) {
       color: #eee;
       &:hover {
@@ -273,12 +272,27 @@ export default {
   }
   .container {
     min-height: 100%;
+    height: 100%;
+    position: relative;
     display: flex;
     flex-flow: column nowrap;
     flex: 1;
     transition: $swift-ease-out;
     @media (min-width: 1281px) {
       padding-left: $sizebar-size;
+    }
+    .page-wrapper {
+      position: relative;
+      min-height: 100%;
+      height: 100%;
+      .page-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: #fff;
+      }
     }
   }
 

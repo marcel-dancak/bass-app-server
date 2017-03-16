@@ -22,6 +22,9 @@ Vue.http.interceptors.push((request, next) => {
     next();
 })
 Vue.material.inkRipple = false
+
+// TODO: use 'dark' theme on headers when bug in Vue-Material (hue in accent)
+// will be fixed
 Vue.material.registerTheme({
   'default': {
     primary: 'blue',
@@ -31,28 +34,9 @@ Vue.material.registerTheme({
       hue: 800
     }
   },
-  author: {
-    accent: {
-      color: 'blue',
-      hue: 200
-    },
-    // warn: {
-    //   color: 'blue',
-    //   hue: 300
-    // },
-    warn: {
-      color: 'blue-grey',
-      hue: 600
-    },
-    primary: {
-      color: 'blue-grey',
-      hue: 800
-    }
-  },
-  detail: {
+  dark: {
     primary: 'blue',
-    accent: 'white',
-    warn: {
+    accent: {
       color: 'blue-grey',
       hue: 800
     }
@@ -76,6 +60,10 @@ Vue.filter('timediff', function(value) {
 Vue.filter('todate', function(value) {
   const time = new Date(value)
   return format(time, 'MMM D, YYYY')
+})
+
+Vue.filter('capitalize-list', function(list) {
+  return list.map(item => { return item[0].toUpperCase() + item.substr(1) }).join(', ')
 })
 
 

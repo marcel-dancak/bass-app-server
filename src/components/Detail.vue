@@ -1,11 +1,5 @@
 <template>
-<md-theme md-name="detail">
-  <div>
-<!--     <md-toolbar class="md-warn main">
-      <md-button @click.native="back">
-        <md-icon>arrow_back</md-icon> Back
-      </md-button>
-    </md-toolbar> -->
+  <div class="page-container">
     
     <md-card class="header md-warn">
       <md-layout>
@@ -150,7 +144,6 @@
     </md-card>
 
   </div>
-</md-theme>
 </template>
 
 <script>
@@ -262,7 +255,9 @@
       .md-card-actions {
         justify-content: flex-start;
         .md-button {
-          padding-left: 4px;
+          padding-left: 6px;
+          padding-right: 6px;
+          margin-right: 12px;
         }
       }
     }
@@ -273,9 +268,6 @@
         text-align: right;
         padding-top: 12px;
         display: inline-block;
-        a {
-
-        }
       }
       .md-avatar {
         float: right;
@@ -283,9 +275,9 @@
         height: 56px;
         margin: 8px 16px 12px 10px;
         .md-icon {
-          width: 36px;
-          height: 36px;
-          font-size: 36px;
+          width: 64px;
+          height: 64px;
+          font-size: 64px;
         }
       }
       .md-card-actions {
@@ -316,7 +308,11 @@
     .actions-toolbar {
       max-height: 42px;
       .back.md-button {
-        width: 36px;
+        min-width: 32px;
+        width: 32px;
+        .md-icon {
+          margin-left: 0;
+        }
       }
       .md-button {
         margin: 3px 20px;

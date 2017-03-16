@@ -1,7 +1,6 @@
 <template>
-<md-theme md-name="author">
-  <div class="author-detail">
-    <md-card class="author detail md-primary xmd-warn">
+  <div class="page-container author-detail">
+    <md-card class="author detail md-warn">
       <md-layout>
         <div class="main-section">
           <md-card-header>
@@ -19,15 +18,12 @@
           <md-card-actions>
             <md-button
               class="icon-text"
-              @click.native="toggleSubscription(project.author)">
-                <i
-                  class="fa"
-                  :class="[subscribed? 'fa-eye-slash' : 'fa-eye']">
-                </i>
-                Subscribe
+              :class="{'md-primary': subscribed}"
+              @click.native="toggleSubscription(author)">
+                <i class="fa fa-eye"></i> Subscribe
             </md-button>
+
             <div class="md-subhead">Uploads: {{ author.projects_count }}</div>
-            <!-- <div class="md-subhead">Joined: {{ author.date_joined | todate }}</div> -->
           </md-card-actions>
         </div>
         <div style="flex: 1"></div>
@@ -48,7 +44,7 @@
       </md-layout>
     </md-card>
 
-    <md-toolbar class="main md-warn">
+    <md-toolbar class="main md-accent">
       <md-button
         @click.native="back"
         class="back md-icon-button xmd-raised">
@@ -76,7 +72,6 @@
     <!-- <projects-table :projects="projects"></projects-table> -->
 
   </div>
-</md-theme>
 </template>
 
 <script>
@@ -181,7 +176,7 @@ export default {
           top: 2px;
           bottom: 2px;
           width: 1px;
-          background-color: #555;
+          background-color: #777;
         }
       }
     }
@@ -193,7 +188,6 @@ export default {
       text-align: right;
       display: flex;
       flex-direction: column;
-      xjustify-content: flex-end;
       justify-content: space-between;
       h4 {
         opacity: 0.55;

@@ -1,38 +1,34 @@
 <template>
-  <!-- <transition name="slide"> -->
-  <!-- <transition name="slide-fade-reverse"> -->
-  <!-- <transition :name="transition"> -->
-    <div>
-      <md-toolbar class="md-warn main">
-        <md-button
-          class="menu md-icon-button"
-          @click.native="toggleMenu">
-          <md-icon>menu</md-icon>
-        </md-button>
-        <h1 class="md-title">{{ title }}</h1>
+  <div class="page-container">
+    <md-toolbar class="md-warn main">
+      <md-button
+        class="menu md-icon-button"
+        @click.native="toggleMenu">
+        <md-icon>menu</md-icon>
+      </md-button>
+      <h1 class="md-title">{{ title }}</h1>
 
 
-        <md-input-container style="flex: 1">
-          <md-input
-            type="text"
-            placeholder="Search"
-            v-model="query"
-            @keyup.enter.native="search">
-          </md-input>
-        </md-input-container>
+      <md-input-container style="flex: 1">
+        <md-input
+          type="text"
+          placeholder="Search"
+          v-model="query"
+          @keyup.enter.native="search">
+        </md-input>
+      </md-input-container>
 
-        <md-button
-          class="md-icon-button"
-          @click.native="search">
-          <md-icon>search</md-icon>
-        </md-button>
-      </md-toolbar>
-      
-      <projects-list :projects="projects"></projects-list>
-      <!-- <projects-table :projects="projects"></projects-table> -->
+      <md-button
+        class="md-icon-button"
+        @click.native="search">
+        <md-icon>search</md-icon>
+      </md-button>
+    </md-toolbar>
 
-    </div>
-  <!-- </transition> -->
+    <!-- <projects-list :projects="projects"></projects-list> -->
+    <projects-table :projects="projects"></projects-table>
+
+  </div>
 </template>
 
 <script>
