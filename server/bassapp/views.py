@@ -1,7 +1,8 @@
 import json
 
-from lzstring import LZString
+# from lzstring import LZString
 from django.conf import settings
+from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, Http404
 from django.views.decorators.gzip import gzip_page
 from django.views.decorators.csrf import csrf_exempt
@@ -10,10 +11,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.core import serializers
+from django.db.models import Q
 
 from bassapp import forms
 from bassapp.models import Project
 from bassapp.admin import ProjectAdmin
+from bassapp.libs.lzstring import LZString
 
 
 from django.contrib import admin
@@ -89,7 +92,7 @@ def get_projects_data(queryset):
             'id': project.pk,
             'title': project.title,
             'artist': project.artist,
-            'youtube_link': project.youtube_link,
+            'video_link': project.video_link,
             'author': {
                 'id': project.user.pk,
                 'name': project.user.username,
@@ -100,7 +103,7 @@ def get_projects_data(queryset):
             'tracks': project.tracks,
             'tags': project.tags,
             'likes': project.likes,
-            'created': project.timestamp # TODO
+            'created': project.created
         })
     return projects
 
@@ -111,29 +114,53 @@ def user_projects(request, author):
         queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
 
     author = get_user_model().objects.get(id=author)
+    projects = get_projects_data(queryset)
     data = {
         'profile': {
+            'id': author.id,
             'username': author.username,
             'first_name': author.first_name,
             'last_name': author.last_name,
             'date_joined': author.date_joined,
+            'projects_count': len(projects),
             'avatar': author.avatar.url if author.avatar else ''
         },
-        'projects': get_projects_data(queryset)
+        'projects': projects
     }
     return JsonResponse(data)
 
 
 def projects(request, filter=None):
     queryset = Project.objects.all()
-    if 'q' in request.GET:
-        queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
 
     if filter == 'favourite':
         queryset = queryset.filter(pk__in=request.user.favourites)
 
     if filter == 'liked':
         queryset = queryset.order_by('-likes')
+
+    if 'q' in request.GET:
+        queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
+
+    if 'genres' in request.GET:
+        queryset = queryset.filter(genres__overlap=request.GET['genres'].split(','))
+
+    if 'styles' in request.GET:
+        queryset = queryset.filter(playing_styles__overlap=request.GET['styles'].split(','))
+
+    if 'artists' in request.GET:
+        artists = request.GET['artists'].split(',')
+        q = Q(artist__icontains=artists[0])
+        for artist in artists[1:]:
+            q = q | Q(artist__icontains=artist)
+        queryset = queryset.filter(q)
+
+    if 'authors' in request.GET:
+        authors = request.GET['authors'].split(',')
+        q = Q(user__username__icontains=authors[0])
+        for author in authors[1:]:
+            q = q | Q(user__username__icontains=author)
+        queryset = queryset.filter(q)
 
     return JsonResponse(get_projects_data(queryset), safe=False)
 
@@ -168,11 +195,12 @@ def project(request):
         form = forms.GetProjectForm(request.GET)
         if form.is_valid():
             project = form.cleaned_data['id']
-            data = project.data
-            # data = LZString.decompressFromBase64(project.data)
-            response = HttpResponse(data, content_type='application/json')
-            # response['Content-Disposition'] = 'attachment; filename={0}.json'.format(project.id)
-            return response
+            if form.cleaned_data['data']:
+                data = project.data
+                # data = LZString.decompressFromBase64(project.data)
+                return HttpResponse(data, content_type='application/json')
+            data = get_projects_data([project])[0]
+            return JsonResponse(data)
     raise Http404
 
 
@@ -234,3 +262,13 @@ def subscribe(request):
             else:
                 request.user.subscribers.remove(author)
     return HttpResponse("ok")
+
+
+def app(request):
+    return render(
+        request,
+        "bassapp/index.html",
+        {},
+        status=200,
+        content_type="text/html"
+    )

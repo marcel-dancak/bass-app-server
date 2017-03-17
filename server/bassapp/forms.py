@@ -20,6 +20,7 @@ class GetProjectForm(forms.Form):
         queryset=Project.objects.all(),
         help_text="Project ID"
     )
+    data = forms.BooleanField(required=False)
 
 
 class ProjectVoteForm(forms.Form):

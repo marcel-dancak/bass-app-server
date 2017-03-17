@@ -4,6 +4,7 @@ from bassapp import views
 
 
 urlpatterns = [
+    url(r"^$", views.app, name="index"),
     url(r"^profile/$", views.user_profile, name="user_profile"),
     url(r"^project/$", views.project, name="project"),
     url(r"^projects/author/([0-9]+)/$", views.user_projects, name="user_projects"),

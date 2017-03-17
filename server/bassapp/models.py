@@ -4,15 +4,17 @@ import string
 from django.conf import settings
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django_resized import ResizedImageField
 
 
 from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    # youtube_username = models.CharField("youtube username", max_length=100, blank=True)
-    avatar = models.ImageField(
+    avatar = ResizedImageField(
         'profile picture',
+        size=[100, 100],
+        crop=['middle', 'center'],
         upload_to='static/media/images/avatars/',
         null=True,
         blank=True
@@ -29,18 +31,12 @@ class User(AbstractUser):
     )
     subscribers = models.ManyToManyField("self", blank=True)
 
-"""
-class Profile(models.Model):
-    youtube_username = models.CharField("youtube username", max_length=100, blank=True)
-    likes = ArrayField(
-        models.CharField(max_length=10),
-        blank=True
+    # youtube, twitter, facebook, instagram, patreon
+    links = ArrayField(
+        models.CharField(max_length=100),
+        blank=True,
+        default=[]
     )
-    favourites = ArrayField(
-        models.CharField(max_length=10),
-        blank=True
-    )
-"""
 
 class Project(models.Model):
     INSTRUMENTS_CHOICES = (
@@ -63,10 +59,13 @@ class Project(models.Model):
     title = models.CharField("title", max_length=100, db_index=True, blank=False)
     artist = models.CharField("artist", max_length=100, db_index=True, blank=True)
     description = models.TextField("description", blank=True)
-    youtube_link = models.CharField("youtube hash", max_length=100, blank=True)
+    video_link = models.CharField("video link", max_length=100, blank=True)
     data = models.TextField("data")
     data_public = models.TextField("public version", blank=True)
-    timestamp = models.DateTimeField("time stamp", auto_now_add=True)
+
+    # rename to created
+    created = models.DateTimeField("created", auto_now_add=True)
+    modified = models.DateTimeField("last modified", auto_now=True)
 
     # rename to genres
     genres = ArrayField(
@@ -90,16 +89,15 @@ class Project(models.Model):
         models.CharField(max_length=16, blank=True),
         blank=True
     )
-    # category: (cover/lesson/..)
+    # category: (cover/lesson/backing track/composition..)
     # difficulty = models.IntegerField("difficulty")
     level = models.IntegerField("level", default=3)
     likes = models.IntegerField("likes", default=0)
 
-    # pinax-likes
     # revision history?
 
     class Meta:
-        ordering = ["timestamp"]
+        ordering = ["-created"]
 
     def __unicode__(self):
         return self.id
@@ -115,15 +113,3 @@ class Project(models.Model):
             self.id = random_id
         return super(Project, self).save(*args, **kwargs)
 
-
-# class FavouriteProjects(models.Model):
-#     project = models.ForeignKey(
-#         Project,
-#         verbose_name="project",
-#         on_delete=models.CASCADE
-#     )
-#     user = models.ForeignKey(
-#         settings.AUTH_USER_MODEL,
-#         verbose_name="user",
-#         on_delete=models.CASCADE
-#     )
