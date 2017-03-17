@@ -6,13 +6,16 @@ import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.css'
 import 'font-awesome/css/font-awesome.css'
 
+import store from './store'
 import routes from './routes'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
+import Client from './client'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(VueMaterial)
+Vue.use(Client)
 
 
 Vue.http.options.root = 'http://localhost:8000'
@@ -70,19 +73,6 @@ Vue.filter('capitalize-list', function(list) {
 window.app = new Vue({
   el: '#app',
   template: '<router-view></router-view>',
-  data: {
-    user: {likes: [], favourites: []},
-    projects: []
-  },
-  methods: {
-    updateUser(data) {
-      Object.assign(this.user, data)
-      Object.keys(this.user).forEach(function(key) {
-        if (!data[key]) {
-          delete this.user[key]
-        }
-      }, this)
-    }
-  },
-  router: new VueRouter({routes})
+  router: new VueRouter({routes}),
+  store
 })

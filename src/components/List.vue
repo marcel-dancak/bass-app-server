@@ -45,8 +45,6 @@ export default {
     q: String,
     filter: String
   },
-  beforeCreate() {
-  },
   data () {
     return {
       title: 'Catalog',
@@ -57,13 +55,16 @@ export default {
   },
   watch: {
     '$route' (to, from) {
+      // filter changes when not active (keep-alive)
+      if (to.name !== 'list') return
+
       console.log('** Route changed **')
       this.route(to)
     }
   },
   created () {
     this.query = this.q
-    this.route(this.$router.currentRoute)
+    this.route(this.$route)
   },
   methods: {
     route(to) {
@@ -71,32 +72,15 @@ export default {
         this.title = 'Favourite'
       } else if (to.path === '/liked') {
         this.title = 'Most Liked'
-      } else if (to.path.startsWith('/author/')) {
-        this.title = `Author's Projects`
       } else {
         this.title = 'All Projects'
       }
       this.fetchProjects(to.path, to.query)
     },
     fetchProjects(path, query) {
-      // console.log(path+' '+JSON.stringify(query))
-      this.$http.get(
-        'projects'+path,
-        {params: query}
-      ).then(response => {
-          // get body data
-          let projects = response.data;
-          let user = this.$root.$data.user
-
-          projects.forEach(function(item) {
-            item.starred = user.favourites.indexOf(item.id) !== -1
-            item.liked = user.likes.indexOf(item.id) !== -1
-          }, this)
-
-          this.projects = projects
-          this.$root.$data.projects = projects
-        }, response => {
-          // error callback
+      this.$client.fetchProjects(path, query)
+        .then(response => {
+          this.projects = response.data
         })
     },
     search() {

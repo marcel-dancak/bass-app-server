@@ -10,51 +10,24 @@
             <div class="md-subhead">{{ project.artist || '-'}}</div>
           </md-card-header>
           <md-card-actions>
-<!--             <md-button
-              class="icon-text"
-              @click.native="toggleFavourite(project)">
-              <md-icon v-if="project.starred">star</md-icon>
-              <md-icon v-else>star_border</md-icon>
-              Bookmark
-            </md-button> -->
             <md-button
               class="icon-text"
-              :class="{'md-primary': project.starred}"
+              :class="{'md-primary': bookmarked}"
               @click.native="toggleFavourite(project)">
               <md-icon>star</md-icon>
               Bookmark
               <!-- &nbsp;<span style="color:#fff">Bookmark</span> -->
             </md-button>
 
-            <!-- <span class="counter">{{ project.likes }}</span> -->
-
-<!--             <md-button
-              class="icon-text"
-              @click.native="toggleLike(project)">
-              {{ project.likes }}
-              <md-icon v-if="project.liked">favorite</md-icon>
-              <md-icon v-else>favorite_border</md-icon>
-              Like
-            </md-button> -->
-
             <md-button
               class="icon-text"
-              :class="{'md-primary': project.liked}"
+              :class="{'md-primary': liked}"
               @click.native="toggleLike(project)">
               {{ project.likes }}
               <md-icon>thumb_up</md-icon>
               Like
               <!-- &nbsp;<span style="color:#fff">Like</span> -->
             </md-button>
-
-<!--             <md-button
-              class="icon-text"
-              @click.native="toggleLike(project)">
-                <i
-                  class="fa"
-                  :class="[project.liked? 'fa-thumbs-up' : 'fa-thumbs-o-up']">
-                </i> Like
-            </md-button> -->
 
           </md-card-actions>
         </div>
@@ -76,19 +49,10 @@
 
           <md-card-actions>
             <!-- <span class="counter">2</span> -->
-<!--             <md-button
-              class="icon-text"
-              @click.native="toggleSubscription(project.author)">
-                <i
-                  class="fa"
-                  :class="[subscribed? 'fa-eye-slash' : 'fa-eye']">
-                </i> Subscribe
-            </md-button> -->
-
             <md-button
               class="icon-text"
               :class="{'md-primary': subscribed}"
-              @click.native="toggleSubscription(project.author)">
+              @click.native="toggleSubscribe(project.author)">
                 <i class="fa fa-eye"></i> Subscribe
             </md-button>
 
@@ -121,6 +85,7 @@
             <p class="r-pad">
               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
             </p>
+            <!-- <p> {{ project }} </p> -->
 
           </md-layout>
 
@@ -164,20 +129,32 @@
           },
           genres: [],
           playing_styles: []
-        },
-        subscribed: false
+        }
+      }
+    },
+    computed: {
+      liked() {
+        if (this.$store.state.user.likes) {
+          return this.$store.state.user.likes.indexOf(this.id) !== -1
+        }
+        return false
+      },
+      bookmarked() {
+        if (this.$store.state.user.favourites) {
+          return this.$store.state.user.favourites.indexOf(this.id) !== -1
+        }
+        return false
+      },
+      subscribed() {
+        if (this.$store.state.user.subscribers) {
+          return this.$store.state.user.subscribers.indexOf(this.project.author.id) !== -1
+        }
+        return false
       }
     },
     created() {
-      var id = this.id;
-      let project = this.$root.$data.projects.find(item => {return item.id === id})
-      if (project) {
-        const subscribers = this.$root.$data.user.subscribers || []
-        this.subscribed = subscribers.indexOf(project.author.id) !== -1
-        this.project = project
-      } else {
-        this.fetchData()
-      }
+      console.log('Detail Created: '+this.id)
+      this.fetchData()
     },
     methods: {
       loadImg(name) {
@@ -187,71 +164,40 @@
         this.$router.go(-1)
       },
       fetchData() {
-        this.$http
-          .get('project/', { params: {id: this.id} })
+        this.$client.fetchProject(this.id)
           .then(response => {
-            console.log(response.data)
             this.project = response.data
           })
-
       },
       toggleFavourite(project) {
-        console.log('toggleFavourite')
-        let user = this.$root.$data.user
-        this.$http
-          .post('star/', {project: project.id, value: !project.starred})
-          .then(response => {
-              project.starred = !project.starred
-              if (project.starred) {
-                user.favourites.push(project.id)
-              } else {
-                user.favourites.splice(user.favourites.indexOf(project.id), 1)
-              }
-            }, response => {
-
-            })
+        console.log('toggle Favourite')
+        this.$client.toggleFavourite(project)
       },
       toggleLike(project) {
-        console.log('toggleLike')
-        let user = this.$root.$data.user
-        this.$http
-          .post('like/', {project: project.id, value: !project.liked})
-          .then(response => {
-              project.liked = !project.liked
-              if (project.liked) {
-                user.likes.push(project.id)
-                project.likes++
-              } else {
-                user.likes.splice(user.likes.indexOf(project.id), 1)
-                project.likes--
-              }
-            }, response => {
-
-            })
+        console.log('toggle Like')
+        this.$client.toggleLike(project)
       },
-      toggleSubscription(author) {
-        console.log('toggle Subscription')
-        this.$http
-          .post('subscribe/', {author: author.id, value: !this.subscribed})
-          .then(response => {
-              this.subscribed = !this.subscribed
-            }, response => {
-
-            })
+      toggleSubscribe(author) {
+        console.log('toggle Subscribe')
+        this.$client.toggleSubscribe(author)
       }
     }
   }
 </script>
 <style lang="scss">
-
+/*
   .counter {
     padding-left: 6px;
     padding-right: 4px;
   }
+*/
   .md-card.header {
     border-radius: 0;
     .header-section {
       flex: 1 0 auto;
+      .md-subhead {
+        margin-top: 1px;
+      }
       .md-card-actions {
         justify-content: flex-start;
         .md-button {

@@ -1,6 +1,5 @@
 <template>
   <md-table>
-
     <md-table-header>
       <md-table-row>
         <md-table-head class="icon"></md-table-head>
@@ -18,7 +17,7 @@
             v-model="filter.genres"
             :md-input-placeholder="filter.genres.length? ' ' : 'Genre filter'"
             @change="updateFilter">
-            <template scope="chip">{{ chip.value | lowercase }}</template>
+            <template scope="chip">{{ chip.value }}</template>
           </md-chips>
         </md-table-head>
         <md-table-head>Playing style
@@ -45,7 +44,8 @@
     <md-table-body>
       <md-table-row v-for="(item, index) in projects" :key="item.project">
         <md-table-cell class="icon">
-          <md-icon>{{ item.starred? 'star' : 'star_border' }}</md-icon>
+          <!-- <md-icon>{{ item.starred? 'star' : 'star_border' }}</md-icon> -->
+          <md-icon>{{ bookmarks[index]? 'star' : 'star_border' }}</md-icon>
         </md-table-cell>
         <md-table-cell class="title">
           <router-link :to="{ name: 'detail', params: { id: item.id }}">
@@ -87,10 +87,14 @@ export default {
       }
     }
   },
+  computed: {
+    bookmarks() {
+      return this.projects.map(item => { return this.$store.state.user.favourites.indexOf(item.id) !== -1 })
+    }
+  },
   methods: {
     updateFilter() {
       console.log('updateFilter')
-      const current = this.$router.currentRoute
       let query = {}
       for (let key in this.filter) {
         const values = this.filter[key]
@@ -99,7 +103,7 @@ export default {
         }
       }
       this.$router.push({
-        path: current.path,
+        path: this.$route.path,
         query: query
       })
     },
@@ -110,10 +114,11 @@ export default {
     }
   },
   created() {
-    this.syncWithRoute(this.$router.currentRoute)
+    this.syncWithRoute(this.$route)
   },
   watch: {
     '$route' (to, from) {
+      // TODO: filter when not active
       console.log('## Route changed ##')
       this.syncWithRoute(to)
     }

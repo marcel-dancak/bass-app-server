@@ -4,7 +4,7 @@
       v-for="(item, index) in projects" :key="item.project">
       <router-link :to="{ name: 'detail', params: { id: item.id }}">
         <div class="left-section">
-          <md-icon>{{ item.starred? 'star' : 'star_border' }}</md-icon>
+          <md-icon>{{ bookmarks[index]? 'star' : 'star_border' }}</md-icon>
         </div>
 
         <div class="md-list-text-container">
@@ -33,6 +33,11 @@ export default {
     projects: {
       type: Array,
       required: true
+    }
+  },
+  computed: {
+    bookmarks() {
+      return this.projects.map(item => { return this.$store.state.user.favourites.indexOf(item.id) !== -1 })
     }
   }
 }

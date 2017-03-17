@@ -77,7 +77,9 @@
       </md-sidenav>
 
       <transition :name="transition">
+        <keep-alive include="list">
         <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
+        </keep-alive>
       </transition>
 
     </div>
@@ -93,8 +95,12 @@ export default {
     return {
       transition: 'slide',
       query: '',
-      user: this.$root.$data.user,
       projects: []
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.state.user
     }
   },
   components: {
@@ -103,7 +109,7 @@ export default {
   created () {
     // setTimeout(this.getUserProfile, 1000)
     this.getUserProfile()
-    this._historyStack = [this.$router.currentRoute.fullPath]
+    this._historyStack = [this.$route.fullPath]
     let onResize = e => {
       const offset = Math.round(Math.max((window.innerWidth - 1600)/2, 0))
       document.body.style.transform = `translate3d(${offset}px, 0, 0)`
@@ -136,16 +142,12 @@ export default {
     getUserProfile() {
       this.$http.get('profile/')
         .then(response => {
-          this.$root.updateUser(response.data)
-          this.$forceUpdate()
-          // this.$router.push({name: currentRoute.name, query: currentRoute.query})
-          // this.$router.push({name: 'list'})
+          this.$store.commit('updateProfile', response.data)
         })
     },
     onLogin(profile) {
       console.log('Login Successful')
-      this.$root.updateUser(profile)
-      this.$forceUpdate()
+      this.$store.commit('updateProfile', profile)
     },
     logout() {
       this.$http.get('logout/').then(response => {

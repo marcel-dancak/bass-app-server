@@ -19,7 +19,7 @@
             <md-button
               class="icon-text"
               :class="{'md-primary': subscribed}"
-              @click.native="toggleSubscription(author)">
+              @click.native="toggleSubscribe(author)">
                 <i class="fa fa-eye"></i> Subscribe
             </md-button>
 
@@ -91,9 +91,16 @@ export default {
   data () {
     return {
       author: {},
-      subscribed: true,
       query: '',
       projects: [],
+    }
+  },
+  computed: {
+    subscribed() {
+      if (this.$store.state.user.subscribers) {
+        return this.$store.state.user.subscribers.indexOf(this.author.id) !== -1
+      }
+      return false
     }
   },
   created () {
@@ -106,27 +113,17 @@ export default {
     },
     fetchProjects(query) {
       console.log('fetching projects')
-      this.$http.get(
-        `projects/author/${this.id}`,
-        {params: query}
-      ).then(response => {
-          // get body data
-          let projects = response.data.projects
-          let user = this.$root.$data.user
-
-          projects.forEach(function(item) {
-            item.starred = user.favourites.indexOf(item.id) !== -1
-            item.liked = user.likes.indexOf(item.id) !== -1
-          }, this)
-          this.projects = projects
-          this.$root.$data.projects = projects
+      this.$client.fetchUserProjects(this.id)
+        .then(response => {
+          this.projects = response.data.projects
           this.author = response.data.profile
-        }, response => {
-          // error callback
         })
     },
     search() {
       this.fetchProjects({q: this.query})
+    },
+    toggleSubscribe() {
+      this.$client.toggleSubscribe(this.author)
     },
     toggleMenu() {
       this.$emit('toggle-menu')
