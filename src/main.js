@@ -17,9 +17,8 @@ Vue.use(VueResource)
 Vue.use(VueMaterial)
 Vue.use(Client)
 
+Vue.http.options.root = process.env.API_URL
 
-Vue.http.options.root = 'http://localhost:8000'
-// Vue.http.options.root = 'http://192.168.0.151:8000'
 Vue.http.interceptors.push((request, next) => {
     request.credentials = true;
     next();
