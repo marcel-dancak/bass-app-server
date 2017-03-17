@@ -31,13 +31,16 @@
           <h4>Joined: {{ author.date_joined | todate }}</h4>
           <div class="icon-links">
             <md-button href="#" class="md-icon-button">
-              <i class="fa fa-youtube"></i>
+              <i class="fa fa-youtube-square"></i>
             </md-button>
             <md-button href="#" class="md-icon-button">
-              <i class="fa fa-facebook"></i>
+              <i class="fa fa-facebook-square"></i>
             </md-button>
             <md-button href="#" class="md-icon-button">
-              <i class="fa fa-twitter"></i>
+              <i class="fa fa-twitter-square"></i>
+            </md-button>
+            <md-button href="#" class="md-icon-button">
+              <img src="../assets/patreon-square.svg">
             </md-button>
           </div>
         </div>
@@ -47,12 +50,14 @@
     <md-toolbar class="main md-accent">
       <md-button
         @click.native="back"
-        class="back md-icon-button xmd-raised">
+        class="back md-icon-button">
         <md-icon>arrow_back</md-icon>
       </md-button>
-      <h2 class="md-title">Projects</h2>
+      <h1 class="md-title">Projects</h1>
 
-      <md-input-container style="flex: 1 0" class="md-primary">
+      <md-input-container
+        style="flex: 1 0"
+        class="md-primary">
         <md-input
           type="text"
           placeholder="Search"
@@ -97,15 +102,21 @@ export default {
   },
   computed: {
     subscribed() {
-      if (this.$store.state.user.subscribers) {
-        return this.$store.state.user.subscribers.indexOf(this.author.id) !== -1
-      }
-      return false
+      return this.$store.state.user.subscribers.indexOf(this.author.id) !== -1
     }
   },
   created () {
     this.query = this.q
     this.fetchProjects(this.query)
+  },
+  watch: {
+    '$route' (to, from) {
+      if (to.name === 'author') {
+        console.log('** AUTHOR PAGE **')
+        this.query = this.q
+        this.fetchProjects(this.query)
+      }
+    }
   },
   methods: {
     back() {
@@ -196,9 +207,14 @@ export default {
         .md-button {
           padding: 4px;
           margin: 0;
+          img {
+            margin-top: 1px;
+            width: 24px;
+            height: 24px;
+          }
         }
         i {
-          font-size: 24px;
+          font-size: 28px;
         }
       }
       .md-subhead {

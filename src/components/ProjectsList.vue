@@ -15,7 +15,7 @@
         <div class="right-section">
           <span class="author">{{ item.author.name }}</span>
           <div class="rating" v-if="item.likes">
-            <md-icon>favorite</md-icon>
+            <md-icon>thumb_up</md-icon>
             <span>{{ item.likes | positive}}</span>
           </div>
           <p class="md-subhead">{{ item.created | timediff }}</p>

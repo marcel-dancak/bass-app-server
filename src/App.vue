@@ -77,7 +77,7 @@
       </md-sidenav>
 
       <transition :name="transition">
-        <keep-alive include="list">
+        <keep-alive include="list,author-projects">
         <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
         </keep-alive>
       </transition>

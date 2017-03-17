@@ -75,9 +75,9 @@
               <div style="flex: 1"></div>
               <!-- <md-layout md-flex="true"></md-layout> -->
               <md-button
-                v-if="project.youtube_link"
-                class="fa icon-button md-raised">
-                <i class="fa fa-youtube"></i>
+                v-if="project.video_link"
+                class="fa icon-button md-warn">
+                <i class="fa fa-youtube-square"></i>
               </md-button>
               <md-button class="md-primary md-raised open">OPEN</md-button>
             </md-layout>
@@ -134,22 +134,13 @@
     },
     computed: {
       liked() {
-        if (this.$store.state.user.likes) {
-          return this.$store.state.user.likes.indexOf(this.id) !== -1
-        }
-        return false
+        return this.$store.state.user.likes.indexOf(this.id) !== -1
       },
       bookmarked() {
-        if (this.$store.state.user.favourites) {
-          return this.$store.state.user.favourites.indexOf(this.id) !== -1
-        }
-        return false
+        return this.$store.state.user.favourites.indexOf(this.id) !== -1
       },
       subscribed() {
-        if (this.$store.state.user.subscribers) {
-          return this.$store.state.user.subscribers.indexOf(this.project.author.id) !== -1
-        }
-        return false
+        return this.$store.state.user.subscribers.indexOf(this.project.author.id) !== -1
       }
     },
     created() {
@@ -237,10 +228,6 @@
       img.md-icon {
         margin-right: 5px;
       }
-      .video-link {
-        float: right;
-        font-size: 28px;
-      }
       .subcard {
         padding: 6px 16px;
         width: 100%;
@@ -260,14 +247,18 @@
           margin-left: 0;
         }
       }
+      i.fa {
+        font-size: 36px;
+      }
       .md-button {
         margin: 3px 20px;
         height: 36px;
         margin-left: 0;
         &.fa {
-          width: 64px;
-          min-width: 64px;
+          width: 44px;
+          min-width: 44px;
           padding: 0;
+          opacity: 0.95;
         }
         &.open {
           padding: 0 70px;
