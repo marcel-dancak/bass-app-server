@@ -7,7 +7,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 from django.views.decorators.gzip import gzip_page
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.core import serializers
@@ -16,6 +16,7 @@ from django.db.models import Q
 from bassapp import forms
 from bassapp.models import Project
 from bassapp.admin import ProjectAdmin
+from bassapp.decorators import login_required
 from bassapp.libs.lzstring import LZString
 
 
@@ -35,6 +36,7 @@ def get_user_profile(user):
         'likes': user.likes,
         'subscribers': list(user.subscribers.values_list('pk', flat=True))
     }
+
 
 @csrf_exempt
 def client_login(request):
@@ -65,7 +67,6 @@ def client_logout(request):
     return HttpResponse(" ", status=200)
 
 
-@csrf_exempt
 def user_profile(request):
     if request.user and request.user.is_authenticated():
 
@@ -204,7 +205,7 @@ def project(request):
     raise Http404
 
 
-@csrf_exempt
+@login_required
 def star(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
@@ -224,7 +225,7 @@ def star(request):
 
     raise Http404
 
-@csrf_exempt
+@login_required
 def like(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
@@ -248,7 +249,7 @@ def like(request):
     raise Http404
 
 
-@csrf_exempt
+@login_required
 def subscribe(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))

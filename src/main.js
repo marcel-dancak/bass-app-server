@@ -19,7 +19,27 @@ Vue.use(Client)
 
 Vue.http.options.root = process.env.API_URL
 
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';')
+    for (const i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim()
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+        break
+      }
+    }
+  }
+  return cookieValue
+}
+
 Vue.http.interceptors.push((request, next) => {
+    if (request.method === 'POST') {
+      const csrftoken = getCookie('csrftoken')
+      request.headers.set('X-CSRFTOKEN', csrftoken)
+    }
     request.credentials = true;
     next();
 })
