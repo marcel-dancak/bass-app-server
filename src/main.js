@@ -70,22 +70,27 @@ import differenceInDays from 'date-fns/difference_in_days'
 import differenceInWeeks from 'date-fns/difference_in_weeks'
 import format from 'date-fns/format'
 
-Vue.filter('positive', function(value) {
+Vue.filter('positive', value => {
   return value > 0? value : ''
 })
 
-Vue.filter('timediff', function(value) {
+Vue.filter('timediff', value => {
   const time = new Date(value)
   return differenceInDays(new Date(), time)+' days ago'
 })
 
-Vue.filter('todate', function(value) {
-  const time = new Date(value)
-  return format(time, 'MMM D, YYYY')
+Vue.filter('todate', value => {
+  return format(new Date(value), 'MMM D, YYYY')
 })
 
-Vue.filter('capitalize-list', function(list) {
-  return list.map(item => { return item[0].toUpperCase() + item.substr(1) }).join(', ')
+Vue.filter('capitalize', value => {
+  if (!value) return ''
+  value = value.toString()
+  return value.charAt(0).toUpperCase() + value.slice(1)
+})
+
+Vue.filter('capitalize-list', list => {
+  return list.map(item => { return item[0].toUpperCase() + item.slice(1) }).join(', ')
 })
 
 

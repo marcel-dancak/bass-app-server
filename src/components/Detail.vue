@@ -92,8 +92,8 @@
           <md-layout md-flex="30">
             <md-card class="subcard">
               <p><label>Category: </label> Cover</p>
-              <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
-              <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
+              <p><label>Genres: </label> {{ project.genres | capitalize-list }}</p>
+              <p><label>Techniques: </label> {{ project.playing_styles | capitalize-list }}</p>
               <p>
                 <label>Tracks: </label>&nbsp;&nbsp;
                 <img

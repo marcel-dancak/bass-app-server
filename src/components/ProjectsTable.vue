@@ -6,7 +6,7 @@
         <md-table-head class="title">Title
           <md-chips
             v-model="filter.artists"
-            :md-input-placeholder="filter.artists.length? ' ' : 'Artist filter'"
+            :md-input-placeholder="filter.artists.length? 'Add' : 'Artist filter'"
             @change="updateFilter">
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
@@ -15,7 +15,7 @@
           <md-chips
             class="capitalize"
             v-model="filter.genres"
-            :md-input-placeholder="filter.genres.length? ' ' : 'Genre filter'"
+            :md-input-placeholder="filter.genres.length? 'Add' : 'Genre filter'"
             @change="updateFilter">
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
@@ -24,7 +24,7 @@
           <md-chips
             class="capitalize"
             v-model="filter.styles"
-            :md-input-placeholder="filter.styles.length? ' ' : 'Style filter'"
+            :md-input-placeholder="filter.styles.length? 'Add' : 'Style filter'"
             @change="updateFilter">
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
@@ -32,12 +32,12 @@
         <md-table-head>Author
           <md-chips
             v-model="filter.authors"
-            :md-input-placeholder="filter.authors.length? ' ' : 'Author filter'"
+            :md-input-placeholder="filter.authors.length? 'Add' : 'Author filter'"
             @change="updateFilter">
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
         </md-table-head>
-        <md-table-head class="icon"><md-icon>thumb_up</md-icon></md-table-head>
+        <md-table-head class="slim"><md-icon>thumb_up</md-icon></md-table-head>
       </md-table-row>
     </md-table-header>
 
@@ -138,12 +138,21 @@ export default {
     }
   }
 
-  .md-table-head.icon {
-    min-width: 24px;
-    width: 24px;
-  }
   .md-table-head {
     height: 80px;
+
+    &.icon {
+      width: 32px;
+      .md-table-head-container {
+        width: inherit;
+      }
+    }
+    &.slim {
+      width: 64px;
+      .md-table-head-container {
+        width: inherit;
+      }
+    }
     .md-table-head-container {
       background-color: #EEEEEE!important;
       height: 80px;
@@ -175,20 +184,10 @@ export default {
       .md-chips.capitalize {
         text-transform: capitalize;
       }
-      /*
-      position: relative;
-      width: 100%;
-      height: 72px;
-      .md-chips {
-        position: absolute;
-        left: 16px;
-        right: 0;
-        top: 32px;
+      /* make input field short when not empty */
+      .md-chips .md-chip + .md-input {
+        width: 64px;
       }
-      */
-    }
-    &.title .md-table-head-text {
-      padding-left: 0;
     }
   }
 
@@ -202,18 +201,23 @@ export default {
     }
     &.icon {
       .md-table-cell-container {
-        padding: 0 15px;
+        padding: 0 8px;
         opacity: 0.75;
+        width: 32px;
+        justify-content: flex-end;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
         .md-icon {
           font-size: 20px;
+          min-width: 0;
+          width: 20px;
+          margin: 0;
         }
       }
     }
     &.title {
       line-height: 22px;
-      .md-table-cell-container {
-        padding-left: 0;
-      }
       a {
         width: 100%;
       }

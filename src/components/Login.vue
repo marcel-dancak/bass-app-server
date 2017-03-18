@@ -3,7 +3,7 @@
     <md-dialog-title>Login</md-dialog-title>
 
     <md-dialog-content>
-      <form>
+      <form @keyup.enter="login">
         <md-input-container>
           <label>Username</label>
           <md-input
