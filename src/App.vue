@@ -8,23 +8,39 @@
         class="main-sidebar md-left md-fixed">
 
           <md-card class="my-card md-accent">
-            <md-card-header v-if="user.username">
-              <md-card-header-text>
-                <div class="md-title">
-                  <router-link :to="{ path: '/profile' }">
-                    {{ user.username }}
-                  </router-link>
-                </div>
-                <div class="md-subhead">{{ user.first_name}} {{ user.last_name }}</a></div>
-              </md-card-header-text>
-              <md-card-media>
-                <md-avatar v-if="user.avatar" class="md-large">
-                  <img :src="$http.options.root+user.avatar">
-                </md-avatar>
-                <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
-                <md-icon v-else class="md-size-3x">face</md-icon>
-              </md-card-media>
+            <md-card-header>
+              <template v-if="user.username">
+                <md-card-header-text>
+                  <div class="md-title">
+                    <router-link :to="{ path: '/profile' }">
+                      {{ user.username }}
+                    </router-link>
+                  </div>
+                  <div class="md-subhead">{{ user.first_name}} {{ user.last_name }}</a></div>
+                </md-card-header-text>
+                <md-card-media>
+                  <md-avatar v-if="user.avatar" class="md-large">
+                    <img :src="$http.options.root+user.avatar">
+                  </md-avatar>
+                  <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
+                  <md-icon v-else class="md-size-3x">face</md-icon>
+                </md-card-media>
+              </template>
+              <template v-else>
+                <md-card-header-text class="welcome">
+                  <div class="md-subhead">Welcome in the</div>
+                  <div class="md-title">Bass Catalog</div>
+                  <div class="register-link">
+                    <a href="#">Create an account</a>
+                  </div>
+                </md-card-header-text>
+
+                <md-card-media>
+                  <md-icon class="md-size-3x">backup</md-icon>
+                </md-card-media>
+              </template>
             </md-card-header>
+
             <md-divider></md-divider>
             <md-card-actions>
               <template v-if="user.username">
@@ -143,7 +159,7 @@ export default {
       this.$http.get('profile/')
         .then(response => {
           this.$store.commit('updateProfile', response.data)
-        })
+        }, response => {})
     },
     onLogin(profile) {
       console.log('Login Successful')
@@ -182,9 +198,30 @@ export default {
     border-radius: 0;
     border-right: 1px solid #666;
     xbox-shadow: none;
+    overflow: hidden;
     .md-card-header {
       margin: 0;
       padding-bottom: 0;
+      .welcome {
+        .md-subhead {
+          font-size: 11px;
+          line-height: 14px;
+          margin-top: -8px;
+          margin-left: -8px;
+          opacity: 0.5;
+        }
+        .md-title {
+          margin-top: 0;
+          margin-bottom: 10px;
+          font-size: 22px;
+        }
+        .register-link {
+          padding: 4px 0;
+          opacity: 0.75;
+          text-align: center;
+        }
+      }
+
     }
     .md-card-actions {
       padding: 6px;
@@ -294,6 +331,7 @@ export default {
         top: 0;
         bottom: 0;
         background-color: #fff;
+        overflow: auto;
       }
     }
   }
