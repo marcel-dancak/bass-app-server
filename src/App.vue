@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="app" :class="{noauth: !user.username}">
     <login-dialog ref="login" @login="onLogin"></login-dialog>
     <div class="page-wrapper">
 
@@ -75,17 +75,20 @@
             <md-list-item>
               <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
               <router-link :to="{ path: '/all'}">
-                <md-icon>restore</md-icon> <span>All</span>
+                <md-icon>restore</md-icon>
+                <span>All</span>
               </router-link>
             </md-list-item>
-            <md-list-item>
+            <md-list-item noauth-hide>
               <router-link :to="{ path: '/favourite' }">
-                <md-icon>start</md-icon> <span>Bookmarked</span>
+                <md-icon>start</md-icon>
+                <span>Bookmarked</span>
               </router-link>
             </md-list-item>
             <md-list-item>
               <router-link :to="{ path: '/liked' }">
-                <md-icon>thumb_up</md-icon> <span>Highest Rated</span>
+                <md-icon>thumb_up</md-icon>
+                <span>Highest Rated</span>
               </router-link>
             </md-list-item>
           </md-list>
@@ -94,7 +97,7 @@
 
       <transition :name="transition">
         <keep-alive include="list,author-projects">
-        <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
+          <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
         </keep-alive>
       </transition>
 
@@ -168,6 +171,7 @@ export default {
     logout() {
       this.$http.get('logout/').then(response => {
         this.$router.go(0)
+        // this.$router.replace({path: '/'}, e => {location.reload()})
       })
     }
   }
@@ -309,7 +313,7 @@ export default {
   a:not(.md-button):hover {
     text-decoration: none!important;
   }
-  .container {
+  .app {
     min-height: 100%;
     height: 100%;
     position: relative;
@@ -332,6 +336,15 @@ export default {
         bottom: 0;
         background-color: #fff;
         overflow: auto;
+      }
+    }
+    &.noauth {
+      .noauth-disable, [noauth-disable] {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .noauth-hide, [noauth-hide] {
+        display: none;
       }
     }
   }

@@ -9,7 +9,7 @@
             <div class="md-title">{{ project.title }}</div>
             <div class="md-subhead">{{ project.artist || '-'}}</div>
           </md-card-header>
-          <md-card-actions>
+          <md-card-actions noauth-disable>
             <md-button
               class="icon-text"
               :class="{'md-primary': bookmarked}"
@@ -47,7 +47,7 @@
             <md-icon>face</md-icon>
           </md-avatar>
 
-          <md-card-actions>
+          <md-card-actions noauth-disable>
             <!-- <span class="counter">2</span> -->
             <md-button
               class="icon-text"

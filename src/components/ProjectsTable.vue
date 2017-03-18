@@ -2,7 +2,7 @@
   <md-table>
     <md-table-header>
       <md-table-row>
-        <md-table-head class="icon"></md-table-head>
+        <md-table-head class="icon noauth-hide"></md-table-head>
         <md-table-head class="title">Title
           <md-chips
             v-model="filter.artists"
@@ -43,7 +43,7 @@
 
     <md-table-body>
       <md-table-row v-for="(item, index) in projects" :key="item.project">
-        <md-table-cell class="icon">
+        <md-table-cell class="icon noauth-hide">
           <!-- <md-icon>{{ item.starred? 'star' : 'star_border' }}</md-icon> -->
           <md-icon>{{ bookmarks[index]? 'star' : 'star_border' }}</md-icon>
         </md-table-cell>

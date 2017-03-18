@@ -15,7 +15,7 @@
             </md-card-header-text>
           </md-card-header>
 
-          <md-card-actions>
+          <md-card-actions noauth-disable>
             <md-button
               class="icon-text"
               :class="{'md-primary': subscribed}"
