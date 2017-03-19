@@ -58,17 +58,6 @@
 
         <div class="main-sidebar-links">
           <md-list>
-<!--             <template v-if="user.username">
-              <md-list-item @click.native="logout">
-                <md-icon>account_circle</md-icon> <span>Logout</span>
-              </md-list-item>
-            </template>
-            <template v-else>
-              <md-list-item @click.native="$refs.login.open">
-                <md-icon>account_circle</md-icon> <span>Login</span>
-              </md-list-item>
-            </template>
-            <md-divider></md-divider> -->
 
             <!-- My projects -->
 
@@ -126,8 +115,8 @@ export default {
     LoginDialog
   },
   created () {
-    // setTimeout(this.getUserProfile, 1000)
-    this.getUserProfile()
+    // setTimeout(this.loadUserProfile, 1000)
+    this.loadUserProfile()
     this._historyStack = [this.$route.fullPath]
     let onResize = e => {
       const offset = Math.round(Math.max((window.innerWidth - 1600)/2, 0))
@@ -158,11 +147,8 @@ export default {
     }
   },
   methods: {
-    getUserProfile() {
-      this.$http.get('profile/')
-        .then(response => {
-          this.$store.commit('updateProfile', response.data)
-        }, response => {})
+    loadUserProfile() {
+      this.$client.loadUserProfile()
     },
     onLogin(profile) {
       console.log('Login Successful')

@@ -52,6 +52,9 @@ class Client {
   // }
 
   fetchProjects (path, query) {
+    if (!path.endsWith('/')) {
+      path = path+'/'
+    }
     const data = this.fromCache(path, query)
     if (data) {
       return Vue.Promise.resolve({data: data})
@@ -138,6 +141,15 @@ class Client {
 
         })
   }
+
+  loadUserProfile() {
+    const q = Vue.http.get('profile/')
+    q.then(response => {
+        store.commit('updateProfile', response.data)
+      }, response => {})
+    return q
+  }
+
 }
 
 const ClientPlugin = {
