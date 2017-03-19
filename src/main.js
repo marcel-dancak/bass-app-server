@@ -93,6 +93,14 @@ Vue.filter('capitalize-list', list => {
   return list.map(item => { return item[0].toUpperCase() + item.slice(1) }).join(', ')
 })
 
+Vue.directive('chips-label', {
+  inserted: function (el, binding) {
+    let labelEl = document.createElement('label')
+    labelEl.appendChild(document.createTextNode(binding.value))
+    el.querySelector('.md-input-container').appendChild(labelEl)
+  }
+})
+
 
 window.app = new Vue({
   el: '#app',

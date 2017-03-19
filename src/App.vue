@@ -176,6 +176,14 @@ export default {
   .r-pad {
     padding-right: 16px;
   }
+  .md-chips.with-label {
+    padding-top: 10px;
+    label {
+      top: -10px;
+      opacity: 1;
+    }
+  }
+
   .md-card.md-accent, .md-card.md-warn {
     a:not(.md-button) {
       color: #eee;

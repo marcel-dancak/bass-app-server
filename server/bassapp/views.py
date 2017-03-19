@@ -34,6 +34,7 @@ def get_user_profile(user):
         'avatar': user.avatar.url if user.avatar else '',
         'favourites': user.favourites,
         'likes': user.likes,
+        'links': user.links,
         'subscribers': list(user.subscribers.values_list('pk', flat=True))
     }
 
@@ -124,7 +125,8 @@ def user_projects(request, author):
             'last_name': author.last_name,
             'date_joined': author.date_joined,
             'projects_count': len(projects),
-            'avatar': author.avatar.url if author.avatar else ''
+            'avatar': author.avatar.url if author.avatar else '',
+            'links': author.links
         },
         'projects': projects
     }

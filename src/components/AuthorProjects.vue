@@ -30,17 +30,12 @@
         <div class="right-section">
           <h4>Joined: {{ author.date_joined | todate }}</h4>
           <div class="icon-links">
-            <md-button href="#" class="md-icon-button">
-              <i class="fa fa-youtube-square"></i>
-            </md-button>
-            <md-button href="#" class="md-icon-button">
-              <i class="fa fa-facebook-square"></i>
-            </md-button>
-            <md-button href="#" class="md-icon-button">
-              <i class="fa fa-twitter-square"></i>
-            </md-button>
-            <md-button href="#" class="md-icon-button">
-              <img src="../assets/patreon-square.svg">
+            <md-button
+              v-for="link in author.links"
+              :href="link"
+              target="_blank"
+              class="md-icon-button">
+              <i class="fa" :class="extractSite(link)"></i>
             </md-button>
           </div>
         </div>
@@ -136,13 +131,17 @@ export default {
     toggleSubscribe() {
       this.$client.toggleSubscribe(this.author)
     },
-    toggleMenu() {
-      this.$emit('toggle-menu')
+    extractSite(link) {
+      const hostname = new URL(link).hostname
+      const parts = hostname.split('.')
+      const site = parts[parts.length-2]
+      return `fa-${site}-square`
     }
   }
 }
 </script>
 <style lang="scss">
+
   .md-card.author {
     box-shadow: none;
     border-radius: 0;
@@ -203,18 +202,26 @@ export default {
       }
       .icon-links {
         margin-left: 16px;
-        opacity: 0.8;
         .md-button {
           padding: 4px;
           margin: 0;
-          img {
-            margin-top: 1px;
-            width: 24px;
-            height: 24px;
+          opacity: 0.7;
+          &:hover {
+            opacity: 0.9;
           }
         }
-        i {
+        i.fa {
           font-size: 28px;
+          color: #fff;
+        }
+        .fa-patreon-square {
+          background-image: url('../assets/patreon-square.svg');
+          background-size: 24px;
+          width: 24px;
+          height: 24px;
+          margin-top: 2px;
+          xbackground-color: #e6461a;
+          border-radius: 5px;
         }
       }
       .md-subhead {
