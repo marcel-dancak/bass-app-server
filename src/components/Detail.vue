@@ -76,10 +76,17 @@
               <!-- <md-layout md-flex="true"></md-layout> -->
               <md-button
                 v-if="project.video_link"
-                class="fa icon-button md-warn">
+                class="fa icon-button md-warn"
+                :href="project.video_link | videolink"
+                target="_blank">
                 <i class="fa fa-youtube-square"></i>
               </md-button>
-              <md-button class="md-primary md-raised open">OPEN</md-button>
+              <md-button
+                class="md-primary md-raised open"
+                :href="project.id | applink"
+                target="_blank">
+                OPEN
+              </md-button>
             </md-layout>
 
             <p class="r-pad">
@@ -249,6 +256,7 @@
       }
       i.fa {
         font-size: 36px;
+        line-height: 36px;
       }
       .md-button {
         margin: 3px 20px;

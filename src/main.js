@@ -93,6 +93,18 @@ Vue.filter('capitalize-list', list => {
   return list.map(item => { return item[0].toUpperCase() + item.slice(1) }).join(', ')
 })
 
+Vue.filter('applink', value => {
+  const serverUrl = Vue.http.options.root
+  return `${serverUrl}/app/#${value}/`
+})
+
+Vue.filter('videolink', value => {
+  if (value.startsWith('http')) {
+    return value
+  }
+  return 'https://www.youtube.com/watch?v='+value
+})
+
 Vue.directive('chips-label', {
   inserted: function (el, binding) {
     let labelEl = document.createElement('label')

@@ -8,7 +8,8 @@ export default new Vuex.Store({
     user: {
         likes: [],
         favourites: [],
-        subscribers: []
+        subscribers: [],
+        links: []
     }
   },
   mutations: {
