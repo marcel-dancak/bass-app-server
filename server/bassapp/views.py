@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage
 # from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.core import serializers
 from django.db.models import Q
 
@@ -136,7 +137,7 @@ def user_projects(request, author):
 def projects(request, filter=None):
     queryset = Project.objects.all()
 
-    if filter == 'favourite':
+    if filter == 'favourite' and request.user.is_authenticated():
         queryset = queryset.filter(pk__in=request.user.favourites)
 
     if filter == 'liked':
@@ -267,7 +268,7 @@ def subscribe(request):
     return HttpResponse("ok")
 
 
-def app(request):
+def catalog(request):
     return render(
         request,
         "bassapp/index.html",
@@ -275,3 +276,17 @@ def app(request):
         status=200,
         content_type="text/html"
     )
+
+def app(request):
+    return render(
+        request,
+        "bassapp/app.html",
+        {},
+        status=200,
+        content_type="text/html"
+    )
+
+def app_data(request, id, *args):
+    project = get_object_or_404(Project, pk=id)
+    data = LZString.decompressFromBase64(project.data)
+    return HttpResponse(data, content_type='application/json')
