@@ -34,6 +34,21 @@
     opacity: 0;
   }
 
+
+  .fade-enter-active {
+    transition: all .45s ease;
+  }
+  .fade-leave-active {
+    transition: all .45s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+
+  .fade-enter {
+    opacity: 0;
+  }
+  .fade-leave-to {
+    opacity: 0;
+  }
+
 /*
   .slide-fade-enter-active {
     transition: all .45s ease;

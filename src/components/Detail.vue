@@ -1,6 +1,5 @@
 <template>
-  <div class="page-container">
-    
+  <div class="page-container md-column">
     <md-card class="header md-warn">
       <md-layout>
         <div class="header-section">
@@ -61,60 +60,14 @@
         </div>
       </md-layout>
     </md-card>
+
     <md-divider></md-divider>
-
-    <md-card class="detail md-transparent">
-      <md-card-content>
-        <md-layout md-row md-column-xsmall>
-          <md-layout md-flex="70" md-column>
-            <md-layout md-row class="actions-toolbar">
-              <md-button class="back md-icon-button xmd-fab md-clean" @click.native="back">
-                <md-icon>arrow_back</md-icon>
-              </md-button>
-              <p class="md-subhead">Created: {{ project.created | todate }}</p>
-              <div style="flex: 1"></div>
-              <!-- <md-layout md-flex="true"></md-layout> -->
-              <md-button
-                v-if="project.video_link"
-                class="fa icon-button md-warn"
-                :href="project.video_link | videolink"
-                target="_blank">
-                <i class="fa fa-youtube-square"></i>
-              </md-button>
-              <md-button
-                class="md-primary md-raised open"
-                :href="project.id | applink"
-                target="_blank">
-                OPEN
-              </md-button>
-            </md-layout>
-
-            <p class="r-pad">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-            </p>
-            <!-- <p> {{ project }} </p> -->
-
-          </md-layout>
-
-          <md-layout md-flex="30">
-            <md-card class="subcard">
-              <p><label>Category: </label> Cover</p>
-              <p><label>Genres: </label> {{ project.genres | capitalize-list }}</p>
-              <p><label>Techniques: </label> {{ project.playing_styles | capitalize-list }}</p>
-              <p>
-                <label>Tracks: </label>&nbsp;&nbsp;
-                <img
-                  v-for="track in project.tracks"
-                  class="md-icon md-size-1x"
-                  :src="loadImg(track)">
-              </p>
-            </md-card>
-          </md-layout>
-
-        </md-layout>
-      </md-card-content>
-    </md-card>
-
+    <!-- Content View/Edit sub-page -->
+    <div class="nested-page-wrapper">
+      <transition name="fade">
+        <router-view></router-view>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -128,14 +81,12 @@
     data () {
       return {
         project: {
+          id: '',
           title: 'Title',
           artist: 'Artist',
-          id: '',
           author: {
             name: 'Author'
-          },
-          genres: [],
-          playing_styles: []
+          }
         }
       }
     },
@@ -155,12 +106,6 @@
       this.fetchData()
     },
     methods: {
-      loadImg(name) {
-         return require(`../assets/${name}.svg`)
-      },
-      back() {
-        this.$router.go(-1)
-      },
       fetchData() {
         this.$client.fetchProject(this.id)
           .then(response => {
@@ -189,6 +134,22 @@
     padding-right: 4px;
   }
 */
+  .page-container.md-column {
+    display: flex;
+    flex-direction: column;
+  }
+  .nested-page-wrapper {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: visible;
+    /* Disable nested scrolling */
+    /*
+    .page-container {
+      overflow: visible!important;
+    }
+    */
+  }
+
   .md-card.header {
     border-radius: 0;
     .header-section {
@@ -226,54 +187,6 @@
       }
       .md-card-actions {
         width: 100%;
-      }
-    }
-  }
-  .md-card.detail {
-    box-shadow: none;
-    .md-card-content {
-      img.md-icon {
-        margin-right: 5px;
-      }
-      .subcard {
-        padding: 6px 16px;
-        width: 100%;
-      }
-    }
-    label {
-      font-weight: bold;
-      color: #444;
-      margin-right: 5px;
-    }
-    .actions-toolbar {
-      max-height: 42px;
-      .back.md-button {
-        min-width: 32px;
-        width: 32px;
-        .md-icon {
-          margin-left: 0;
-        }
-      }
-      i.fa {
-        font-size: 36px;
-        line-height: 36px;
-      }
-      .md-button {
-        margin: 3px 20px;
-        height: 36px;
-        margin-left: 0;
-        &.fa {
-          width: 44px;
-          min-width: 44px;
-          padding: 0;
-          opacity: 0.95;
-        }
-        &.open {
-          padding: 0 70px;
-        }
-      }
-      p {
-        margin: auto 0;
       }
     }
   }

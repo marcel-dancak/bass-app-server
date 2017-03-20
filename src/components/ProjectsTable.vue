@@ -181,9 +181,6 @@ export default {
     .md-table-head-text {
       height: auto;
       font-size: 14px;
-      .md-chips.capitalize {
-        text-transform: capitalize;
-      }
       /* make input field short when not empty */
       .md-chips .md-chip + .md-input {
         width: 64px;
