@@ -66,6 +66,7 @@ Vue.material.registerTheme({
 })
 
 import differenceInMinutes from 'date-fns/difference_in_minutes'
+import differenceInHours from 'date-fns/difference_in_hours'
 import differenceInDays from 'date-fns/difference_in_days'
 import differenceInWeeks from 'date-fns/difference_in_weeks'
 import format from 'date-fns/format'
@@ -75,8 +76,19 @@ Vue.filter('positive', value => {
 })
 
 Vue.filter('timediff', value => {
+  const now = new Date()
   const time = new Date(value)
-  return differenceInDays(new Date(), time)+' days ago'
+
+  const days = differenceInDays(now, time)
+  if (days < 1) {
+    const hours = differenceInHours(now, time)
+    if (hours < 1) {
+      const minutes = differenceInMinutes(now, time)
+      return minutes+' minutes ago'
+    }
+    return hours+' hours ago'
+  }
+  return days+' days ago'
 })
 
 Vue.filter('todate', value => {
@@ -90,6 +102,7 @@ Vue.filter('capitalize', value => {
 })
 
 Vue.filter('capitalize-list', list => {
+  if (!list) return ''
   return list.map(item => { return item[0].toUpperCase() + item.slice(1) }).join(', ')
 })
 

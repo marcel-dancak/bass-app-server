@@ -134,7 +134,10 @@ export default {
     extractSite(link) {
       const hostname = new URL(link).hostname
       const parts = hostname.split('.')
-      const site = parts[parts.length-2]
+      let site = parts[parts.length-2]
+      if (site === 'google' && parts[0] === 'plus') {
+        site = 'google-plus'
+      }
       return `fa-${site}-square`
     }
   }

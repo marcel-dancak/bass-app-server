@@ -63,7 +63,7 @@
         Cancel
       </md-button>
       <md-button
-        class="md-raised"
+        class="md-raised md-primary"
         @click.native="save">
         Save
       </md-button>

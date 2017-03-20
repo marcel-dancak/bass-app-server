@@ -177,7 +177,7 @@ export default {
     padding-right: 16px;
   }
   .md-chips.with-label {
-    padding-top: 10px;
+    padding-top: 6px;
     label {
       top: -10px;
       opacity: 1;
@@ -219,7 +219,6 @@ export default {
           text-align: center;
         }
       }
-
     }
     .md-card-actions {
       padding: 6px;
