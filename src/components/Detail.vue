@@ -86,7 +86,9 @@
           artist: 'Artist',
           author: {
             name: 'Author'
-          }
+          },
+          genres: [],
+          playing_styles: []
         }
       }
     },

@@ -183,9 +183,6 @@ export default {
       opacity: 1;
     }
   }
-  .md-chips.capitalize {
-    text-transform: capitalize;
-  }
 
   .md-card.md-accent, .md-card.md-warn {
     a:not(.md-button) {

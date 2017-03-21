@@ -13,7 +13,6 @@
         </md-table-head>
         <md-table-head>Genre
           <md-chips
-            class="capitalize"
             v-model="filter.genres"
             :md-input-placeholder="filter.genres.length? 'Add' : 'Genre filter'"
             @change="updateFilter">
@@ -22,7 +21,6 @@
         </md-table-head>
         <md-table-head>Playing style
           <md-chips
-            class="capitalize"
             v-model="filter.styles"
             :md-input-placeholder="filter.styles.length? 'Add' : 'Style filter'"
             @change="updateFilter">
@@ -53,8 +51,8 @@
             <div class="md-subhead">{{ item.artist }}</div>
           </router-link>
         </md-table-cell>
-        <md-table-cell>{{ item.genres | capitalize-list }}</md-table-cell>
-        <md-table-cell>{{ item.playing_styles | capitalize-list }}</md-table-cell>
+        <md-table-cell>{{ item.genres.join(', ') }}</md-table-cell>
+        <md-table-cell>{{ item.playing_styles.join(', ') }}</md-table-cell>
         <md-table-cell class="author">
           <div class="md-title">{{ item.author.name }}</div>
           <div class="md-subhead">{{ item.created | timediff }}</div>
@@ -69,6 +67,8 @@
 </template>
 
 <script>
+import Constants from '../constants.js'
+
 export default {
   name: 'projects-table',
   props: {
@@ -94,18 +94,23 @@ export default {
   },
   methods: {
     updateFilter() {
-      console.log('updateFilter')
+      this.filter.genres = Constants.MusicalStyles.from(this.filter.genres)
+      this.filter.styles = Constants.PlayingStyles.from(this.filter.styles)
       let query = {}
       for (let key in this.filter) {
         const values = this.filter[key]
         if (values.length) {
-          query[key] = values.join(',').toLowerCase()
+          query[key] = values.join(',')
         }
       }
       this.$router.push({
         path: this.$route.path,
         query: query
       })
+    },
+    standardizeGenres() {
+      this.filter.genres = Constants.MusicalStyles.from(this.filter.genres)
+      this.updateFilter()
     },
     syncWithRoute(route) {
       for (let key in this.filter) {

@@ -54,9 +54,9 @@
 
           <md-layout md-flex="30">
             <md-card class="subcard">
-              <p><label>Category: </label> {{ project.category | capitalize }}</p>
-              <p><label>Genres: </label> {{ project.genres | capitalize-list }}</p>
-              <p><label>Techniques: </label> {{ project.playing_styles | capitalize-list }}</p>
+              <p><label>Category: </label> {{ project.category }}</p>
+              <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
+              <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
               <p>
                 <label>Tracks: </label>&nbsp;&nbsp;
                 <img
@@ -64,6 +64,7 @@
                   class="md-icon md-size-1x"
                   :src="loadImg(track)">
               </p>
+              <p><label>Difficulty: </label> {{ Difficulties[project.level] }}</p>
             </md-card>
           </md-layout>
 
@@ -74,6 +75,8 @@
 </template>
 
 <script>
+  import Constants from '../constants.js'
+
   export default {
     name: 'detail-content',
     computed: {
@@ -86,6 +89,9 @@
       user() {
         return this.$store.state.user
       }
+    },
+    created() {
+      this.Difficulties = Constants.Difficulties
     },
     methods: {
       loadImg(name) {

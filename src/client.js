@@ -82,6 +82,13 @@ class Client {
     return Vue.http.get('project/', { params: {id: id} })
   }
 
+  updatePorject (data) {
+    const q = Vue.http.post('project/', data)
+    q.then(response => {
+      this.cache = {}
+    })
+    return q
+  }
 
   toggleFavourite (project) {
     const user = store.state.user
