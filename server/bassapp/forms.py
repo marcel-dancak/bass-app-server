@@ -1,7 +1,19 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.forms import SimpleArrayField
 
 from bassapp.models import Project
+
+
+class ArrayField(SimpleArrayField):
+    def to_python(self, value):
+        if isinstance(value, list):
+            return value
+        return super(ArrayField, self).to_python(value)
+
+# class AppDataField(forms.CharField):
+#     def clean(self, value):
+#         pass
 
 
 class LoginForm(forms.Form):
@@ -10,9 +22,24 @@ class LoginForm(forms.Form):
 
 
 class ProjectDataForm(forms.ModelForm):
+    # data = AppDataField(required=False)
+
+    def full_clean(self):
+        current_data = self.instance.data if self.instance else None
+        # when 'data' was not explicitly passed, do not modify it
+        if 'data' not in self.data:
+            self.fields.pop('data')
+        super(ProjectDataForm, self).full_clean()
+
     class Meta:
         model = Project
         exclude = ('id', 'user', 'likes', 'data_public')
+        field_classes = {
+            'genres': ArrayField,
+            'playing_styles': ArrayField,
+            'tags': ArrayField,
+            'tracks': ArrayField
+        }
 
 
 class GetProjectForm(forms.Form):

@@ -95,6 +95,7 @@ def get_projects_data(queryset):
             'id': project.pk,
             'title': project.title,
             'artist': project.artist,
+            'description': project.description,
             'video_link': project.video_link,
             'author': {
                 'id': project.user.pk,
@@ -106,11 +107,14 @@ def get_projects_data(queryset):
             'tracks': project.tracks,
             'tags': project.tags,
             'likes': project.likes,
+            'level': project.level,
+            'category': project.category,
             'created': project.created
         })
     return projects
 
 
+@gzip_page
 def user_projects(request, author):
     queryset = Project.objects.filter(user=author)
     if 'q' in request.GET:
@@ -134,6 +138,7 @@ def user_projects(request, author):
     return JsonResponse(data)
 
 
+@gzip_page
 def projects(request, filter=None):
     queryset = Project.objects.all()
 
@@ -176,21 +181,26 @@ def project(request):
         # print (request.body)
         # print  (json.loads(LZString.decompressFromUTF16(request.body.decode('utf-8'))))
         # data = json.loads(LZString.decompress(request.read()))
-        print (request.body)
+        # print (request.body)
         data = json.loads(request.body.decode('utf-8'))
-        # print (data)
+
+        print (data)
+
         # data = json.loads(LZString.decompressFromBase64(request.body))
         # data = json.loads(LZString.decompressFromUTF16(request.body.decode('utf-8')))
 
-        data['genres'] = ','.join(data['genres'])
-        data['playing_styles'] = ','.join(data['playing_styles'])
-        
-        p = LZString.decompressFromBase64(data['data'])
-        # print (p)
-        
-        form = forms.ProjectDataForm(data)
+        instance = None
+        if 'id' in data:
+            instance = get_object_or_404(Project, pk=data['id'])
+            # TODO: check user permissions
+
+        # for param in ('genres', 'playing_styles', 'tags')
+
+        form = forms.ProjectDataForm(data, instance=instance)
         if form.is_valid():
-            # print form.cleaned_data
+            # print (form.cleaned_data)
+            # p = LZString.decompressFromBase64(data['data'])
+            # print (p)
             project = form.save()
             return HttpResponse(project.id)
         else:

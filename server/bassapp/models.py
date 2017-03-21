@@ -89,7 +89,8 @@ class Project(models.Model):
         models.CharField(max_length=16, blank=True),
         blank=True
     )
-    # category: (cover/lesson/backing track/composition..)
+    # (cover/lesson/backing track/composition..)
+    category = models.CharField(max_length=20)
     # difficulty = models.IntegerField("difficulty")
     level = models.IntegerField("level", default=3)
     likes = models.IntegerField("likes", default=0)

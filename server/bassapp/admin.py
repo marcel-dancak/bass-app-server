@@ -15,6 +15,6 @@ class UserAdmin(BaseUserAdmin):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
 	list_display = ('title', 'artist', 'genres', 'playing_styles', 'created')
-	exclude = ('id',)
+	exclude = ('id', 'likes')
 	search_fields = ('title', 'artist', 'genres', 'playing_styles', 'user__username')
 	list_filter = ('user', )
