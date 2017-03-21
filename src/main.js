@@ -62,6 +62,14 @@ Vue.material.registerTheme({
       color: 'blue-grey',
       hue: 800
     }
+  },
+  dialog: {
+    primary: 'blue',
+    accent: {
+      color: 'blue-grey',
+      hue: 800
+    },
+    warn: 'red'
   }
 })
 

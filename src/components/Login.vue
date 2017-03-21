@@ -1,39 +1,47 @@
 <template>
-  <md-dialog ref="login">
-    <md-dialog-title>Login</md-dialog-title>
+  <md-theme md-name="dialog">
+    <md-dialog
+      ref="login"
+      @open="error=false">
+      <md-dialog-title>Login</md-dialog-title>
 
-    <md-dialog-content>
-      <form @keyup.enter="login">
-        <md-input-container>
-          <label>Username</label>
-          <md-input
-            type="text"
-            v-model="username">
-          </md-input>
-        </md-input-container>
-        <md-input-container>
-          <label>Password</label>
-          <md-input
-            type="password"
-            v-model="password">
-          </md-input>
-        </md-input-container>
-      </form>
-    </md-dialog-content>
+      <md-dialog-content>
+        <form
+          @keyup.enter="login"
+          novalidate @submit.stop.prevent="submit">
+          <md-input-container :class="{'md-input-invalid': error}">
+            <label>Username</label>
+            <md-input
+              type="text"
+              v-model="username">
+            </md-input>
+          </md-input-container>
+          <md-input-container
+            md-has-password
+            :class="{'md-input-invalid': error}">
+            <label>Password</label>
+            <md-input
+              type="password"
+              v-model="password">
+            </md-input>
+          </md-input-container>
+        </form>
+      </md-dialog-content>
 
-    <md-dialog-actions>
-      <md-button
-        class="md-primary"
-        @click.native="close">
-        Cancel
-      </md-button>
-      <md-button
-        class="md-primary"
-        @click.native="login">
-        Login
-      </md-button>
-    </md-dialog-actions>
-  </md-dialog>
+      <md-dialog-actions>
+        <md-button
+          class="md-primary"
+          @click.native="close">
+          Cancel
+        </md-button>
+        <md-button
+          class="md-primary"
+          @click.native="login">
+          Login
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
+  </md-theme>
 </template>
 
 <script>
@@ -42,7 +50,8 @@ export default {
   data () {
     return {
       username: '',
-      password: ''
+      password: '',
+      error: false
     }
   },
   methods: {
@@ -62,11 +71,14 @@ export default {
         }
       ).then(response => {
         console.log('logged in')
+        this.error = false
         // this.$root.$data.user = response.data
         this.close()
         this.$emit('login', response.data)
       }, response => {
-        console.log('failed to login')
+        if (response.status === 401) {
+          this.error = true
+        }
       })
     }
   }
