@@ -3,7 +3,7 @@
     <md-card class="detail md-transparent">
       <md-card-content>
         <md-layout md-row md-column-xsmall>
-          <md-layout md-flex="70" md-column>
+          <md-layout md-flex="70" md-column md-flex-small="60">
             <md-layout md-row class="actions-toolbar">
               <md-button class="back md-icon-button xmd-fab md-clean" @click.native="back">
                 <md-icon>arrow_back</md-icon>
@@ -46,25 +46,32 @@
             </md-layout>
 
             <p class="r-pad">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+              {{ project.description }}
             </p>
             <!-- <p> {{ project }} </p> -->
 
           </md-layout>
 
-          <md-layout md-flex="30">
+          <md-layout md-flex="30" md-flex-small="40">
             <md-card class="subcard">
+              <p><label>Difficulty: </label>
+                <span class="level"> {{ Difficulties[project.level] }}</span>
+              </p>
               <p><label>Category: </label> {{ project.category }}</p>
               <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
               <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
+              <!-- <p><label>Difficulty: </label> {{ Difficulties[project.level] }}</p> -->
+
               <p>
-                <label>Tracks: </label>&nbsp;&nbsp;
+                <label>Tracks: </label>
                 <img
                   v-for="track in project.tracks"
                   class="md-icon md-size-1x"
                   :src="loadImg(track)">
               </p>
-              <p><label>Difficulty: </label> {{ Difficulties[project.level] }}</p>
+              <p v-if="project.tags.length">
+                <label>Tags: </label> {{ project.tags.join(', ') }}
+              </p>
             </md-card>
           </md-layout>
 
@@ -108,17 +115,35 @@
     box-shadow: none;
     .md-card-content {
       img.md-icon {
-        margin-right: 5px;
+        margin-right: 6px;
       }
       .subcard {
         padding: 6px 16px;
         width: 100%;
+        min-width: 240px;
+        p {
+          margin: 12px 0;
+        }
+        .level {
+          background-color: #37474f;
+          xbackground-color: #555;
+          color: #fff;
+          opacity: 0.85;
+          text-transform: uppercase;
+          font-weight: bold;
+          font-size: 12px;
+          padding: 3px 6px 2px 6px;
+          line-height: 12px;
+          border-radius: 4px;
+        }
       }
     }
     label {
-      font-weight: bold;
+      font-weight: 500;
       color: #444;
       margin-right: 5px;
+      min-width: 92px;
+      display: inline-block;
     }
     .actions-toolbar {
       max-height: 42px;
@@ -127,6 +152,7 @@
         width: 32px;
         .md-icon {
           margin-left: 0;
+          margin-bottom: auto;
         }
       }
       i.fa {

@@ -4,26 +4,20 @@
 
     <md-input-container>
       <label>Title</label>
-      <md-input
-        name="title"
-        v-model="form.title">
+      <md-input v-model="form.title">
       </md-input>
     </md-input-container>
 
     <md-input-container>
       <label>Artist</label>
-      <md-input
-        name="artist"
-        v-model="form.artist">
+      <md-input v-model="form.artist">
       </md-input>
     </md-input-container>
 
     <div class="field-group">
       <md-input-container>
         <label>Category</label>
-        <md-select
-          name="category"
-          v-model="form.category">
+        <md-select v-model="form.category">
 
           <md-option
             v-for="category in Categories"
@@ -35,9 +29,7 @@
 
       <md-input-container>
         <label>Difficulty</label>
-        <md-select
-          name="level"
-          v-model="form.level">
+        <md-select v-model="form.level">
           <md-option
             v-for="(label, value) in Difficulties"
             :value="parseInt(value)">{{ label }}
@@ -46,33 +38,7 @@
       </md-input-container>
     </div>
 
-    <md-input-container>
-      <label>Description</label>
-      <md-textarea
-        name="description"
-        v-model="form.description">
-      </md-textarea>
-    </md-input-container>
-
-    <md-input-container>
-      <label>Video Link</label>
-      <md-input
-        name="video_link"
-        v-model="form.video_link">
-      </md-input>
-    </md-input-container>
-
     <div class="field-group">
-<!--     <md-chips
-      v-chips-label="'Playing Styles'"
-      v-model="form.playing_styles"
-      class="with-label"
-      md-input-placeholder="Add playing style">
-      <template scope="chip">{{ chip.value }}</template>
-    </md-chips>
-    <input name="playing_styles" type="hidden" :value="formatArrayValue(form.playing_styles)"> -->
-
-
       <md-chips
         v-chips-label="'Musical Genres'"
         v-model="form.genres"
@@ -81,7 +47,6 @@
         @change="standardizeGenres">
         <template scope="chip">{{ chip.value }}</template>
       </md-chips>
-      <input name="genres" type="hidden" :value="formatArrayValue(form.genres)">
 
       <md-input-container>
         <label>Playing Styles</label>
@@ -97,6 +62,12 @@
       </md-input-container>
     </div>
 
+    <md-input-container>
+      <label>Description</label>
+      <md-textarea v-model="form.description">
+      </md-textarea>
+    </md-input-container>
+
     <md-chips
       v-chips-label="'Tags'"
       v-model="form.tags"
@@ -104,7 +75,12 @@
       md-input-placeholder="Add tag">
       <template scope="chip">{{ chip.value }}</template>
     </md-chips>
-    <input name="playing_styles" type="hidden" :value="formatArrayValue(form.tags)">
+
+    <md-input-container>
+      <label>Video Link</label>
+      <md-input v-model="form.video_link">
+      </md-input>
+    </md-input-container>
 
     <md-toolbar class="md-warn main md-transparent">
       <div style="flex:1"></div>
@@ -214,6 +190,10 @@ export default {
         align-self: flex-end;
         xpadding-top: 24px;
       }
+    }
+    /* temporary workaround for auto-height issue until next Vue-Material version */
+    textarea.md-input {
+      min-height: 130px;
     }
   }
 </style>

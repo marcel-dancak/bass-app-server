@@ -1,9 +1,10 @@
 const constants = {
   Difficulties: {
       1: 'Easy',
-      2: 'Medium',
-      3: 'Hard',
-      4: 'Extreme'
+      2: 'Normal',
+      3: 'Advanced',
+      4: 'Hard',
+      5: 'Extreme'
   },
   Categories: [
     'Cover',

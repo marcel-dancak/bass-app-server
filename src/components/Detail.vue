@@ -88,7 +88,8 @@
             name: 'Author'
           },
           genres: [],
-          playing_styles: []
+          playing_styles: [],
+          tags: []
         }
       }
     },
