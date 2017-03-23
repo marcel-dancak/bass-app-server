@@ -15,7 +15,7 @@ class User(AbstractUser):
         'profile picture',
         size=[100, 100],
         crop=['middle', 'center'],
-        upload_to='static/media/images/avatars/',
+        upload_to='images/avatars/',
         null=True,
         blank=True
     )

@@ -90,13 +90,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'bassapp',
+    'bassapp.catalog',
+    'bassapp.app',
 )
 
 ROOT_URLCONF = '{{ project_name }}.urls'
 WSGI_APPLICATION = '{{ project_name }}.wsgi.application'
 
-AUTH_USER_MODEL = 'bassapp.User'
+AUTH_USER_MODEL = 'catalog.User'
 
 
 ### CUSTOM SETTINGS

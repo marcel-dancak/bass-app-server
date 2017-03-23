@@ -4,5 +4,7 @@ include README
 include MANIFEST.in
 include requirements.txt
 recursive-include bassapp/conf/project_template *
-recursive-include bassapp/static *
-recursive-include bassapp/templates *
+recursive-include bassapp/catalog/static *
+recursive-include bassapp/catalog/templates *
+recursive-include bassapp/app/static *
+recursive-include bassapp/app/templates *

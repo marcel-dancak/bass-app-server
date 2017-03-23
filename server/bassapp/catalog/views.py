@@ -11,19 +11,17 @@ from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.core import serializers
 from django.db.models import Q
 
-from bassapp import forms
-from bassapp.models import Project
-from bassapp.admin import ProjectAdmin
 from bassapp.decorators import login_required
 from bassapp.libs.lzstring import LZString
-
+from . import forms
+from .models import Project
 
 from django.contrib import admin
-# admin = ProjectAdmin(Project, admin.site)
 admin = admin.site._registry[Project]
+# from bassapp.admin import ProjectAdmin
+# admin = ProjectAdmin(Project, admin.site)
 
 
 def get_user_profile(user):
@@ -281,22 +279,8 @@ def subscribe(request):
 def catalog(request):
     return render(
         request,
-        "bassapp/index.html",
+        "catalog/index.html",
         {},
         status=200,
         content_type="text/html"
     )
-
-def app(request):
-    return render(
-        request,
-        "bassapp/app.html",
-        {},
-        status=200,
-        content_type="text/html"
-    )
-
-def app_data(request, id, *args):
-    project = get_object_or_404(Project, pk=id)
-    data = LZString.decompressFromBase64(project.data)
-    return HttpResponse(data, content_type='application/json')

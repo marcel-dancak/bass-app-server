@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 exclude_from_packages = [
-    'bassapp.migrations',
+    'bassapp.catalog.migrations',
     # 'bassapp.conf.project_template'
 ]
 

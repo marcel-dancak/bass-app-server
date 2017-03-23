@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.forms import SimpleArrayField
 
-from bassapp.models import Project
+from .models import Project
 
 
 class ArrayField(SimpleArrayField):

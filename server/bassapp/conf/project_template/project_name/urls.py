@@ -2,15 +2,12 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
-from django.contrib.auth.views import login, logout
 from django.contrib import admin
 
 
-
 urlpatterns = [
-    url(r'', include('bassapp.urls', namespace='bassapp')),
-    url(r'^login/$', login, name='login'),
-    url(r'^logout/$', logout, name='logout'),
+    url(r'', include('bassapp.catalog.urls', namespace='catalog')),
+    url(r'', include('bassapp.app.urls', namespace='app')),
     url(r'^admin/', include(admin.site.urls))
 ]
 

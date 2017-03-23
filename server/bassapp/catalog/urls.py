@@ -1,12 +1,10 @@
 from django.conf.urls import url
 
-from bassapp import views
+from . import views
 
 
 urlpatterns = [
     url(r"^$", views.catalog, name="catalog"),
-    url(r"^app/$", views.app, name="app"),
-    url(r"^app/(\w+)/(.json/)?$", views.app_data, name="app_data"),
     url(r"^profile/$", views.user_profile, name="user_profile"),
     url(r"^project/$", views.project, name="project"),
     url(r"^projects/author/([0-9]+)/$", views.user_projects, name="user_projects"),
