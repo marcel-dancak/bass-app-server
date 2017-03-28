@@ -65,7 +65,8 @@ class Project(models.Model):
 
     # rename to created
     created = models.DateTimeField("created", auto_now_add=True)
-    modified = models.DateTimeField("last modified", auto_now=True)
+    # update manually on 'data' change
+    modified = models.DateTimeField("last modified", auto_now_add=True)
 
     # rename to genres
     genres = ArrayField(

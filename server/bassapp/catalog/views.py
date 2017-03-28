@@ -34,7 +34,8 @@ def get_user_profile(user):
         'favourites': user.favourites,
         'likes': user.likes,
         'links': user.links,
-        'subscribers': list(user.subscribers.values_list('pk', flat=True))
+        'subscribers': list(user.subscribers.values_list('pk', flat=True)),
+        'projectsCount': Project.objects.filter(user=user).count()
     }
 
 
@@ -107,7 +108,8 @@ def get_projects_data(queryset):
             'likes': project.likes,
             'level': project.level,
             'category': project.category,
-            'created': project.created
+            'created': project.created,
+            'modified': project.modified
         })
     return projects
 
@@ -145,6 +147,12 @@ def projects(request, filter=None):
 
     if filter == 'liked':
         queryset = queryset.order_by('-likes')
+
+    if filter == 'subscribers':
+        queryset = queryset.filter(user__in=request.user.subscribers.all())
+
+    if filter == 'my':
+        queryset = queryset.filter(user=request.user)
 
     if 'q' in request.GET:
         queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]

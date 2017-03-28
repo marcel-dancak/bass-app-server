@@ -1,5 +1,13 @@
 .DS_Store
-node_modules/
-dist/
-npm-debug.log
 *.pyc
+dist/
+server/bassapp/catalog/static/catalog/
+server/bassapp/catalog/templates/index.html
+server/www/
+
+dockers/media/
+dockers/aws-compose.yml
+dockers/docker-compose.yml
+
+node_modules/
+npm-debug.log
