@@ -8,3 +8,4 @@ recursive-include bassapp/catalog/static *
 recursive-include bassapp/catalog/templates *
 recursive-include bassapp/app/static *
 recursive-include bassapp/app/templates *
+recursive-include bassapp/accounts/templates *

@@ -51,6 +51,7 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'media/')
 ### SYSTEM CONFIGURATION
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -90,6 +91,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'bassapp.accounts',
     'bassapp.catalog',
     'bassapp.app',
 )
@@ -100,10 +102,26 @@ WSGI_APPLICATION = '{{ project_name }}.wsgi.application'
 AUTH_USER_MODEL = 'catalog.User'
 
 
+# Accounts Registration
+ACCOUNT_ACTIVATION_DAYS = 3
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+
+
 ### CUSTOM SETTINGS
 try:
     from {{ project_name }}.settings_custom import *
 except ImportError:
     pass
+
+
+### ENVIRONMENT VARIABLES SETTINGS
+for k,v in os.environ.items():
+    if k.startswith("DJANGO_"):
+        key = k.split('_', 1)[1]
+        globals()[key] = v
+
 
 # vim: set ts=8 sts=4 sw=4 et:

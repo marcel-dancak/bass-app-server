@@ -1,0 +1,4 @@
+Hello {{ user.username }},
+
+
+Here is your activation link http://{{ site }}{% url 'registration_activate' activation_key %}

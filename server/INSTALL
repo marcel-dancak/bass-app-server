@@ -1,3 +1,2 @@
-
-python manage.py makemigrations bassapp
+python manage.py makemigrations catalog
 python manage.py migrate
