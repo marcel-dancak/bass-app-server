@@ -31,7 +31,9 @@
                   <div class="md-subhead">Welcome in the</div>
                   <div class="md-title">Bass Catalog</div>
                   <div class="register-link">
-                    <a href="#">Create an account</a>
+                    <router-link :to="{ name: 'registration' }">
+                      Create an account
+                    </router-link>
                   </div>
                 </md-card-header-text>
 

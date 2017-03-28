@@ -1,5 +1,5 @@
 <template>
-  <md-theme md-name="dialog">
+  <md-theme md-name="form">
     <md-dialog
       ref="login"
       @open="error=false">
@@ -62,7 +62,6 @@ export default {
       this.$refs.login.close()
     },
     login() {
-      console.log(`login: ${this.username} ${this.password}`)
       this.$http.post(
         'login/',
         {
@@ -70,9 +69,7 @@ export default {
           password: this.password
         }
       ).then(response => {
-        console.log('logged in')
         this.error = false
-        // this.$root.$data.user = response.data
         this.close()
         this.$emit('login', response.data)
       }, response => {

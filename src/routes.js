@@ -5,6 +5,8 @@ import DetailEditor from './components/DetailEditor'
 import List from './components/List'
 import AuthorProjects from './components/AuthorProjects'
 import UserProfile from './components/UserProfile'
+import AccountRegistration from './components/AccountRegistration'
+
 
 export default [
   {
@@ -37,6 +39,10 @@ export default [
         name: 'profile',
         path: 'profile',
         component: UserProfile,
+      }, {
+        name: 'registration',
+        path: 'registration',
+        component: AccountRegistration
       }
     ]
   }

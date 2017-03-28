@@ -63,7 +63,7 @@ Vue.material.registerTheme({
       hue: 800
     }
   },
-  dialog: {
+  form: {
     primary: 'blue',
     accent: {
       color: 'blue-grey',
@@ -116,7 +116,7 @@ Vue.filter('capitalize-list', list => {
 
 Vue.filter('applink', value => {
   const serverUrl = Vue.http.options.root
-  return `${serverUrl}/app/#${value}/`
+  return `${serverUrl}/app#${value}`
 })
 
 Vue.filter('videolink', value => {
