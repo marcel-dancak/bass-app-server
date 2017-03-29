@@ -1,0 +1,15 @@
+{% load i18n static %}
+<!DOCTYPE html>
+
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="robots" content="NONE,NOARCHIVE" />
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+  {% block content %}
+  {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,119 @@
+/*@font-face {
+    font-family: 'Roboto';
+    src: url('../../admin/fonts/Roboto-Bold-webfont.woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../../admin/fonts/Roboto-Regular-webfont.woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../../admin/fonts/Roboto-Light-webfont.woff');
+    font-weight: 300;
+    font-style: normal;
+}*/
+
+body {
+  padding: 1em;
+  margin: 0;
+  font-family: Helvetica;
+  font-family: "Roboto", "Helvetica", "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial;
+}
+
+form {
+  padding: 1em 0;
+}
+
+.md-input-container {
+  margin: 24px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.md-input-container label {
+  min-width: 140px;
+  display: inline-block;
+  font-size: 15px;
+  opacity: 0.75;
+  line-height: 32px;
+}
+
+input {
+  display: inline-block;
+  border-color: #ccc;
+  border-width: 0 0 1px 0;
+  font-size: 17px;
+  outline: none;
+  height: 32px;
+  transition: all .4s cubic-bezier(.25,.8,.25,1);
+  transition-property: border-color;
+  padding-bottom: 1px;
+  box-sizing: border-box;
+  background-color: transparent;
+  flex: 1;
+  max-width: 360px;
+}
+input:focus {
+  border-color: #1e88e5;
+  padding-bottom: 0;
+  border-width: 0 0 2px 0;
+}
+
+.md-button {
+  display: inline-block;
+  height: 36px;
+  line-height: 36px;
+  border: none;
+  padding: 0 16px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin: 4px 8px;
+}
+.md-button.md-raised:not([disabled]) {
+  box-shadow: 0 1px 5px rgba(0,0,0,.2),0 2px 2px rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.12);
+}
+
+.md-button.md-primary:not([disabled]) {
+  background-color: #2196f3;
+  color: rgba(255, 255, 255, .87);
+}
+.md-button.md-primary:not([disabled]):hover {
+  background-color: #1e88e5;
+}
+
+.md-button[type="submit"] {
+  margin: 12px;
+  float: right;
+}
+
+ul.errorlist {
+  color: #F4511E;
+  padding-left: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 540px;
+  margin: 0 auto;
+}
+.center {
+  text-align: center;
+}
+.note {
+  font-weight: normal;
+  opacity: 0.5;
+  padding: 6px 0;
+  font-size: 15px;
+}
