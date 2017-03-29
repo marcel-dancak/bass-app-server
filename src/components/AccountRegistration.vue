@@ -4,6 +4,7 @@
       <h1 class="md-title">Account Registration</h1>
     </md-toolbar>
     <md-theme md-name="form">
+
     <form class="profile-form">
       <md-input-container :class="{ 'md-input-invalid': errors.username }">
         <label>Username</label>
@@ -68,17 +69,21 @@
         <span class="md-error" v-for="error in errors.password2">{{ error.message }}</span>
       </md-input-container>
 
+    <div class="progress-box">
+      <md-progress md-indeterminate v-show="inProgress"></md-progress>
+    </div>
+
       <md-toolbar class="md-warn main md-transparent">
         <div style="flex:1"></div>
         <md-button
           class="md-raised"
-          @click.native="back">
+          @click.native="$router.back">
           Cancel
         </md-button>
         <md-button
           class="md-raised md-primary"
           @click.native="register"
-          :disabled="registrationDisabled">
+          :disabled="inProgress">
           Register
         </md-button>
       </md-toolbar>
@@ -98,22 +103,14 @@ export default {
   name: 'user-profile',
   data () {
     return {
-      registrationDisabled: false,
+      form: {},
       errors: {},
-      form: {
-        username: 'Test',
-        email: 'dancakm@gmail.com',
-        password1: 'qq',
-        password2: 'qq'
-      },
+      inProgress: false
     }
   },
 
   methods: {
-    back() {
-      this.$router.go(-1)
-    },
-    register() {
+    register () {
       this.errors = {}
       var formData = new FormData(this.$el.querySelector('form'));
       this.$http.post(
@@ -123,11 +120,12 @@ export default {
         this.$refs.confirm.open()
       }, response => {
         this.errors = response.data
-        this.registrationDisabled = false
+      }).finally(resp => {
+        this.inProgress = false
       })
-      this.registrationDisabled = true
+      this.inProgress = true
     },
-    onDialogClose() {
+    onDialogClose () {
       this.$router.push({ path: '/' })
     }
   }
@@ -140,6 +138,9 @@ export default {
     max-width: 600px;
     .md-chip {
       width: 100%;
+    }
+    .progress-box {
+      height: 10px;
     }
   }
 </style>
