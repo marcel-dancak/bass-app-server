@@ -59,7 +59,7 @@
       <div style="flex:1"></div>
       <md-button
         class="md-raised"
-        @click.native="back">
+        @click.native="$router.back">
         Cancel
       </md-button>
       <md-button
@@ -103,16 +103,13 @@ export default {
     }
   },
   methods: {
-    back() {
-      this.$router.go(-1)
-    },
     initializeForm() {
       let form = {}
       const fields = ['id', 'username', 'first_name', 'last_name', 'email', 'links']
       fields.forEach(key => {
-          form[key] = this.user[key]
-        })
-    this.form = form
+        form[key] = this.user[key]
+      })
+      this.form = form
     },
     save() {
       var formData = new FormData(this.$el.querySelector('form'));

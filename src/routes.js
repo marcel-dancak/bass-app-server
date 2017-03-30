@@ -19,9 +19,10 @@ export default [
         props: true
       }, {
         path: '',
-        alias: ['all', 'favourite', 'liked'],
+        alias: ['all', 'favourite', 'liked', 'subscribers', 'my'],
         name: 'list',
-        component: List
+        component: List,
+        props: (route) => ({ showAuthor: route.path !== '/my' })
       }, {
         name: 'detail',
         path: 'detail/:id',

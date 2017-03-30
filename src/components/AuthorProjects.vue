@@ -42,9 +42,11 @@
       </md-layout>
     </md-card>
 
+    <!-- <list-view :title="'Projects'" :projects="projects"></list-view> -->
+    <!-- <div v-if="false"> -->
     <md-toolbar class="main md-accent">
       <md-button
-        @click.native="back"
+        @click.native="$router.back"
         class="back md-icon-button">
         <md-icon>arrow_back</md-icon>
       </md-button>
@@ -68,13 +70,14 @@
       </md-button>
     </md-toolbar>
 
-    <projects-list :projects="projects"></projects-list>
-    <!-- <projects-table :projects="projects"></projects-table> -->
-
+    <projects-table v-if="true" :projects="projects" :showLastEdit="true"></projects-table>
+    <projects-list v-else :projects="projects"></projects-list>
+    <!-- </div> -->
   </div>
 </template>
 
 <script>
+import ListView from './ListView'
 import ProjectsList from './ProjectsList'
 import ProjectsTable from './ProjectsTable'
 
@@ -82,10 +85,10 @@ export default {
   name: 'author-projects',
   components: {
     ProjectsList,
-    ProjectsTable
+    ProjectsTable,
+    ListView
   },
   props: {
-    q: String,
     id: [String, Number]
   },
   data () {
@@ -101,32 +104,33 @@ export default {
     }
   },
   created () {
-    this.query = this.q
-    this.fetchProjects(this.query)
+    this.route(this.$route)
   },
   watch: {
     '$route' (to, from) {
       if (to.name === 'author') {
         console.log('** AUTHOR PAGE **')
-        this.query = this.q
-        this.fetchProjects(this.query)
+        this.route(to)
       }
     }
   },
   methods: {
-    back() {
-      this.$router.go(-1)
+    route(to) {
+      this.fetchProjects(to.query)
+      this.query = to.query.q || ''
     },
     fetchProjects(query) {
       console.log('fetching projects')
-      this.$client.fetchUserProjects(this.id)
+      this.$client.fetchUserProjects(this.id, query)
         .then(response => {
           this.projects = response.data.projects
           this.author = response.data.profile
         })
     },
     search() {
-      this.fetchProjects({q: this.query})
+      const query = Object.assign({}, this.$route.query)
+      query['q'] = this.query
+      this.$router.push({query: query})
     },
     toggleSubscribe() {
       this.$client.toggleSubscribe(this.author)
@@ -167,7 +171,7 @@ export default {
       }
     }
     .md-card-actions {
-      padding-top: 12px!important;
+      padding-top: 13px!important;
       padding-bottom: 8px!important;
       justify-content: flex-start;
       .md-button {
@@ -232,21 +236,23 @@ export default {
         font-weight: 500;
       }
     }
-    .md-toolbar {
-      .back.md-button {
-        margin-left: 4px;
-        margin-right: 12px;
-      }
-    }
   }
   </style>
   <style lang="scss">
-  .author-detail .md-list.projects {
-    .author {
-      visibility: hidden;
+  .author-detail {
+    .md-list.projects {
+      .author {
+        visibility: hidden;
+      }
+      .rating:before {
+        display: none;
+      }
     }
-    .rating:before {
-      display: none;
+    .md-toolbar {
+      .back.md-button {
+        margin-left: 0;
+        margin-right: 0;
+      }
     }
   }
   </style>

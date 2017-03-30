@@ -25,8 +25,13 @@
       </md-button>
     </md-toolbar>
 
-    <!-- <projects-list :projects="projects"></projects-list> -->
-    <projects-table :projects="projects"></projects-table>
+    <projects-table
+      v-if="onDesktop"
+      :projects="projects"
+      :showAuthor="showAuthor"
+      :showLastEdit="!showAuthor"
+      ></projects-table>
+    <projects-list v-else :projects="projects"></projects-list>
 
   </div>
 </template>
@@ -42,15 +47,15 @@ export default {
     ProjectsTable
   },
   props: {
-    q: String,
-    filter: String
+    showAuthor: Boolean,
   },
   data () {
     return {
+      showMe: true,
       title: 'Catalog',
       query: '',
       projects: [],
-      transition: 'slide-fade-reverse'
+      onDesktop: window.innerWidth >= 720
     }
   },
   watch: {
@@ -63,8 +68,11 @@ export default {
     }
   },
   created () {
-    this.query = this.q
+    window.addEventListener('resize', this.handleResize)
     this.route(this.$route)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.handleResize)
   },
   methods: {
     route(to) {
@@ -72,10 +80,15 @@ export default {
         this.title = 'Favourite'
       } else if (to.path === '/liked') {
         this.title = 'Most Liked'
+      } else if (to.path === '/my') {
+        this.title = 'My Projects'
+      } else if (to.path === '/subscribers') {
+        this.title = 'From Subscribers'
       } else {
         this.title = 'All Projects'
       }
       this.fetchProjects(to.path, to.query)
+      this.query = to.query.q || ''
     },
     fetchProjects(path, query) {
       this.$client.fetchProjects(path, query)
@@ -84,7 +97,12 @@ export default {
         })
     },
     search() {
-      this.$router.push({query: {q: this.query}})
+      const query = Object.assign({}, this.$route.query)
+      query['q'] = this.query
+      this.$router.push({query: query})
+    },
+    handleResize() {
+      this.onDesktop = window.innerWidth >= 720
     },
     toggleMenu() {
       this.$emit('toggle-menu')

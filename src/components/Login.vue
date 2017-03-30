@@ -124,9 +124,8 @@ export default {
         'accounts/password_reset/',
         formData
       ).then(response => {
-        this.inProgress = false
         this.passwordResetSent = true
-      }, response => {
+      }).finally(response => {
         this.inProgress = false
       })
     }

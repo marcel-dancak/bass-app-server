@@ -5,7 +5,9 @@
         <md-layout md-row md-column-xsmall>
           <md-layout md-flex="70" md-column md-flex-small="60">
             <md-layout md-row class="actions-toolbar">
-              <md-button class="back md-icon-button xmd-fab md-clean" @click.native="back">
+              <md-button
+                class="back md-icon-button xmd-fab md-clean"
+                @click.native="$router.back">
                 <md-icon>arrow_back</md-icon>
               </md-button>
               <p class="md-subhead">Created: {{ project.created | todate }}</p>
@@ -103,9 +105,6 @@
     methods: {
       loadImg(name) {
          return require(`../assets/${name}.svg`)
-      },
-      back() {
-        this.$router.go(-1)
       }
     }
   }

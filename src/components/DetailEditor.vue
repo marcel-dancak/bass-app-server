@@ -86,7 +86,7 @@
       <div style="flex:1"></div>
       <md-button
         class="md-raised"
-        @click.native="back">
+        @click.native="$router.back">
         Cancel
       </md-button>
       <md-button
@@ -132,9 +132,6 @@ export default {
     }
   },
   methods: {
-    back() {
-      this.$router.go(-1)
-    },
     initializeForm() {
       let form = {}
       const fields = [

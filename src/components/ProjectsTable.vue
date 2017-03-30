@@ -1,7 +1,7 @@
 <template>
   <md-table>
     <md-table-header>
-      <md-table-row>
+      <md-table-row class="nofilter">
         <md-table-head class="icon noauth-hide"></md-table-head>
         <md-table-head class="title">Title
           <md-chips
@@ -27,7 +27,7 @@
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
         </md-table-head>
-        <md-table-head>Author
+        <md-table-head v-if="showAuthor">Author
           <md-chips
             v-model="filter.authors"
             :md-input-placeholder="filter.authors.length? 'Add' : 'Author filter'"
@@ -35,6 +35,9 @@
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
         </md-table-head>
+
+        <md-table-head v-if="showLastEdit">Last Edit</md-table-head>
+
         <md-table-head class="slim"><md-icon>thumb_up</md-icon></md-table-head>
       </md-table-row>
     </md-table-header>
@@ -48,14 +51,22 @@
         <md-table-cell class="title">
           <router-link :to="{ name: 'detail', params: { id: item.id }}">
             <div class="md-title">{{ item.title }}</div>
-            <div class="md-subhead">{{ item.artist }}</div>
+            <div class="md-subhead">{{ item.artist || '-' }}</div>
           </router-link>
         </md-table-cell>
         <md-table-cell>{{ item.genres.join(', ') }}</md-table-cell>
         <md-table-cell>{{ item.playing_styles.join(', ') }}</md-table-cell>
-        <md-table-cell class="author">
+        <md-table-cell
+          v-if="showAuthor"
+          class="author">
           <div class="md-title">{{ item.author.name }}</div>
           <div class="md-subhead">{{ item.created | timediff }}</div>
+        </md-table-cell>
+        <md-table-cell
+          v-if="showLastEdit"
+          class="date">
+          <div class="md-title">{{ item.modified | todate }}</div>
+          <div class="md-subhead">{{ item.modified | timediff }}</div>
         </md-table-cell>
         <md-table-cell>
           {{ item.likes }}
@@ -75,7 +86,9 @@ export default {
     projects: {
       type: Array,
       required: true
-    }
+    },
+    showAuthor: Boolean,
+    showLastEdit: Boolean
   },
   data() {
     return {
@@ -96,11 +109,13 @@ export default {
     updateFilter() {
       this.filter.genres = Constants.MusicalStyles.from(this.filter.genres)
       this.filter.styles = Constants.PlayingStyles.from(this.filter.styles)
-      let query = {}
+      const query = Object.assign({}, this.$route.query)
       for (let key in this.filter) {
         const values = this.filter[key]
         if (values.length) {
           query[key] = values.join(',')
+        } else {
+          delete query[key]
         }
       }
       this.$router.push({
@@ -137,15 +152,8 @@ export default {
   .md-table-row:hover .md-table-cell {
     background-color: #FFF9C4!important;
   }
-  .md-table-header {
-    tr {
-      border-bottom: 1px solid #ccc;
-    }
-  }
-
   .md-table-head {
-    height: 80px;
-
+    background-color: #EEEEEE;
     &.icon {
       width: 32px;
       .md-table-head-container {
@@ -159,10 +167,11 @@ export default {
       }
     }
     .md-table-head-container {
-      background-color: #EEEEEE!important;
+      /* background-color: #EEEEEE!important; */
       height: 80px;
       padding: 8px 0;
     }
+
     .md-input-container {
       margin: 0;
       padding-top: 4px;
@@ -189,6 +198,23 @@ export default {
       /* make input field short when not empty */
       .md-chips .md-chip + .md-input {
         width: 64px;
+      }
+    }
+  }
+
+  .md-table-header {
+    tr {
+      border-bottom: 1px solid #ccc;
+    }
+
+    .nofilter .md-table-head {
+      xbackground-color: #fff;
+      .md-table-head-container {
+        height: 56px;
+        padding: 16px 0;
+        .md-table-head-text > div {
+          display: none;
+        }
       }
     }
   }
@@ -232,7 +258,7 @@ export default {
         color: #888;
       }
     }
-    &.author {
+    &.author, &.date {
       .md-title {
         font-size: 15px;
         color: #444;
