@@ -3,9 +3,12 @@
 
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
   <head>
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{{ title }}{% endblock %}</title>
     <meta name="robots" content="NONE,NOARCHIVE" />
-    {% block head %}{% endblock %}
+    {% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static "accounts/css/form.css" %}" />
+    {% endblock %}
+    {% block extrahead %}{% endblock %}
   </head>
 
   <body>

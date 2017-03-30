@@ -1,14 +1,17 @@
-<!DOCTYPE html>
-<html lang="en-us">
-<head>
-  <title>BassApp Catalog Registration</title>
-  <meta name="robots" content="NONE,NOARCHIVE" />
-</head>
+{% extends "base.html" %}
 {% load i18n %}
 
-<body>
-  <h1>Registration is complete!</h1>
+{% block title %}{% trans "Registration Complete" %}{% endblock %}
+
+{% block content %}
+<div class="container center">
+  <h2>{% trans "Registration is complete!" %}</h2>
   <p>
-    Your account was activated. You can now login in <a href="/">Bass Catalog</a>
+    {% trans "Your account was activated. You can now login in" %}
   </p>
-</body>
+  <br />
+  <p>
+    <a class="md-button md-raised md-primary" href="/">Bass Catalog</a>
+  </p>
+</div>
+{% endblock %}
