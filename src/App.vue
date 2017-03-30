@@ -1,98 +1,116 @@
 <template>
-  <div class="app" :class="{noauth: !user.username}">
-    <login-dialog ref="login" @login="onLogin"></login-dialog>
-    <div class="page-wrapper">
+  <div class="app-container" :class="{noauth: !user.username}">
+    <div class="app">
+      <login-dialog ref="login" @login="onLogin"></login-dialog>
+      <div class="page-wrapper">
 
-      <md-sidenav
-        ref="sidenav"
-        class="main-sidebar md-left md-fixed">
+        <transition :name="transition">
+          <keep-alive include="list,author-projects">
+            <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
+          </keep-alive>
+        </transition>
 
-          <md-card class="my-card md-accent">
-            <md-card-header>
-              <template v-if="user.username">
-                <md-card-header-text>
-                  <div class="md-title">
-                    <router-link :to="{ path: '/profile' }">
-                      {{ user.username }}
-                    </router-link>
-                  </div>
-                  <div class="md-subhead">{{ user.first_name}} {{ user.last_name }}</a></div>
-                </md-card-header-text>
-                <md-card-media>
-                  <md-avatar v-if="user.avatar" class="md-large">
-                    <img :src="$http.options.root+user.avatar">
-                  </md-avatar>
-                  <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
-                  <md-icon v-else class="md-size-3x">face</md-icon>
-                </md-card-media>
-              </template>
-              <template v-else>
-                <md-card-header-text class="welcome">
-                  <div class="md-subhead">Welcome in the</div>
-                  <div class="md-title">Bass Catalog</div>
-                  <div class="register-link">
-                    <router-link :to="{ name: 'registration' }">
-                      Create an account
-                    </router-link>
-                  </div>
-                </md-card-header-text>
-
-                <md-card-media>
-                  <md-icon class="md-size-3x">backup</md-icon>
-                </md-card-media>
-              </template>
-            </md-card-header>
-
-            <md-divider></md-divider>
-            <md-card-actions>
-              <template v-if="user.username">
-                <md-button @click.native="logout">
-                  <md-icon>account_circle</md-icon> <span>Logout</span>
-                </md-button>
-              </template>
-              <template v-else>
-                <md-button @click.native="$refs.login.open">
-                  <md-icon>account_circle</md-icon> <span>Login</span>
-                </md-button>
-              </template>
-            </md-card-actions>
-          </md-card>
-
-        <div class="main-sidebar-links">
-          <md-list>
-
-            <!-- My projects -->
-
-            <md-list-item>
-              <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
-              <router-link :to="{ path: '/all'}">
-                <md-icon>restore</md-icon>
-                <span>All</span>
-              </router-link>
-            </md-list-item>
-            <md-list-item noauth-hide>
-              <router-link :to="{ path: '/favourite' }">
-                <md-icon>start</md-icon>
-                <span>Bookmarked</span>
-              </router-link>
-            </md-list-item>
-            <md-list-item>
-              <router-link :to="{ path: '/liked' }">
-                <md-icon>thumb_up</md-icon>
-                <span>Highest Rated</span>
-              </router-link>
-            </md-list-item>
-          </md-list>
-        </div>
-      </md-sidenav>
-
-      <transition :name="transition">
-        <keep-alive include="list,author-projects">
-          <router-view @toggle-menu="$refs.sidenav.toggle()"></router-view>
-        </keep-alive>
-      </transition>
-
+      </div>
     </div>
+
+    <md-sidenav
+      ref="sidenav"
+      class="main-sidebar md-left xmd-fixed">
+
+        <md-card class="my-card md-accent">
+          <md-card-header>
+            <template v-if="user.username">
+              <md-card-header-text>
+                <div class="md-title">
+                  <router-link :to="{ path: '/profile' }">
+                    {{ user.username }}
+                  </router-link>
+                </div>
+                <div class="md-subhead">{{ user.first_name}} {{ user.last_name }}</a></div>
+              </md-card-header-text>
+              <md-card-media>
+                <md-avatar v-if="user.avatar" class="md-large">
+                  <img :src="$http.options.root+user.avatar">
+                </md-avatar>
+                <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
+                <md-icon v-else class="md-size-3x">face</md-icon>
+              </md-card-media>
+            </template>
+            <template v-else>
+              <md-card-header-text class="welcome">
+                <div class="md-subhead">Welcome in the</div>
+                <div class="md-title">Bass Catalog</div>
+                <div class="register-link">
+                  <router-link :to="{ name: 'registration' }">
+                    Create an account
+                  </router-link>
+                </div>
+              </md-card-header-text>
+
+              <md-card-media>
+                <md-icon class="md-size-3x">backup</md-icon>
+              </md-card-media>
+            </template>
+          </md-card-header>
+
+          <md-divider></md-divider>
+          <md-card-actions>
+            <template v-if="user.username">
+              <md-button @click.native="logout">
+                <md-icon>account_circle</md-icon> <span>Logout</span>
+              </md-button>
+            </template>
+            <template v-else>
+              <md-button @click.native="$refs.login.open">
+                <md-icon>account_circle</md-icon> <span>Login</span>
+              </md-button>
+            </template>
+          </md-card-actions>
+        </md-card>
+
+      <div class="main-sidebar-links">
+        <md-list>
+
+          <!-- My projects -->
+
+          <md-list-item>
+            <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
+            <router-link :to="{ path: '/all'}">
+              <md-icon>restore</md-icon>
+              <span>All Projects</span>
+            </router-link>
+          </md-list-item>
+
+          <md-list-item v-if="user.projectsCount">
+            <router-link :to="{ path: '/my' }">
+              <md-icon>create</md-icon>
+              <span>My Projects</span>
+            </router-link>
+          </md-list-item>
+
+          <md-list-item noauth-hide>
+            <router-link :to="{ path: '/favourite' }">
+              <md-icon>start</md-icon>
+              <span>Bookmarked</span>
+            </router-link>
+          </md-list-item>
+
+          <md-list-item noauth-hide>
+            <router-link :to="{ path: '/subscribers' }">
+              <md-icon>visibility</md-icon>
+              <span>From Subscribers</span>
+            </router-link>
+          </md-list-item>
+
+          <md-list-item>
+            <router-link :to="{ path: '/liked' }">
+              <md-icon>thumb_up</md-icon>
+              <span>Highest Rated</span>
+            </router-link>
+          </md-list-item>
+        </md-list>
+      </div>
+    </md-sidenav>
   </div>
 </template>
 
@@ -120,12 +138,6 @@ export default {
     // setTimeout(this.loadUserProfile, 1000)
     this.loadUserProfile()
     this._historyStack = [this.$route.fullPath]
-    let onResize = e => {
-      const offset = Math.round(Math.max((window.innerWidth - 1600)/2, 0))
-      document.body.style.transform = `translate3d(${offset}px, 0, 0)`
-    }
-    window.addEventListener('resize', onResize)
-    onResize()
   },
   watch: {
     '$route' (to, from) {
@@ -186,6 +198,10 @@ export default {
     }
   }
 
+  a:not(.md-button):not([disabled]) {
+    cursor: pointer;
+  }
+
   .md-card.md-accent, .md-card.md-warn {
     a:not(.md-button) {
       color: #eee;
@@ -197,7 +213,6 @@ export default {
   .my-card.md-card {
     border-radius: 0;
     border-right: 1px solid #666;
-    xbox-shadow: none;
     overflow: hidden;
     .md-card-header {
       margin: 0;
@@ -291,16 +306,47 @@ export default {
   html,
   body {
     height: 100%;
+    width: 100%;
     overflow: hidden;
+    xdisplay: flex;
+    xjustify-content: center;
   }
 
-  body {
+  .page-wrapper {
+    position: relative;
+    min-height: 100%;
+    height: 100%;
+    .page-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: #fff;
+      overflow: auto;
+    }
+  }
+
+  .app-container {
     max-width: 1600px;
+    min-height: 100%;
+    height: 100%;
+    position: relative;
+    margin: 0 auto;
+    xflex: 1;
+
+    &.noauth {
+      .noauth-disable, [noauth-disable] {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .noauth-hide, [noauth-hide] {
+        display: none;
+      }
+    }
   }
   @media (min-width: 1601px) {
-    body {
-      margin-right: auto;
-      border-left: 1px solid #ccc;
+    .app-container {
       border-right: 1px solid #ccc;
     }
   }
@@ -308,6 +354,7 @@ export default {
   a:not(.md-button):hover {
     text-decoration: none!important;
   }
+
   .app {
     min-height: 100%;
     height: 100%;
@@ -318,29 +365,6 @@ export default {
     transition: $swift-ease-out;
     @media (min-width: 1281px) {
       padding-left: $sizebar-size;
-    }
-    .page-wrapper {
-      position: relative;
-      min-height: 100%;
-      height: 100%;
-      .page-container {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background-color: #fff;
-        overflow: auto;
-      }
-    }
-    &.noauth {
-      .noauth-disable, [noauth-disable] {
-        opacity: 0.5;
-        pointer-events: none;
-      }
-      .noauth-hide, [noauth-hide] {
-        display: none;
-      }
     }
   }
 

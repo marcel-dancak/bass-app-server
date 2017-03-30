@@ -105,7 +105,6 @@
       }
     },
     created() {
-      console.log('Detail Created: '+this.id)
       this.fetchData()
     },
     methods: {
@@ -116,15 +115,12 @@
           })
       },
       toggleFavourite(project) {
-        console.log('toggle Favourite')
         this.$client.toggleFavourite(project)
       },
       toggleLike(project) {
-        console.log('toggle Like')
         this.$client.toggleLike(project)
       },
       toggleSubscribe(author) {
-        console.log('toggle Subscribe')
         this.$client.toggleSubscribe(author)
       }
     }
@@ -146,11 +142,9 @@
     flex: 1 1 auto;
     overflow: visible;
     /* Disable nested scrolling */
-    /*
     .page-container {
       overflow: visible!important;
     }
-    */
   }
 
   .md-card.header {
