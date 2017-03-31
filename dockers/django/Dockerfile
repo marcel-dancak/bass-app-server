@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY bass-app-dev.tar.gz /tmp/bass-app-dev.tar.gz
 
 # Install Gunicorn and BassApp dependencies
-RUN pip3 install --no-cache-dir 'gunicorn>=19.1.1,<19.2' && \
+RUN pip3 install --no-cache-dir 'gunicorn>=19.7,<19.8' && \
     pip3 install --no-cache-dir /tmp/bass-app-dev.tar.gz && \
     rm /tmp/bass-app-dev.tar.gz
 

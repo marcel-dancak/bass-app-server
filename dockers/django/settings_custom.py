@@ -1,6 +1,9 @@
 import os
+import sys
 
 DEBUG = False
+
+ADMINS = [('Marcel', 'dancakm@gmail.com')]
 
 DATABASES = {
     'default': {
@@ -16,20 +19,40 @@ DATABASES = {
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(message)s'
+        },
+    },
     'handlers': {
-        'file': {
-            'level': 'WARNING',
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/django/bassapp.log'
-        },
-        'console': {
+        'stdout': {
             'level': 'INFO',
-            'class': 'logging.StreamHandler'
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'stream': sys.stdout
         },
+        'stderr': {
+            'level': 'WARNING',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stderr
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True
+        }
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'console'],
+            'handlers': ['stderr', 'mail_admins'],
+            'level': 'WARNING',
+            'propagate': True
+        },
+        'bassapp': {
+            'handlers': ['stdout'],
             'level': 'INFO',
             'propagate': True
         }
