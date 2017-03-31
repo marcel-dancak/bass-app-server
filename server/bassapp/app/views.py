@@ -9,13 +9,8 @@ from bassapp.libs.lzstring import LZString
 
 
 def app(request):
-    return render(
-        request,
-        "app/index.html",
-        {},
-        status=200,
-        content_type="text/html"
-    )
+    return render(request, "app/index.html")
+
 
 def app_data(request, id, *args):
     project = get_object_or_404(Project, pk=id)

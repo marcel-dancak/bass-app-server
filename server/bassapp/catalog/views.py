@@ -1,11 +1,16 @@
 import json
+import logging
 
 # from lzstring import LZString
 from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, Http404
+from django.views import View
 from django.views.decorators.gzip import gzip_page
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 from django.core.paginator import Paginator, EmptyPage
 # from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -22,6 +27,14 @@ from django.contrib import admin
 admin = admin.site._registry[Project]
 # from bassapp.admin import ProjectAdmin
 # admin = ProjectAdmin(Project, admin.site)
+
+
+logger = logging.getLogger(__name__)
+
+@ensure_csrf_cookie
+def catalog(request):
+    logger.info('Catalog App touched!')
+    return render(request, "catalog/index.html")
 
 
 def get_user_profile(user):
@@ -114,83 +127,97 @@ def get_projects_data(queryset):
     return projects
 
 
-@gzip_page
-def user_projects(request, author):
-    queryset = Project.objects.filter(user=author)
-    if 'q' in request.GET:
-        queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
+class ProjectsFilterMixin(object):
+    def filter(self, queryset, request):
+        if 'q' in request.GET:
+            queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
 
-    author = get_user_model().objects.get(id=author)
-    projects = get_projects_data(queryset)
-    data = {
-        'profile': {
-            'id': author.id,
-            'username': author.username,
-            'first_name': author.first_name,
-            'last_name': author.last_name,
-            'date_joined': author.date_joined,
-            'projects_count': len(projects),
-            'avatar': author.avatar.url if author.avatar else '',
-            'links': author.links
-        },
-        'projects': projects
-    }
-    return JsonResponse(data)
+        if 'genres' in request.GET:
+            queryset = queryset.filter(genres__overlap=request.GET['genres'].split(','))
 
+        if 'styles' in request.GET:
+            queryset = queryset.filter(playing_styles__overlap=request.GET['styles'].split(','))
 
-@gzip_page
-def projects(request, filter=None):
-    queryset = Project.objects.all()
+        if 'artists' in request.GET:
+            artists = request.GET['artists'].split(',')
+            q = Q(artist__icontains=artists[0])
+            for artist in artists[1:]:
+                q = q | Q(artist__icontains=artist)
+            queryset = queryset.filter(q)
 
-    if filter == 'favourite' and request.user.is_authenticated():
-        queryset = queryset.filter(pk__in=request.user.favourites)
-
-    if filter == 'liked':
-        queryset = queryset.order_by('-likes')
-
-    if filter == 'subscribers':
-        queryset = queryset.filter(user__in=request.user.subscribers.all())
-
-    if filter == 'my':
-        queryset = queryset.filter(user=request.user)
-
-    if 'q' in request.GET:
-        queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
-
-    if 'genres' in request.GET:
-        queryset = queryset.filter(genres__overlap=request.GET['genres'].split(','))
-
-    if 'styles' in request.GET:
-        queryset = queryset.filter(playing_styles__overlap=request.GET['styles'].split(','))
-
-    if 'artists' in request.GET:
-        artists = request.GET['artists'].split(',')
-        q = Q(artist__icontains=artists[0])
-        for artist in artists[1:]:
-            q = q | Q(artist__icontains=artist)
-        queryset = queryset.filter(q)
-
-    if 'authors' in request.GET:
-        authors = request.GET['authors'].split(',')
-        q = Q(user__username__icontains=authors[0])
-        for author in authors[1:]:
-            q = q | Q(user__username__icontains=author)
-        queryset = queryset.filter(q)
-
-    return JsonResponse(get_projects_data(queryset), safe=False)
+        if 'authors' in request.GET:
+            authors = request.GET['authors'].split(',')
+            q = Q(user__username__icontains=authors[0])
+            for author in authors[1:]:
+                q = q | Q(user__username__icontains=author)
+            queryset = queryset.filter(q)
+        return queryset
 
 
-@csrf_exempt
-@gzip_page
-def project(request):
-    if request.method == "POST":
+class ProjectsList(ProjectsFilterMixin, View):
+
+    @method_decorator(gzip_page)
+    def get(self, request, base_filter=None):
+        # queryset = Project.objects.all()
+        queryset = Project.objects.defer('data', 'data_public').prefetch_related('user')
+
+        if base_filter == 'favourite' and request.user.is_authenticated():
+            queryset = queryset.filter(pk__in=request.user.favourites)
+
+        if base_filter == 'subscribers':
+            queryset = queryset.filter(user__in=request.user.subscribers.all())
+
+        if base_filter == 'my':
+            queryset = queryset.filter(user=request.user)
+
+        if base_filter == 'liked':
+            queryset = queryset.order_by('-likes')
+
+        queryset = self.filter(queryset, request)
+        return JsonResponse(get_projects_data(queryset), safe=False)
+
+
+
+class AuthorProjects(ProjectsFilterMixin, View):
+
+    @method_decorator(gzip_page)
+    def get(self, request, author):
+        author = get_user_model().objects.get(id=author)
+        queryset = Project.objects.defer('data', 'data_public').filter(user=author)
+        queryset = self.filter(queryset, request)
+
+        # user already fetched author model to avoid additional db queries
+        projects = list(queryset)
+        for project in projects:
+            project.user = author
+
+        projects = get_projects_data(projects)
+        data = {
+            'profile': {
+                'id': author.id,
+                'username': author.username,
+                'first_name': author.first_name,
+                'last_name': author.last_name,
+                'date_joined': author.date_joined,
+                'projects_count': len(projects),
+                'avatar': author.avatar.url if author.avatar else '',
+                'links': author.links
+            },
+            'projects': projects
+        }
+        return JsonResponse(data)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ProjectView(View):
+
+    @method_decorator(login_required)
+    def post(self, request):
         # print (request.body)
         # print  (json.loads(LZString.decompressFromUTF16(request.body.decode('utf-8'))))
         # data = json.loads(LZString.decompress(request.read()))
         # print (request.body)
         data = json.loads(request.body.decode('utf-8'))
-
-        print (data)
 
         # data = json.loads(LZString.decompressFromBase64(request.body))
         # data = json.loads(LZString.decompressFromUTF16(request.body.decode('utf-8')))
@@ -204,24 +231,32 @@ def project(request):
 
         form = forms.ProjectDataForm(data, instance=instance)
         if form.is_valid():
-            # print (form.cleaned_data)
+            print (form.cleaned_data)
             # p = LZString.decompressFromBase64(data['data'])
             # print (p)
+            raise Exception("Uploading not yet implemented!")
+            return HttpResponse("ok")
+            # project.user = self.request.user
             project = form.save()
             return HttpResponse(project.id)
         else:
             print (form.errors)
-    else:
+        raise Http404
+
+
+    def get(self, request):
         form = forms.GetProjectForm(request.GET)
         if form.is_valid():
             project = form.cleaned_data['id']
+            project_data = get_projects_data([project])[0]
             if form.cleaned_data['data']:
+                # TODO: data shoud depend on authentication
                 data = project.data
                 # data = LZString.decompressFromBase64(project.data)
-                return HttpResponse(data, content_type='application/json')
-            data = get_projects_data([project])[0]
-            return JsonResponse(data)
-    raise Http404
+                project_data['data'] = project.data
+
+            return JsonResponse(project_data)
+        raise Http404
 
 
 @login_required
@@ -276,19 +311,8 @@ def subscribe(request):
         if form.is_valid():
             author = form.cleaned_data['author']
             value = form.cleaned_data['value']
-            print(author, value)
             if value:
                 request.user.subscribers.add(author)
             else:
                 request.user.subscribers.remove(author)
     return HttpResponse("ok")
-
-
-def catalog(request):
-    return render(
-        request,
-        "catalog/index.html",
-        {},
-        status=200,
-        content_type="text/html"
-    )
