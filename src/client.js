@@ -144,6 +144,8 @@ class Client {
           } else {
             user.subscribers.splice(index, 1)
           }
+          // invalidate cache
+          this.cache = {}
         }, response => {
 
         })

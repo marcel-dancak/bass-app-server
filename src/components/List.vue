@@ -8,7 +8,6 @@
       </md-button>
       <h1 class="md-title">{{ title }}</h1>
 
-
       <md-input-container style="flex: 1">
         <md-input
           type="text"
@@ -76,13 +75,13 @@ export default {
   },
   methods: {
     route(to) {
-      if (to.path === '/favourite') {
-        this.title = 'Favourite'
+      if (to.path === '/bookmarked') {
+        this.title = 'Bookmarked'
       } else if (to.path === '/liked') {
         this.title = 'Most Liked'
-      } else if (to.path === '/my') {
+      } else if (to.path === '/created') {
         this.title = 'My Projects'
-      } else if (to.path === '/subscribers') {
+      } else if (to.path === '/subscribed') {
         this.title = 'From Subscribers'
       } else {
         this.title = 'All Projects'

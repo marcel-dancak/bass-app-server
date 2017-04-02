@@ -75,35 +75,35 @@
 
           <md-list-item>
             <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
-            <router-link :to="{ path: '/all'}">
+            <router-link :to="{ path: '/', query: $route.query}" exact>
               <md-icon>restore</md-icon>
               <span>All Projects</span>
             </router-link>
           </md-list-item>
 
           <md-list-item v-if="user.projectsCount">
-            <router-link :to="{ path: '/my' }">
+            <router-link :to="{ path: '/created', query: $route.query }">
               <md-icon>create</md-icon>
               <span>My Projects</span>
             </router-link>
           </md-list-item>
 
           <md-list-item noauth-hide>
-            <router-link :to="{ path: '/favourite' }">
+            <router-link :to="{ path: '/bookmarked', query: $route.query }">
               <md-icon>start</md-icon>
               <span>Bookmarked</span>
             </router-link>
           </md-list-item>
 
           <md-list-item noauth-hide>
-            <router-link :to="{ path: '/subscribers' }">
+            <router-link :to="{ path: '/subscribed', query: $route.query }">
               <md-icon>visibility</md-icon>
               <span>From Subscribers</span>
             </router-link>
           </md-list-item>
 
           <md-list-item>
-            <router-link :to="{ path: '/liked' }">
+            <router-link :to="{ path: '/liked', query: $route.query }">
               <md-icon>thumb_up</md-icon>
               <span>Highest Rated</span>
             </router-link>
