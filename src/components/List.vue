@@ -1,49 +1,26 @@
 <template>
   <div class="page-container">
-    <md-toolbar class="md-warn main">
+    <responsive-list
+      :projects="projects"
+      :showAuthor="showAuthor"
+      :showLastEdit="!showAuthor">
       <md-button
         class="menu md-icon-button"
         @click.native="toggleMenu">
         <md-icon>menu</md-icon>
       </md-button>
       <h1 class="md-title">{{ title }}</h1>
-
-      <md-input-container style="flex: 1">
-        <md-input
-          type="text"
-          placeholder="Search"
-          v-model="query"
-          @keyup.enter.native="search">
-        </md-input>
-      </md-input-container>
-
-      <md-button
-        class="md-icon-button"
-        @click.native="search">
-        <md-icon>search</md-icon>
-      </md-button>
-    </md-toolbar>
-
-    <projects-table
-      v-if="onDesktop"
-      :projects="projects"
-      :showAuthor="showAuthor"
-      :showLastEdit="!showAuthor"
-      ></projects-table>
-    <projects-list v-else :projects="projects"></projects-list>
-
+    </responsive-list>
   </div>
 </template>
 
 <script>
-import ProjectsList from './ProjectsList'
-import ProjectsTable from './ProjectsTable'
+import ResponsiveList from './ResponsiveList'
 
 export default {
   name: 'list',
   components: {
-    ProjectsList,
-    ProjectsTable
+    ResponsiveList
   },
   props: {
     showAuthor: Boolean,
@@ -53,8 +30,7 @@ export default {
       showMe: true,
       title: 'Catalog',
       query: '',
-      projects: [],
-      onDesktop: window.innerWidth >= 720
+      projects: []
     }
   },
   watch: {
@@ -67,11 +43,7 @@ export default {
     }
   },
   created () {
-    window.addEventListener('resize', this.handleResize)
     this.route(this.$route)
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.handleResize)
   },
   methods: {
     route(to) {
@@ -94,14 +66,6 @@ export default {
         .then(response => {
           this.projects = response.data
         })
-    },
-    search() {
-      const query = Object.assign({}, this.$route.query)
-      query['q'] = this.query
-      this.$router.push({query: query})
-    },
-    handleResize() {
-      this.onDesktop = window.innerWidth >= 720
     },
     toggleMenu() {
       this.$emit('toggle-menu')

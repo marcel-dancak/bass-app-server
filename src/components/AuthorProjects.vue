@@ -42,51 +42,28 @@
       </md-layout>
     </md-card>
 
-    <!-- <list-view :title="'Projects'" :projects="projects"></list-view> -->
-    <!-- <div v-if="false"> -->
-    <md-toolbar class="main md-accent">
-      <md-button
-        @click.native="$router.back"
-        class="back md-icon-button">
-        <md-icon>arrow_back</md-icon>
-      </md-button>
-      <h1 class="md-title">Projects</h1>
-
-      <md-input-container
-        style="flex: 1 0"
-        class="md-primary">
-        <md-input
-          type="text"
-          placeholder="Search"
-          v-model="query"
-          @keyup.enter.native="search">
-        </md-input>
-      </md-input-container>
-
-      <md-button
-        class="md-icon-button"
-        @click.native="search">
-        <md-icon>search</md-icon>
-      </md-button>
-    </md-toolbar>
-
-    <projects-table v-if="true" :projects="projects" :showLastEdit="true"></projects-table>
-    <projects-list v-else :projects="projects"></projects-list>
-    <!-- </div> -->
+    <md-theme md-name="light">
+      <responsive-list
+        :projects="projects"
+        showLastEdit>
+        <md-button
+          @click.native="$router.back"
+          class="back md-icon-button">
+          <md-icon>arrow_back</md-icon>
+        </md-button>
+        <h1 class="md-title">Projects</h1>
+      </responsive-list>
+    </md-theme>
   </div>
 </template>
 
 <script>
-import ListView from './ListView'
-import ProjectsList from './ProjectsList'
-import ProjectsTable from './ProjectsTable'
+import ResponsiveList from './ResponsiveList'
 
 export default {
   name: 'author-projects',
   components: {
-    ProjectsList,
-    ProjectsTable,
-    ListView
+    ResponsiveList
   },
   props: {
     id: [String, Number]
@@ -95,7 +72,7 @@ export default {
     return {
       author: {},
       query: '',
-      projects: [],
+      projects: []
     }
   },
   computed: {
@@ -104,21 +81,17 @@ export default {
     }
   },
   created () {
-    this.route(this.$route)
+    this.fetchProjects(this.$route.query)
   },
   watch: {
     '$route' (to, from) {
       if (to.name === 'author') {
         console.log('** AUTHOR PAGE **')
-        this.route(to)
+        this.fetchProjects(to.query)
       }
     }
   },
   methods: {
-    route(to) {
-      this.fetchProjects(to.query)
-      this.query = to.query.q || ''
-    },
     fetchProjects(query) {
       console.log('fetching projects')
       this.$client.fetchUserProjects(this.id, query)
@@ -126,11 +99,6 @@ export default {
           this.projects = response.data.projects
           this.author = response.data.profile
         })
-    },
-    search() {
-      const query = Object.assign({}, this.$route.query)
-      query['q'] = this.query
-      this.$router.push({query: query})
     },
     toggleSubscribe() {
       this.$client.toggleSubscribe(this.author)
