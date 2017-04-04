@@ -1,4 +1,5 @@
 import App from './App'
+import Intro from './components/Intro'
 import Detail from './components/Detail'
 import DetailContent from './components/DetailContent'
 import DetailEditor from './components/DetailEditor'
@@ -11,6 +12,9 @@ import AccountRegistration from './components/AccountRegistration'
 export default [
   {
     path: '/',
+    component: Intro
+  }, {
+    path: '/',
     component: App,
     children: [{
         name: 'author',
@@ -18,7 +22,7 @@ export default [
         component: AuthorProjects,
         props: true
       }, {
-        path: '',
+        path: 'projects',
         alias: ['bookmarked', 'subscribed', 'created', 'liked'],
         name: 'list',
         component: List,

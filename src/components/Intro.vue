@@ -1,0 +1,248 @@
+<template>
+  <div class="intro-page">
+    <login-dialog ref="login" @login="onLogin"></login-dialog>
+    <div class="content">
+      <header>
+        <h1>BassCloud <img class="logo" src="../assets/logo.svg"></h1>
+        <div style="flex:1"></div>
+<!--         <router-link
+          to="login"
+          class="md-button md-theme-default md-primary md-raised">
+          <span>Sign In</span>
+        </router-link> -->
+
+        <md-button
+          @click.native="$refs.login.open"
+          class="md-primary md-raised">
+          <span>Sign In</span>
+        </md-button>
+
+      </header>
+      <h4>Online platform for creating and sharing audio compositions wih focus on bass guitar</h4>
+      <hr />
+
+      <br />
+
+<!--       <md-layout md-row md-column-small>
+        <md-layout md-flex="70" md-column md-flex-small="60">
+          <img class="screenshot" src="../assets/app.svg">
+        </md-layout>
+        <md-layout md-flex="30" md-column md-flex-small="40" class="r-pad">
+          <p class="is-left">
+            BassCloud is build as an extension service for the
+            <a href="http://marcel-dancak.github.io/drums-and-bass/">BassApp</a>
+            application, providing online storage space for projects created in it.
+          </p>
+        </md-layout>
+      </md-layout> -->
+      
+    <!-- <img class="screenshot" src="../assets/BassCloud.svg"> -->
+      <!-- <br /><br /> -->
+
+      <md-layout
+        md-row md-column-small
+        class="main-layout">
+        <md-layout md-flex="45" md-column class="is-left">
+          <h3>main goals</h3>
+          <md-list>
+
+            <md-list-item>
+              <md-icon class="md-primary">queue_music</md-icon>
+              <div class="md-list-text-container">
+                <span class="md-title">Rich collection of basselines</span>
+                <p>
+                  Aim is to collect wide range of bass material (covers, lessons, excercises)
+                  with all kinds of musical genres, playing styles and difficulty levels.
+                </p>
+              </div>
+            </md-list-item>
+
+            <md-list-item>
+              <md-icon class="md-primary">share</md-icon>
+              <div class="md-list-text-container">
+                <span class="md-title">Community of creators and followers</span>
+                <p>
+                  It's opportunity for authors to share basslines with thier followers
+                  in more enjoyable form.
+                </p>
+              </div>
+            </md-list-item>
+
+            <md-list-item>
+              <md-icon class="md-primary">trending_up</md-icon>
+              <div class="md-list-text-container">
+                <span class="md-title">Support for further development</span>
+                <p>
+                  Because <a href="http://marcel-dancak.github.io/drums-and-bass/">BassApp</a>
+                  is a free and open source application, one of the BassCloud's service goals
+                  is to provide financial support for its further development and maintenance.
+                </p>
+              </div>
+            </md-list-item>
+
+          </md-list>
+        </md-layout>
+
+        <div class="space"></div>
+
+        <md-layout class="img-container" md-column>
+          <img class="screenshot" src="../assets/app.svg">
+          <br />
+          <p class="is-left">
+            BassCloud is build as an extension service for the
+            <a href="http://marcel-dancak.github.io/drums-and-bass/">BassApp</a>
+            application, providing online storage space for projects created in it.
+          </p>
+        </md-layout>
+      </md-layout>
+
+      <hr />
+      <div>
+        <router-link
+          to="projects"
+          class="md-button md-raised">
+          <span>Without registration</span>
+        </router-link>
+
+        <router-link
+          to="registration"
+          class="md-button md-theme-default md-primary md-raised">
+          <span>Create an account</span>
+        </router-link>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import LoginDialog from './Login'
+  export default {
+    name: 'intro',
+    components: {
+      LoginDialog
+    },
+    methods: {
+      onLogin () {
+        this.$router.push({path: '/projects'})
+      }
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+  .is-left {
+    text-align: left;
+  }
+  .is-right {
+    text-align: right;
+  }
+  .align-right {
+    margin-left: auto;
+    margin-right: 0;
+  }
+</style>
+
+<style lang="scss">
+  .intro-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    padding: 0 1em;
+    xbackground-color: #f9f9f9;
+    background-color: #fff;
+    text-align: center;
+
+    a:not(.md-button) {
+      color: #2196f3;
+    }
+
+    .content {
+      margin: 0 auto;
+      max-width: 1240px;
+      @media (max-width: 1280px) {
+        padding: 0 16px;
+      }
+    }
+    header {
+      position: relative;
+      .md-button {
+        margin: auto 0;
+        position: absolute;
+        right: 0;
+        top: 8px;
+        @media (max-width: 600px) {
+          position: static;
+          margin-bottom: 24px;
+        }
+      }
+    }
+    h1 {
+      opacity: 0.85;
+    }
+    h4 {
+      font-size: 17px;
+      opacity: 0.85;
+      font-weight: 500;
+    }
+    h3 {
+      text-transform: uppercase;
+      font-size: 20px;
+    }
+    hr {
+      opacity: 0.4;
+      margin-bottom: 16px;
+    }
+    .logo {
+      width: 80px;
+      margin-left: 16px;
+    }
+    .img-container {
+      width: 630px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    .screenshot {
+      -webkit-filter: drop-shadow(1px 2px 4px #333);
+      filter: drop-shadow(1px 2px 4px #555);
+    }
+    .main-layout {
+      min-height: 50vh;
+      justify-content: center;
+      .space {
+        width: 24px;
+        height: 24px;
+      }
+      > .md-layout {
+        xmargin: 0 auto;
+      }
+    }
+    .md-list {
+      .md-list-item {
+        padding-bottom: 16px;
+        max-width: 500px;
+        .md-list-item-container {
+          padding-left: 0!important;
+        }
+        &:nth-child(2) {
+          padding-left: 0;
+        }
+        &:nth-child(2) {
+          padding-left: 12px;
+        }
+        &:nth-child(3) {
+          padding-left: 24px;
+        }
+      }
+      .md-title {
+        text-transform: uppercase;
+      }
+      p {
+        white-space: normal;
+      }
+    }
+  }
+
+</style>

@@ -22,7 +22,7 @@
             <template v-if="user.username">
               <md-card-header-text>
                 <div class="md-title">
-                  <router-link :to="{ path: '/profile' }">
+                  <router-link to="/profile">
                     {{ user.username }}
                   </router-link>
                 </div>
@@ -39,7 +39,7 @@
             <template v-else>
               <md-card-header-text class="welcome">
                 <div class="md-subhead">Welcome in the</div>
-                <div class="md-title">Bass Catalog</div>
+                  <router-link class="md-title" to="/">Bass Cloud</router-link>
                 <div class="register-link">
                   <router-link :to="{ name: 'registration' }">
                     Create an account
@@ -75,7 +75,7 @@
 
           <md-list-item>
             <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
-            <router-link :to="{ path: '/', query: $route.query}" exact>
+            <router-link :to="{ path: '/projects', query: $route.query}" exact>
               <md-icon>restore</md-icon>
               <span>All Projects</span>
             </router-link>

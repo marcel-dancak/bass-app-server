@@ -4,6 +4,14 @@ import store from './store'
 
 const CACHE_EXPIRATION = 5 * 60 * 1000
 
+const PROJECTS_FILTERS = {
+  projects: '/',
+  bookmarked: '/bookmarked/',
+  created: '/created/',
+  subscribed: '/subscribed/',
+  liked: '/liked/'
+}
+
 class Client {
 
   cache = {}
@@ -52,19 +60,23 @@ class Client {
   // }
 
   fetchProjects (path, query) {
-    if (!path.endsWith('/')) {
-      path = path+'/'
+    path = 'projects'+(PROJECTS_FILTERS[path] || path)
+    const params = {}
+    for (const key in query) {
+      if (query[key] !== '' && query[key] !== null) {
+        params[key] = query[key]
+      }
     }
-    const data = this.fromCache(path, query)
+    const data = this.fromCache(path, params)
     if (data) {
       return Vue.Promise.resolve({data: data})
     }
     const q = Vue.http.get(
-      'projects'+path,
-      {params: query}
+      path,
+      {params: params}
     )
     q.then(response => {
-      this.insertToCache(path, query, response.data)
+      this.insertToCache(path, params, response.data)
     })
     return q
   }

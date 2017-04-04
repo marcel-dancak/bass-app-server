@@ -27,9 +27,7 @@ export default {
   },
   data () {
     return {
-      showMe: true,
-      title: 'Catalog',
-      query: '',
+      title: 'Projects',
       projects: []
     }
   },
@@ -47,19 +45,20 @@ export default {
   },
   methods: {
     route(to) {
-      if (to.path === '/bookmarked') {
+      const path = to.path.split('/').pop()
+      console.log(path)
+      if (path === 'bookmarked') {
         this.title = 'Bookmarked'
-      } else if (to.path === '/liked') {
+      } else if (path === 'liked') {
         this.title = 'Most Liked'
-      } else if (to.path === '/created') {
+      } else if (path === 'created') {
         this.title = 'My Projects'
-      } else if (to.path === '/subscribed') {
+      } else if (path === 'subscribed') {
         this.title = 'From Subscribers'
       } else {
         this.title = 'All Projects'
       }
-      this.fetchProjects(to.path, to.query)
-      this.query = to.query.q || ''
+      this.fetchProjects(path, to.query)
     },
     fetchProjects(path, query) {
       this.$client.fetchProjects(path, query)
