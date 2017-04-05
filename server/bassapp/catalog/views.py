@@ -163,16 +163,17 @@ class ProjectsList(ProjectsFilterMixin, View):
 
     @method_decorator(gzip_page)
     def get(self, request, base_filter=None):
+        # or select_related
         # queryset = Project.objects.all()
         queryset = Project.objects.defer('data', 'data_public').prefetch_related('user')
 
-        if base_filter == 'favourite' and request.user.is_authenticated():
+        if base_filter == 'bookmarked' and request.user.is_authenticated():
             queryset = queryset.filter(pk__in=request.user.favourites)
 
-        if base_filter == 'subscribers':
+        if base_filter == 'subscribed':
             queryset = queryset.filter(user__in=request.user.subscribers.all())
 
-        if base_filter == 'my':
+        if base_filter == 'created':
             queryset = queryset.filter(user=request.user)
 
         if base_filter == 'liked':
@@ -180,7 +181,6 @@ class ProjectsList(ProjectsFilterMixin, View):
 
         queryset = self.filter(queryset, request)
         return JsonResponse(get_projects_data(queryset), safe=False)
-
 
 
 class AuthorProjects(ProjectsFilterMixin, View):
@@ -191,7 +191,7 @@ class AuthorProjects(ProjectsFilterMixin, View):
         queryset = Project.objects.defer('data', 'data_public').filter(user=author)
         queryset = self.filter(queryset, request)
 
-        # user already fetched author model to avoid additional db queries
+        # use already fetched author model to avoid additional db queries
         projects = list(queryset)
         for project in projects:
             project.user = author
@@ -217,6 +217,7 @@ class AuthorProjects(ProjectsFilterMixin, View):
 class ProjectView(View):
 
     @method_decorator(login_required)
+
     def post(self, request):
         # print (request.body)
         # print  (json.loads(LZString.decompressFromUTF16(request.body.decode('utf-8'))))
@@ -239,9 +240,9 @@ class ProjectView(View):
             print (form.cleaned_data)
             # p = LZString.decompressFromBase64(data['data'])
             # print (p)
-            raise Exception("Uploading not yet implemented!")
+            # raise Exception("Uploading not yet implemented!")
             return HttpResponse("ok")
-            # project.user = self.request.user
+            # project.user = request.user
             project = form.save()
             return HttpResponse(project.id)
         else:
