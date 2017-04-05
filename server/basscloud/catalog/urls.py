@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.views.decorators.cache import cache_page
 
-from bassapp.decorators import login_required, conditional_cache
+from basscloud.decorators import login_required, conditional_cache
 from . import views
 
 

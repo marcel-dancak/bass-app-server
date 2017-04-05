@@ -3,9 +3,10 @@ include LICENSE
 include README
 include MANIFEST.in
 include requirements.txt
-recursive-include bassapp/conf/project_template *
-recursive-include bassapp/catalog/static *
-recursive-include bassapp/catalog/templates *
-recursive-include bassapp/app/static *
-recursive-include bassapp/app/templates *
-recursive-include bassapp/accounts/templates *
+recursive-include basscloud/conf/project_template *
+recursive-include basscloud/catalog/static *
+recursive-include basscloud/catalog/templates *
+recursive-include basscloud/app/static *
+recursive-include basscloud/app/templates *
+recursive-include basscloud/accounts/static *
+recursive-include basscloud/accounts/templates *

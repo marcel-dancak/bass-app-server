@@ -1,8 +1,8 @@
 .DS_Store
 *.pyc
 dist/
-server/bassapp/catalog/static/catalog/
-server/bassapp/catalog/templates/index.html
+server/basscloud/catalog/static/catalog/
+server/basscloud/catalog/templates/index.html
 server/www/
 
 dockers/media/

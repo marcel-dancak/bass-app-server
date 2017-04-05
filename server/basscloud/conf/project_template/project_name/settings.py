@@ -1,5 +1,5 @@
 """
-Django settings for BassApp
+Django settings for BassCloud
 """
 
 import os
@@ -91,9 +91,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'bassapp.accounts',
-    'bassapp.catalog',
-    'bassapp.app',
+    'basscloud.accounts',
+    'basscloud.catalog',
+    'basscloud.app',
 )
 
 ROOT_URLCONF = '{{ project_name }}.urls'

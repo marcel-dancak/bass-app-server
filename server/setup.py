@@ -17,8 +17,8 @@ classifiers = [
 ]
 
 exclude_from_packages = [
-    'bassapp.catalog.migrations',
-    # 'bassapp.conf.project_template'
+    'basscloud.catalog.migrations',
+    # 'basscloud.conf.project_template'
 ]
 
 # requirements
@@ -26,12 +26,12 @@ with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 # setup
-setup(name='bass-app',
-    version=(__import__('bassapp').VERSION),
-    description='BassApp Server',
+setup(name='basscloud',
+    version=(__import__('basscloud').VERSION),
+    description='BassCloud Server',
     author='Marcel Dancak',
     author_email='dancakm@gmail.com',
-    url='https://github.com/marcel-dancak/bass-app-server',
+    url='https://github.com/marcel-dancak/bass-cloud',
     packages=find_packages('./', exclude=exclude_from_packages),
     include_package_data=True,
     classifiers=classifiers,

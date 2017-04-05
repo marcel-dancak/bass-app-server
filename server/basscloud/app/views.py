@@ -3,8 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from bassapp.catalog.models import Project
-from bassapp.libs.lzstring import LZString
+from basscloud.catalog.models import Project
+from basscloud.libs.lzstring import LZString
 
 
 

@@ -51,7 +51,7 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': True
         },
-        'bassapp': {
+        'basscloud': {
             'handlers': ['stdout'],
             'level': 'INFO',
             'propagate': True

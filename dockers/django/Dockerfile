@@ -10,28 +10,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 
-COPY bass-app-dev.tar.gz /tmp/bass-app-dev.tar.gz
+COPY basscloud-dev.tar.gz /tmp/basscloud-dev.tar.gz
 
-# Install Gunicorn and BassApp dependencies
+# Install Gunicorn and BassCloud dependencies
 RUN pip3 install --no-cache-dir 'gunicorn>=19.7,<19.8' && \
-    pip3 install --no-cache-dir /tmp/bass-app-dev.tar.gz && \
-    rm /tmp/bass-app-dev.tar.gz
+    pip3 install --no-cache-dir /tmp/basscloud-dev.tar.gz && \
+    rm /tmp/basscloud-dev.tar.gz
 
-# Install Gunicorn and BassApp dependencies
+# Install Gunicorn and BassCloud dependencies
 # RUN pip3 install --no-cache-dir 'gunicorn>=19.1.1,<19.2' && \
-#     pip3 install 'https://github.com/marcel-dancak/bass-app-server/zipball/master#egg=bass-app-server&subdirectory=server'
+#     pip3 install 'https://github.com/marcel-dancak/basscloud-server/zipball/master#egg=basscloud-server&subdirectory=server'
 
 
-# Create BassApp Django project
-RUN mkdir -p /var/www/bass-app && \
+# Create BassCloud Django project
+RUN mkdir -p /var/www/basscloud && \
     mkdir -p /var/log/django/ && \
     mkdir -p /var/log/gunicorn/ && \
-    django-admin startproject --template=/usr/local/lib/python3.5/dist-packages/bassapp/conf/project_template/ djproject /var/www/bass-app/
+    django-admin startproject --template=/usr/local/lib/python3.5/dist-packages/basscloud/conf/project_template/ djproject /var/www/basscloud/
 
 
 # Configure and initialize Webgis Django project
-COPY settings_custom.py /var/www/bass-app/djproject/settings_custom.py
-ENV PYTHONPATH $PYTHONPATH:/var/www/bass-app/
+COPY settings_custom.py /var/www/basscloud/djproject/settings_custom.py
+ENV PYTHONPATH $PYTHONPATH:/var/www/basscloud/
 ENV DJANGO_SETTINGS_MODULE djproject.settings
 
 
@@ -39,12 +39,12 @@ ENV DJANGO_SETTINGS_MODULE djproject.settings
 # RUN django-admin collectstatic --no-input
 
 
-VOLUME /var/www/bass-app/static/
-VOLUME /var/www/bass-app/media/
+VOLUME /var/www/basscloud/static/
+VOLUME /var/www/basscloud/media/
 EXPOSE 8000
 
 
-COPY gunicorn_conf.py /var/www/bass-app/gunicorn_conf.py
+COPY gunicorn_conf.py /var/www/basscloud/gunicorn_conf.py
 
 
 # Configure Supervisor

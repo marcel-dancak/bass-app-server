@@ -6,9 +6,9 @@ from django.contrib import admin
 
 
 urlpatterns = [
-    url(r'', include('bassapp.catalog.urls', namespace='catalog')),
-    url(r'', include('bassapp.app.urls', namespace='app')),
-    url(r'^accounts/', include('bassapp.accounts.urls')),
+    url(r'', include('basscloud.catalog.urls', namespace='catalog')),
+    url(r'', include('basscloud.app.urls', namespace='app')),
+    url(r'^accounts/', include('basscloud.accounts.urls')),
     url(r'^admin/', include(admin.site.urls))
 ]
 

@@ -18,14 +18,14 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from bassapp.decorators import login_required
-from bassapp.libs.lzstring import LZString
+from basscloud.decorators import login_required
+from basscloud.libs.lzstring import LZString
 from . import forms
 from .models import Project
 
 from django.contrib import admin
 admin = admin.site._registry[Project]
-# from bassapp.admin import ProjectAdmin
+# from basscloud.admin import ProjectAdmin
 # admin = ProjectAdmin(Project, admin.site)
 
 

@@ -4,8 +4,8 @@ var path = require('path')
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve(__dirname, '../server/bassapp/catalog/templates/catalog/index.html'),
-    assetsRoot: path.resolve(__dirname, '../server/bassapp/catalog/static/'),
+    index: path.resolve(__dirname, '../server/basscloud/catalog/templates/catalog/index.html'),
+    assetsRoot: path.resolve(__dirname, '../server/basscloud/catalog/static/'),
     assetsSubDirectory: 'catalog',
     assetsPublicPath: '/static/',
     productionSourceMap: true,
