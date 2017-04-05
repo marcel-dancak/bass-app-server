@@ -1,7 +1,7 @@
 <template>
   <div class="app-container" :class="{noauth: !user.username}">
     <div class="app">
-      <login-dialog ref="login" @login="onLogin"></login-dialog>
+      <login-dialog ref="login"></login-dialog>
       <div class="page-wrapper">
 
         <transition :name="transition">
@@ -136,7 +136,7 @@ export default {
   },
   created () {
     // setTimeout(this.loadUserProfile, 1000)
-    this.loadUserProfile()
+    // this.$client.loadUserProfile()
     this._historyStack = [this.$route.fullPath]
   },
   watch: {
@@ -161,13 +161,6 @@ export default {
     }
   },
   methods: {
-    loadUserProfile() {
-      this.$client.loadUserProfile()
-    },
-    onLogin(profile) {
-      console.log('Login Successful')
-      this.$store.commit('updateProfile', profile)
-    },
     logout() {
       this.$http.get('logout/').then(response => {
         this.$router.go(0)

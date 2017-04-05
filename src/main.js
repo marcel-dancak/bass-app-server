@@ -137,7 +137,10 @@ Vue.directive('chips-label', {
 
 window.app = new Vue({
   el: '#app',
-  template: '<router-view></router-view>',
+  template: '<transition name="fade"><router-view></router-view></transition>',
   router: new VueRouter({routes}),
-  store
+  store,
+  beforeCreate () {
+    this.$client.loadUserProfile()
+  }
 })

@@ -109,6 +109,7 @@ export default {
         this.error = false
         this.inProgress = false
         this.close()
+        this.$store.commit('updateProfile', response.data)
         this.$emit('login', response.data)
       }, response => {
         this.inProgress = false

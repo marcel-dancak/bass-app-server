@@ -1,26 +1,39 @@
 <template>
   <div class="intro-page">
     <login-dialog ref="login" @login="onLogin"></login-dialog>
-    <div class="content">
+    <div class="container">
       <header>
         <h1>BassCloud <img class="logo" src="../assets/logo.svg"></h1>
-        <div style="flex:1"></div>
 <!--         <router-link
           to="login"
           class="md-button md-theme-default md-primary md-raised">
           <span>Sign In</span>
         </router-link> -->
+        <h4>Online platform for creating and sharing audio compositions wih focus on bass guitar</h4>
 
-        <md-button
+        <md-button v-if="!user.username"
           @click.native="$refs.login.open"
           class="md-primary md-raised">
           <span>Sign In</span>
         </md-button>
 
+        <div v-else class="user">
+          <div class="avatar">
+            <md-avatar v-if="user.avatar">
+              <img :src="$http.options.root+user.avatar">
+            </md-avatar>
+            <md-icon v-else class="md-size-2x">face</md-icon>
+          </div>
+          <router-link to="/profile">{{ user.username }}</router-link>
+        </div>
+<!--         <md-button v-else
+          @click.native="$router.push('projects')"
+          class="md-primary md-raised">
+          <span>Sign Out</span>
+        </md-button> -->
       </header>
-      <h4>Online platform for creating and sharing audio compositions wih focus on bass guitar</h4>
-      <hr />
 
+      <hr />
       <br />
 
 <!--       <md-layout md-row md-column-small>
@@ -35,9 +48,6 @@
           </p>
         </md-layout>
       </md-layout> -->
-      
-    <!-- <img class="screenshot" src="../assets/BassCloud.svg"> -->
-      <!-- <br /><br /> -->
 
       <md-layout
         md-row md-column-small
@@ -97,16 +107,18 @@
       </md-layout>
 
       <hr />
-      <div>
+      <div class="actions">
         <router-link
           to="projects"
-          class="md-button md-raised">
-          <span>Without registration</span>
+          :class="{'md-primary': user.username}"
+          class="md-button md-raised md-theme-default">
+          <span>Continue</span>
         </router-link>
 
         <router-link
           to="registration"
-          class="md-button md-theme-default md-primary md-raised">
+          :class="{'md-primary': !user.username}"
+          class="md-button md-raised md-theme-default">
           <span>Create an account</span>
         </router-link>
       </div>
@@ -120,6 +132,11 @@
     name: 'intro',
     components: {
       LoginDialog
+    },
+    computed: {
+      user() {
+        return this.$store.state.user
+      }
     },
     methods: {
       onLogin () {
@@ -159,7 +176,7 @@
       color: #2196f3;
     }
 
-    .content {
+    .container {
       margin: 0 auto;
       max-width: 1240px;
       @media (max-width: 1280px) {
@@ -173,9 +190,41 @@
         position: absolute;
         right: 0;
         top: 8px;
-        @media (max-width: 600px) {
+      }
+      .user {
+        position: absolute;
+        right: 0;
+        top: 8px;
+        a {
+          opacity: 0.85;
+          font-size: 15px;
+        }
+        .avatar {
+          xdisplay: inline-block;
+          .md-avatar {
+            width: 50px;
+            height: 50px;
+          }
+        }
+      }
+      h1 {
+        height: 72px;
+        line-height: 72px;
+      }
+      @media (max-width: 600px) {
+        /*
+        h1 {
+          text-align: left;
+          img {
+            float: right;
+          }
+        }*/
+        .md-button {
           position: static;
           margin-bottom: 24px;
+        }
+        .user {
+          display: none;
         }
       }
     }
@@ -197,12 +246,16 @@
     }
     .logo {
       width: 80px;
-      margin-left: 16px;
+      margin-left: 28px;
     }
     .img-container {
       width: 630px;
       max-width: 100%;
-      margin: 0 auto;
+      margin-left: auto;
+      margin-right: auto;
+      p {
+        color: rgba(0,0,0,.54);
+      }
     }
     .screenshot {
       -webkit-filter: drop-shadow(1px 2px 4px #333);
@@ -210,13 +263,16 @@
     }
     .main-layout {
       min-height: 50vh;
-      justify-content: center;
+      a {
+        font-weight: 500;
+      }
       .space {
         width: 24px;
         height: 24px;
       }
       > .md-layout {
-        xmargin: 0 auto;
+        margin-top: auto;
+        margin-bottom: auto;
       }
     }
     .md-list {
@@ -241,6 +297,11 @@
       }
       p {
         white-space: normal;
+      }
+    }
+    .actions {
+      .md-button {
+        min-width: 180px;
       }
     }
   }
