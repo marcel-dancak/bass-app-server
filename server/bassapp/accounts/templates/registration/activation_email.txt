@@ -1,4 +1,6 @@
 Hello {{ user.username }},
 
+For activation of you account on BassCloud, please go to the following URL link http://{{ site }}{% url 'registration_activate' activation_key %}
 
-Here is your activation link http://{{ site }}{% url 'registration_activate' activation_key %}
+
+Best Regards, BassCloud Team

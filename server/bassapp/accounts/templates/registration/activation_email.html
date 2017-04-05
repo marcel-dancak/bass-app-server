@@ -1,0 +1,25 @@
+{% extends "email_base.html" %}
+
+{% block content %}
+<p>Hi {{ user.username }},</p>
+
+<p>
+  An account has been created for you at <a class="link" href="https://basscloud.net">BassCloud</a>.
+  Please activate your account
+  <a
+    class="md-button md-raised md-primary"
+    href="{{ request.scheme }}://{{ site }}{% url 'registration_activate' activation_key %}">
+    Activate account
+  </a>
+</p>
+
+<br />
+<p>If you received this email in error, you can safely ignore this email.</p>
+
+<p>
+  <small>
+    If you can't get the button to work, paste this link into your browser:
+    http://{{ site }}{% url 'registration_activate' activation_key %}
+</small>
+</p>
+{% endblock %}
