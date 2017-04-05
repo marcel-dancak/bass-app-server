@@ -31,14 +31,19 @@ admin = admin.site._registry[Project]
 
 logger = logging.getLogger(__name__)
 
+
 @ensure_csrf_cookie
 def catalog(request):
     logger.info('Catalog App touched!')
-    return render(request, "catalog/index.html")
+    data = {}
+    if request.user.is_authenticated():
+        data['userProfile'] = json.dumps(get_user_profile(request.user))
+    return render(request, "catalog/index.html", data)
 
 
 def get_user_profile(user):
     return {
+        'id': user.id,
         'username': user.username,
         'first_name': user.first_name,
         'last_name': user.last_name,

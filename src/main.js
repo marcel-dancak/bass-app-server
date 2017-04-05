@@ -141,6 +141,12 @@ window.app = new Vue({
   router: new VueRouter({routes}),
   store,
   beforeCreate () {
-    this.$client.loadUserProfile()
+    if (window.basscloud_user) {
+      if (window.basscloud_user.username) {
+        this.$store.commit('updateProfile', window.basscloud_user)
+      }
+    } else {
+      this.$client.loadUserProfile()
+    }
   }
 })
