@@ -3,14 +3,15 @@
     <md-card class="detail md-transparent">
       <md-card-content>
         <md-layout md-row md-column-xsmall>
-          <md-layout md-flex="70" md-column md-flex-small="60">
+          <md-layout md-flex="70" md-column md-flex-small="60" class="r-pad">
             <md-layout md-row class="actions-toolbar">
               <md-button
                 class="back md-icon-button xmd-fab md-clean"
                 @click.native="$router.back">
                 <md-icon>arrow_back</md-icon>
-              </md-button>
-              <p class="md-subhead">Created: {{ project.created | todate }}</p>
+              </md-button>&nbsp;&nbsp;
+              <span class="created">Created: {{ project.created | todate }}</span>
+              <!-- <span class="md-title">{{ project.category }}</span> -->
               <div style="flex: 1"></div>
               <!-- <md-layout md-flex="true"></md-layout> -->
               <md-button
@@ -33,32 +34,22 @@
                 <md-icon>edit</md-icon>&nbsp;&nbsp; edit
               </router-link>
 
-<!--               <md-button
-                v-if="project.author.name"
-                class="md-raised md-warn edit"
-                href="#">
-                edit <md-icon>edit</md-icon>
-              </md-button> -->
-
-<!--               <md-button
-                v-if="project.author.name"
-                class="fa icon-button md-warn">
-                <i class="fa fa-pencil-square"></i>
-              </md-button> -->
             </md-layout>
 
-            <p class="r-pad">
+            <!-- <div class="created-block">Published on: {{ project.created | todate }}</div> -->
+            <p>
               {{ project.description }}
             </p>
-            <!-- <p> {{ project }} </p> -->
 
           </md-layout>
 
           <md-layout md-flex="30" md-flex-small="40">
             <md-card class="subcard">
-              <p><label>Difficulty: </label>
+<!--               <p><label>Difficulty: </label>
                 <span class="level"> {{ Difficulties[project.level] }}</span>
-              </p>
+              </p> -->
+              <div class="triangle-label" :level="project.level">{{ Difficulties[project.level] }}</div>
+
               <p><label>Category: </label> {{ project.category }}</p>
               <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
               <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
@@ -110,9 +101,23 @@
   }
 </script>
 <style lang="scss">
+  @import '../variables.scss';
+
   .md-card.detail {
     box-shadow: none;
     .md-card-content {
+      .created {
+        font-weight: bold;
+        opacity: 0.85;
+      }
+      .created-block {
+        margin-right: 16px;
+        margin-top: 8px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+        opacity: 0.85;
+      }
       img.md-icon {
         margin-right: 6px;
       }
@@ -120,6 +125,7 @@
         padding: 6px 16px;
         width: 100%;
         min-width: 240px;
+        overflow-x: hidden;
         p {
           margin: 12px 0;
         }
@@ -142,11 +148,16 @@
       color: #444;
       margin-right: 5px;
       min-width: 92px;
+      width: 33%;
       display: inline-block;
     }
     .actions-toolbar {
-      max-height: 42px;
+      height: 48px;
+      max-height: 48px;
+      line-height: 38px;
+      border-bottom: 1px solid #ddd;
       .back.md-button {
+        margin-left: 0!important;
         min-width: 32px;
         width: 32px;
         .md-icon {
@@ -162,7 +173,7 @@
         margin-bottom: 2px;
       }
       .md-button {
-        margin: 3px 20px;
+        margin: 0 3px 6px 6px!important;
         height: 36px;
         margin-left: 0;
         &.fa {
@@ -172,12 +183,58 @@
           opacity: 0.95;
         }
         &.open {
-          padding: 0 60px;
+          @media (min-width: 720px) {
+            padding: 0 50px;
+          }
         }
       }
       p {
         margin: auto 0;
       }
+    }
+    .triangle-label {
+      color: #fff;
+      font-weight: 500;
+      position: absolute;
+      text-align: center;
+
+      top: -13px;
+      right: -34px;
+      height: 60px;
+      width: 100px;
+      line-height: 92px;
+      transform: rotate(45deg);
+
+      transform: rotate(35deg);
+      width: 108px;
+      top: -22px;
+      right: -27px;
+      padding-left: 5px;
+
+      height: 32px;
+      top: 3px;
+      right: -24px;
+      line-height: 42px;
+      box-shadow: $material-shadow-2dp;
+    }
+    .triangle-label[level="1"] {
+      background-color: #689F38;
+      xline-height: 95px;
+    }
+    .triangle-label[level="2"] {
+      background-color: #AFB42B;
+    }
+    .triangle-label[level="3"] {
+      background-color: #FFA000;
+    }
+    .triangle-label[level="4"] {
+      background-color: #E64A19;
+    }
+    .triangle-label[level="5"] {
+      background-color: #d32f2f;
+    }
+    .triangle-label[level="6"] {
+      background-color: #5D4037;
     }
   }
 </style>

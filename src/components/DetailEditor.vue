@@ -139,12 +139,10 @@ export default {
         'level', 'genres', 'playing_styles', 'tags', 'tracks'
       ]
       fields.forEach(key => {
-          form[key] = this.project[key]
-        })
+        form[key] = this.project[key]
+      })
+      form.video_link = this.$options.filters.videolink(form.video_link)
       this.form = form
-    },
-    formatArrayValue(array) {
-      return array? array.join(',') : ''
     },
     standardizeGenres() {
       this.form.genres = Constants.MusicalStyles.from(this.form.genres)

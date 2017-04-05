@@ -176,6 +176,7 @@
         width: 56px;
         height: 56px;
         margin: 8px 16px 12px 10px;
+        background: none;
         .md-icon {
           width: 64px;
           height: 64px;

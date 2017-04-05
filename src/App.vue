@@ -217,6 +217,9 @@ export default {
     .md-card-header {
       margin: 0;
       padding-bottom: 0;
+      /* fix for transition animation (destroyed() which
+        removes flex layout is called before transition ends) */
+      display: flex;
       .welcome {
         .md-subhead {
           font-size: 11px;
@@ -292,7 +295,7 @@ export default {
       max-width: 360px;
       padding-top: 15px;
     }
-    @media (min-width: 1281px) {
+    @media (min-width: 1280px) {
       .menu.md-button {
         display: none;
       }
@@ -355,6 +358,11 @@ export default {
     text-decoration: none!important;
   }
 
+  /* Remove yellow background from 'remembered' input fields */
+  form input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+    /* -webkit-text-fill-color: #000; */
+  }
   .app {
     min-height: 100%;
     height: 100%;
@@ -363,7 +371,7 @@ export default {
     flex-flow: column nowrap;
     flex: 1;
     transition: $swift-ease-out;
-    @media (min-width: 1281px) {
+    @media (min-width: 1280px) {
       padding-left: $sizebar-size;
     }
   }
@@ -374,7 +382,7 @@ export default {
       display: flex;
       flex-flow: column;
       overflow: hidden;
-      @media (min-width: 1281px) {
+      @media (min-width: 1280px) {
         top: 0;
         pointer-events: auto;
         transform: translate3d(0, 0, 0)!important;
@@ -383,7 +391,7 @@ export default {
       }
     }
     .md-backdrop {
-      @media (min-width: 1281px) {
+      @media (min-width: 1280px) {
         opacity: 0;
         pointer-events: none;
       }
@@ -419,7 +427,7 @@ export default {
     }
   }
   @page {
-    size: 1740px 820px;
     margin: 0;
+    /*size: 1740px 820px;*/
   }
 </style>

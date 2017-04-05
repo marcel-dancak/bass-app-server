@@ -1,7 +1,7 @@
 <template>
   <md-table>
     <md-table-header>
-      <md-table-row class="nofilter">
+      <md-table-row xclass="nofilter">
         <md-table-head class="icon noauth-hide"></md-table-head>
         <md-table-head class="title">Title
           <md-chips
