@@ -16,11 +16,6 @@ class ArrayField(SimpleArrayField):
 #         pass
 
 
-class LoginForm(forms.Form):
-    username = forms.CharField(required=True)
-    password = forms.CharField(required=False)
-
-
 class ProjectDataForm(forms.ModelForm):
     # data = AppDataField(required=False)
 

@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from django.core.paginator import Paginator, EmptyPage
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -65,18 +65,18 @@ def client_login(request):
             data = json.loads(request.body.decode('utf-8'))
         else:
             data = request.POST
-        form = forms.LoginForm(data)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
 
-            user = authenticate(username=username, password=password)
-            if user:
-                try:
-                    login(request, user)
-                except Exception as e:
-                    print (e)
-                return JsonResponse(get_user_profile(user))
+        form = AuthenticationForm(data=data)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return JsonResponse(get_user_profile(user))
+
+        return HttpResponse(
+            form.errors.as_json(),
+            content_type='application/json',
+            status=403
+        )
     logout(request)
     return HttpResponse("Login Required", status=401)
 

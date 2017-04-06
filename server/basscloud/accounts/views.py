@@ -33,7 +33,8 @@ class RegistrationView(HmacRegistrationView):
         activation_key = self.get_activation_key(user)
         context = self.get_email_context(activation_key)
         context.update({
-            'user': user
+            'user': user,
+            'protocol': self.request.scheme
         })
 
         subject = render_to_string(self.email_subject_template, context)
@@ -41,7 +42,12 @@ class RegistrationView(HmacRegistrationView):
         subject = ''.join(subject.splitlines())
         message = render_to_string(self.email_body_template, context)
         html_message = render_to_string(self.email_body_template_html, context)
-        user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL, html_message=html_message)
+        user.email_user(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            html_message=html_message
+        )
 
 
 class ResetPassword(FormView):

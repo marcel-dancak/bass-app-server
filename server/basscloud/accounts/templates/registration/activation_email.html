@@ -4,11 +4,11 @@
 <p>Hi {{ user.username }},</p>
 
 <p>
-  An account has been created for you at <a class="link" href="https://basscloud.net">BassCloud</a>.
-  Please activate your account
+  Welcome to <a class="link" href="https://basscloud.net">BassCloud</a>!
+  To activate your account, please click on the following button
   <a
     class="md-button md-raised md-primary"
-    href="{{ request.scheme }}://{{ site }}{% url 'registration_activate' activation_key %}">
+    href="{{ protocol }}://{{ site }}{% url 'registration_activate' activation_key %}">
     Activate account
   </a>
 </p>
