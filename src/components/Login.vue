@@ -4,48 +4,77 @@
       ref="login"
       class="login-dialog"
       @open="initialize">
-      <md-dialog-title>Login</md-dialog-title>
+      <md-dialog-title>
+        {{ forgottenPassword? 'Reset Password' : 'Login' }}
+        <md-spinner
+          :md-size="28"
+          md-indeterminate
+          v-show="inProgress">
+        </md-spinner>
+      </md-dialog-title>
 
       <md-dialog-content>
-        <div class="progress-box">
-          <md-progress md-indeterminate v-show="inProgress"></md-progress>
-        </div>
         <form
           @keyup.enter="login"
           novalidate @submit.stop.prevent="submit">
           <template v-if="!forgottenPassword">
-            <md-input-container :class="{'md-input-invalid': error}">
+            <md-input-container :class="{'md-input-invalid': loginErrors.username}">
               <label>Username</label>
               <md-input
                 name="username"
                 type="text">
               </md-input>
+              <span
+                v-for="error in loginErrors.username"
+                class="md-error">{{ error.message }}
+              </span>
             </md-input-container>
             <md-input-container
               md-has-password
-              :class="{'md-input-invalid': error}">
+              :class="{'md-input-invalid': loginErrors.password}">
               <label>Password</label>
               <md-input
                 name="password"
                 type="password">
               </md-input>
+              <span
+                v-for="error in loginErrors.password"
+                class="md-error">{{ error.message }}
+              </span>
             </md-input-container>
+            <md-input-container
+              v-if="loginErrors.__all__"
+              class="errors-all md-input-invalid">
+              <md-input type="hidden"></md-input>
+              <span
+                v-for="error in loginErrors.__all__"
+                class="md-error">{{ error.message }}
+              </span>
+            </md-input-container>
+
             <a @click="forgottenPassword=true">Forgotten password</a>
           </template>
           <template v-else>
-            <md-input-container>
-              <label>E-mail</label>
+            <br />
+            <p v-if="passwordResetSent" class="success">
+              Verification email was sent to your email address
+            </p>
+            <p v-else class="info">
+              Enter email address associated with your account
+            </p>
+            <br />
+            <md-input-container :class="{ 'md-input-invalid': resetErrors.email }">
+              <label>Email</label>
               <md-input
                 name="email"
                 type="email">
               </md-input>
+              <span
+                v-for="error in resetErrors.email"
+                class="md-error">{{ error.message }}
+              </span>
             </md-input-container>
-            <p v-if="passwordResetSent">
-              Request to reset your password was received, please check your e-mail account for more details.
-            </p>
-            <a v-else
-              @click="forgottenPassword=false">Back to regular login
-            </a>
+            <a @click="forgottenPassword=false">Back to regular login</a>
           </template>
         </form>
       </md-dialog-content>
@@ -80,7 +109,8 @@ export default {
   name: 'login-dialog',
   data () {
     return {
-      error: false,
+      loginErrors: {},
+      resetErrors: {},
       inProgress: false,
       forgottenPassword: false,
       passwordResetSent: false
@@ -94,38 +124,41 @@ export default {
       this.$refs.login.close()
     },
     initialize() {
-      this.error = false
+      this.loginErrors = {}
+      this.resetErrors = {}
       this.inProgress = false
       this.forgottenPassword = false
       this.passwordResetSent = false
     },
     login() {
       this.inProgress = true
+      this.loginErrors = {}
       var formData = new FormData(this.$el.querySelector('form'))
       this.$http.post(
         'login/',
         formData
       ).then(response => {
-        this.error = false
         this.inProgress = false
         this.close()
         this.$store.commit('updateProfile', response.data)
         this.$emit('login', response.data)
       }, response => {
         this.inProgress = false
-        if (response.status === 401) {
-          this.error = true
-        }
+        this.loginErrors = response.data
+        // TODO: custom error when empty response?
       })
     },
     resetPassword () {
       this.inProgress = true
+      this.resetErrors = {}
       var formData = new FormData(this.$el.querySelector('form'))
       this.$http.post(
         'accounts/password_reset/',
         formData
       ).then(response => {
         this.passwordResetSent = true
+      }, response => {
+        this.resetErrors = response.data
       }).finally(response => {
         this.inProgress = false
       })
@@ -138,6 +171,26 @@ export default {
   .login-dialog {
     .md-dialog {
       min-width: 320px;
+      max-width: 420px;
+    }
+    .md-spinner {
+      position: absolute;
+      right: 33px;
+    }
+    .info {
+      opacity: 0.85;
+    }
+    .success {
+      color: #1e88e5;
+    }
+    .errors-all {
+      padding-top: 0;
+      &:after {
+        display: none;
+      }
+      .md-error {
+        bottom: auto;
+      }
     }
     .md-dialog-actions {
       padding: 0 16px;
@@ -145,9 +198,6 @@ export default {
       .md-button {
         padding: 0 16px;
       }
-    }
-    .progress-box {
-      height: 10px;
     }
   }
 </style>

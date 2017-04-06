@@ -33,7 +33,7 @@
       </md-input-container>
 
       <md-input-container :class="{ 'md-input-invalid': errors.email }">
-        <label>E-mail</label>
+        <label>Email</label>
         <md-input
           name="email"
           type="email"
@@ -69,11 +69,15 @@
         <span class="md-error" v-for="error in errors.password2">{{ error.message }}</span>
       </md-input-container>
 
-    <div class="progress-box">
-      <md-progress md-indeterminate v-show="inProgress"></md-progress>
-    </div>
-
       <md-toolbar class="md-warn main md-transparent">
+        <template v-if="inProgress">
+          <md-spinner
+            :md-size="28"
+            md-indeterminate>
+          </md-spinner>
+          <span md-subhead>Creating Account</span>
+        </template>
+
         <div style="flex:1"></div>
         <md-button
           class="md-raised"
@@ -90,7 +94,8 @@
     </form>
     </md-theme>
     <md-dialog-alert
-      md-content="Please check your email account"
+      md-title="Account was created"
+      md-content="Before you can sign in, you must active your account. Actiavation link was sent to your email address."
       @close="onDialogClose"
       ref="confirm">
     </md-dialog-alert>
@@ -139,8 +144,11 @@ export default {
     .md-chip {
       width: 100%;
     }
-    .progress-box {
-      height: 10px;
+    .md-toolbar {
+      > span {
+        margin: 0 6px;
+        opacity: 0.75;
+      }
     }
   }
 </style>
