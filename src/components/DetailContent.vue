@@ -48,12 +48,25 @@
 <!--               <p><label>Difficulty: </label>
                 <span class="level"> {{ Difficulties[project.level] }}</span>
               </p> -->
-              <div class="triangle-label" :level="project.level">{{ Difficulties[project.level] }}</div>
+              <!-- <div class="triangle-label" :level="project.level">{{ Difficulties[project.level] }}</div> -->
+              <div class="triangle-label"><span>{{ project.category }}</span></div>
 
-              <p><label>Category: </label> {{ project.category }}</p>
+              <!-- <p><label>Category: </label> {{ project.category }}</p> -->
+<!--               <p><label>Difficulty: </label>
+                {{ Difficulties[project.level].numeric }}
+                <small>({{ Difficulties[project.level].title }})</small>
+              </p> -->
+              <p style="margin-bottom:5px">
+                <label>Difficulty: </label>
+                <level-indicator :value="project.level"></level-indicator>
+              </p>
+              <!-- <p><label>Difficulty: </label>
+                {{ Difficulties[project.level].title }}
+                &nbsp;( {{ Difficulties[project.level].numeric }} / 5 )
+              </p> -->
+
               <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
               <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
-              <!-- <p><label>Difficulty: </label> {{ Difficulties[project.level] }}</p> -->
 
               <p>
                 <label>Tracks: </label>
@@ -76,9 +89,12 @@
 
 <script>
   import Constants from '../constants.js'
-
+  import LevelIndicator from './LevelIndicator.vue'
   export default {
     name: 'detail-content',
+    components: {
+      LevelIndicator
+    },
     computed: {
       project() {
         return this.$parent.project
@@ -105,6 +121,10 @@
 
   .md-card.detail {
     box-shadow: none;
+    small {
+      opacity: 0.65;
+      font-size: 13px;
+    }
     .md-card-content {
       .created {
         font-weight: bold;
@@ -216,6 +236,24 @@
       right: -24px;
       line-height: 42px;
       box-shadow: $material-shadow-2dp;
+
+      top: 5px;
+      right: -24px;
+      width: 132px;
+      height: 38px;
+      padding-left: 10px;
+      line-height: 18px;
+      font-size: 13px;
+      display: table;
+      xbackground-color: #424242;
+      background-color: #EEEEEE;
+      color: #616161;
+
+      span {
+        display: table-cell;
+        vertical-align: middle;
+        word-spacing: 120px;
+      }
     }
     .triangle-label[level="1"] {
       background-color: #689F38;

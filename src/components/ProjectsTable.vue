@@ -11,6 +11,23 @@
             <template scope="chip">{{ chip.value }}</template>
           </md-chips>
         </md-table-head>
+        <md-table-head class="slim">
+          Level
+          <md-input-container class="select-x">
+            <md-select
+              v-model="filter.level"
+              @selected="updateFilter"
+              placeholder="Select">
+              <md-option v-for="grade in levels" :value="grade.value" :title="grade.label">
+                {{ grade.value }}
+              </md-option>
+            </md-select>
+            <md-button
+              @click.native="filter.level='';updateFilter()">
+              <md-icon>cancel</md-icon>
+            </md-button>
+          </md-input-container>
+        </md-table-head>
         <md-table-head>Genre
           <md-chips
             v-model="filter.genres"
@@ -54,6 +71,10 @@
             <div class="md-subhead">{{ item.artist || '-' }}</div>
           </router-link>
         </md-table-cell>
+        <md-table-cell>
+          <!-- {{ item.level }} -->
+          <level-meter :value="item.level"></level-meter>
+        </md-table-cell>
         <md-table-cell>{{ item.genres.join(', ') }}</md-table-cell>
         <md-table-cell>{{ item.playing_styles.join(', ') }}</md-table-cell>
         <md-table-cell
@@ -79,9 +100,11 @@
 
 <script>
 import Constants from '../constants.js'
+import LevelMeter from './LevelMeter.vue'
 
 export default {
   name: 'projects-table',
+  components: { LevelMeter },
   props: {
     projects: {
       type: Array,
@@ -96,8 +119,27 @@ export default {
         artists: [],
         genres: [],
         styles: [],
-        authors: []
-      }
+        authors: [],
+        level: ''
+      },
+      levels: [
+        {
+          value: 'A',
+          label: 'Newbie'
+        }, {
+          value: 'B',
+          label: 'Beginner'
+        }, {
+          value: 'C',
+          label: 'Intermediate'
+        }, {
+          value: 'D',
+          label: 'Advanced'
+        }, {
+          value: 'E',
+          label: 'Master'
+        }
+      ]
     }
   },
   computed: {
@@ -107,13 +149,16 @@ export default {
   },
   methods: {
     updateFilter() {
+      console.log('updateFilter')
       this.filter.genres = Constants.MusicalStyles.from(this.filter.genres)
       this.filter.styles = Constants.PlayingStyles.from(this.filter.styles)
       const query = Object.assign({}, this.$route.query)
       for (let key in this.filter) {
-        const values = this.filter[key]
-        if (values.length) {
-          query[key] = values.join(',')
+        const value = this.filter[key]
+        console.log(value)
+        if (value && value.length) {
+          // query[key] = value.join(',')
+          query[key] = key.endsWith('s')? value.join(',') : value
         } else {
           delete query[key]
         }
@@ -129,7 +174,11 @@ export default {
     },
     syncWithRoute(route) {
       for (let key in this.filter) {
-        this.filter[key] = route.query[key]? route.query[key].split(',') : []
+        if (key.endsWith('s')) {
+          this.filter[key] = route.query[key]? route.query[key].split(',') : []
+        } else {
+          this.filter[key] = route.query[key]
+        }
       }
     }
   },
@@ -148,6 +197,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+
+.md-menu-item[title]:after {
+  content: attr(title);
+  opacity: 0.7;
+  position: absolute;
+  top: 14px;
+  left: 36px;
+}
+
 .md-table {
   .md-table-row:hover .md-table-cell {
     background-color: #FFF9C4!important;
@@ -165,13 +223,15 @@ export default {
       .md-table-head-container {
         width: inherit;
       }
+      .md-select {
+        min-width: 36px;
+      }
     }
     .md-table-head-container {
       /* background-color: #EEEEEE!important; */
       height: 80px;
       padding: 8px 0;
     }
-
     .md-input-container {
       margin: 0;
       padding-top: 4px;
@@ -182,6 +242,34 @@ export default {
         &::-webkit-input-placeholder {
           font-size: 14px;
           opacity: 0.55;
+        }
+      }
+      &:not(.md-has-value) {
+        /* md-select placeholder */
+        .md-select-value {
+          font-weight: 400;
+          font-size: 14px;
+          opacity: 0.55;
+        }
+        &.select-x .md-button {
+          display: none;
+        }
+      }
+      &.select-x {
+        min-width: 44px;
+        .md-button {
+          margin: 0 0 0 4px;
+          padding: 0;
+          min-width: 24px;
+          min-height: 0;
+          outline: none;
+          border: none;
+          .md-icon {
+            margin: 0 0 4px 0;
+            &:after {
+              display: none;
+            }
+          }
         }
       }
     }

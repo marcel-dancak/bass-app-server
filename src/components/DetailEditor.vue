@@ -32,7 +32,7 @@
         <md-select v-model="form.level">
           <md-option
             v-for="(label, value) in Difficulties"
-            :value="parseInt(value)">{{ label }}
+            :value="parseInt(value)">{{ label.title }}
           </md-option>
         </md-select>
       </md-input-container>
