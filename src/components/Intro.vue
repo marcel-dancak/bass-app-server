@@ -1,9 +1,17 @@
 <template>
   <div class="intro-page">
-    <login-dialog ref="login" @login="onLogin"></login-dialog>
+    <login-dialog ref="login" @login="afterLogin"></login-dialog>
     <div class="container">
       <header>
-        <h1>BassCloud <img class="logo" src="../assets/logo.svg"></h1>
+        <!-- <h1>BassCloud <img class="logo" src="../assets/logo.svg"></h1> -->
+        <h1>
+          <img class="text-logo" src="../assets/text_logo.svg">
+          <img class="logo" src="../assets/logo.svg">
+        </h1>
+        <!-- <div>
+          <img class="text_logo" src="../assets/text_logo.svg">
+          <img class="logo" src="../assets/logo.svg">
+        </div> -->
 <!--         <router-link
           to="login"
           class="md-button md-theme-default md-primary md-raised">
@@ -36,19 +44,6 @@
       <hr />
       <br />
 
-<!--       <md-layout md-row md-column-small>
-        <md-layout md-flex="70" md-column md-flex-small="60">
-          <img class="screenshot" src="../assets/app.svg">
-        </md-layout>
-        <md-layout md-flex="30" md-column md-flex-small="40" class="r-pad">
-          <p class="is-left">
-            BassCloud is build as an extension service for the
-            <a href="http://marcel-dancak.github.io/drums-and-bass/">BassApp</a>
-            application, providing online storage space for projects created in it.
-          </p>
-        </md-layout>
-      </md-layout> -->
-
       <md-layout
         md-row md-column-small
         class="main-layout">
@@ -72,8 +67,8 @@
               <div class="md-list-text-container">
                 <span class="md-title">Community of creators and followers</span>
                 <p>
-                  It's opportunity for authors to share basslines with thier followers
-                  in more enjoyable form.
+                  Provide mutually beneficial environment for authors and subscribers.
+                  Give authors great tools for creating bass tracks in easy to learn form, and so motivate followers in rewarding them.
                 </p>
               </div>
             </md-list-item>
@@ -98,10 +93,10 @@
         <md-layout class="img-container" md-column>
           <img class="screenshot" src="../assets/app.svg">
           <br />
-          <p class="is-left">
+          <p>
             BassCloud is build as an extension service for the
             <a href="http://marcel-dancak.github.io/drums-and-bass/">BassApp</a>
-            application, providing online storage space for projects created in it.
+            application, providing online storage space and catalog-like interface for projects created in it.
           </p>
         </md-layout>
       </md-layout>
@@ -139,7 +134,7 @@
       }
     },
     methods: {
-      onLogin () {
+      afterLogin () {
         this.$router.push({path: '/projects'})
       }
     }
@@ -167,10 +162,13 @@
     height: 100%;
     width: 100%;
     overflow: auto;
-    padding: 0 1em;
     xbackground-color: #f9f9f9;
     background-color: #fff;
     text-align: center;
+
+    @media (min-width: 560px) {
+      padding: 0 1em;
+    }
 
     a:not(.md-button) {
       color: #2196f3;
@@ -189,12 +187,12 @@
         margin: auto 0;
         position: absolute;
         right: 0;
-        top: 8px;
+        top: 16px;
       }
       .user {
         position: absolute;
         right: 0;
-        top: 8px;
+        top: -2px;
         a {
           opacity: 0.85;
           font-size: 15px;
@@ -209,7 +207,10 @@
       }
       h1 {
         height: 72px;
-        line-height: 72px;
+        line-height: 80px;
+        img {
+          transform: translateY(-12px);
+        }
       }
       @media (max-width: 600px) {
         /*
@@ -248,6 +249,10 @@
       width: 80px;
       margin-left: 28px;
     }
+    .text-logo {
+      margin-top: 10px;
+      height: 48px;
+    }
     .img-container {
       width: 630px;
       max-width: 100%;
@@ -262,6 +267,7 @@
       filter: drop-shadow(1px 2px 4px #555);
     }
     .main-layout {
+      flex-wrap: nowrap;
       min-height: 50vh;
       a {
         font-weight: 500;
@@ -273,6 +279,7 @@
       > .md-layout {
         margin-top: auto;
         margin-bottom: auto;
+        flex-wrap: nowrap;
       }
     }
     .md-list {
@@ -282,14 +289,19 @@
         .md-list-item-container {
           padding-left: 0!important;
         }
-        &:nth-child(2) {
-          padding-left: 0;
+        .md-icon {
+          margin-right: 24px;
         }
-        &:nth-child(2) {
-          padding-left: 12px;
-        }
-        &:nth-child(3) {
-          padding-left: 24px;
+        @media (min-width: 560px) {
+          &:nth-child(1) {
+            padding-left: 0;
+          }
+          &:nth-child(2) {
+            padding-left: 12px;
+          }
+          &:nth-child(3) {
+            padding-left: 24px;
+          }
         }
       }
       .md-title {

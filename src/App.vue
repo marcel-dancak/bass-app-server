@@ -39,7 +39,7 @@
             <template v-else>
               <md-card-header-text class="welcome">
                 <div class="md-subhead">Welcome in the</div>
-                  <router-link class="md-title" to="/">Bass Cloud</router-link>
+                  <router-link class="md-title" to="/">BassCloud</router-link>
                 <div class="register-link">
                   <router-link :to="{ name: 'registration' }">
                     Create an account
@@ -174,6 +174,8 @@ export default {
 <style lang="scss">
   @import 'variables.scss';
   @import 'animations.scss';
+  $fa-font-path: "~font-awesome/fonts";
+  @import "~font-awesome/scss/font-awesome.scss";
 
   $sizebar-size: 280px;
 

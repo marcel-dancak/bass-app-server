@@ -4,7 +4,7 @@ import Vue from 'vue'
 
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.css'
-import 'font-awesome/css/font-awesome.css'
+// import 'font-awesome/css/font-awesome.css'
 
 import store from './store'
 import routes from './routes'
@@ -56,13 +56,18 @@ Vue.material.registerTheme({
       hue: 800
     }
   },
-  dark: {
+  'light': {
     primary: 'blue',
-    accent: {
-      color: 'blue-grey',
-      hue: 800
-    }
+    accent: 'blue-grey',
+    warn: 'blue-grey'
   },
+  // dark: {
+  //   primary: 'blue',
+  //   accent: {
+  //     color: 'blue-grey',
+  //     hue: 800
+  //   }
+  // },
   form: {
     primary: 'blue',
     accent: {
@@ -120,6 +125,7 @@ Vue.filter('applink', value => {
 })
 
 Vue.filter('videolink', value => {
+  if (!value) return ''
   if (value.startsWith('http')) {
     return value
   }
@@ -133,7 +139,6 @@ Vue.directive('chips-label', {
     el.querySelector('.md-input-container').appendChild(labelEl)
   }
 })
-
 
 window.app = new Vue({
   el: '#app',
