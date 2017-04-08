@@ -3,37 +3,40 @@
     <md-card class="detail md-transparent">
       <md-card-content>
         <md-layout md-row md-column-xsmall>
-          <md-layout md-flex="70" md-column md-flex-small="60" class="r-pad">
-            <md-layout md-row class="actions-toolbar">
-              <md-button
-                class="back md-icon-button xmd-fab md-clean"
-                @click.native="$router.back">
-                <md-icon>arrow_back</md-icon>
-              </md-button>&nbsp;&nbsp;
-              <span class="created">Created: {{ project.created | todate }}</span>
+          <md-layout md-flex="65" md-column md-flex-small="60" class="r-pad">
+            <md-layout md-row md-column-small class="actions-toolbar">
+              <md-layout md-row>
+                <md-button
+                  class="back md-icon-button md-clean"
+                  @click.native="$router.back">
+                  <md-icon>arrow_back</md-icon>
+                </md-button>&nbsp;&nbsp;
+                <span class="created">Created: {{ project.created | todate }}</span>
+              </md-layout>
               <!-- <span class="md-title">{{ project.category }}</span> -->
-              <div style="flex: 1"></div>
               <!-- <md-layout md-flex="true"></md-layout> -->
-              <md-button
-                v-if="project.video_link"
-                class="fa icon-button md-warn"
-                :href="project.video_link | videolink"
-                target="_blank">
-                <i class="fa fa-youtube-square"></i>
-              </md-button>
-              <md-button
-                class="md-primary md-raised open"
-                :href="project.id | applink"
-                target="_blank">
-                OPEN
-              </md-button>
-              <router-link
-                v-if="user.username === project.author.name"
-                :to="{ path: 'edit' }" append
-                class="md-button md-raised md-warn edit md-theme-default">
-                <md-icon>edit</md-icon>&nbsp;&nbsp; edit
-              </router-link>
-
+              <md-layout md-row md-align="end">
+                <!-- <md-layout style="flex:1" md-hide-small></md-layout> -->
+                <md-button
+                  v-if="project.video_link"
+                  class="fa icon-button md-warn"
+                  :href="project.video_link | videolink"
+                  target="_blank">
+                  <i class="fa fa-youtube-square"></i>
+                </md-button>
+                <md-button
+                  class="md-primary md-raised open md-flex-small"
+                  :href="project.id | applink"
+                  target="_blank">
+                  OPEN
+                </md-button>
+                <router-link
+                  v-if="user.username === project.author.name"
+                  :to="{ path: 'edit' }" append
+                  class="md-button md-raised md-warn edit md-theme-default md-flex-small">
+                  <md-icon>edit</md-icon>&nbsp;&nbsp; edit
+                </router-link>
+              </md-layout>
             </md-layout>
 
             <!-- <div class="created-block">Published on: {{ project.created | todate }}</div> -->
@@ -43,8 +46,8 @@
 
           </md-layout>
 
-          <md-layout md-flex="30" md-flex-small="40">
-            <md-card class="subcard">
+          <md-layout md-flex="35" md-flex-small="40" xmd-column>
+            <md-card class="subcard md-align-center">
 <!--               <p><label>Difficulty: </label>
                 <span class="level"> {{ Difficulties[project.level] }}</span>
               </p> -->
@@ -79,6 +82,8 @@
                 <label>Tags: </label> {{ project.tags.join(', ') }}
               </p>
             </md-card>
+            <!-- <div style="flex:1"></div> -->
+            <!-- <md-layout md-flex></md-layout> -->
           </md-layout>
 
         </md-layout>
@@ -172,10 +177,13 @@
       display: inline-block;
     }
     .actions-toolbar {
-      height: 48px;
-      max-height: 48px;
+      min-height: 48px;
       line-height: 38px;
       border-bottom: 1px solid #ddd;
+      flex: 0 0 auto;
+      > .md-row {
+        height: 48px;
+      }
       .back.md-button {
         margin-left: 0!important;
         min-width: 32px;
@@ -202,10 +210,8 @@
           padding: 0;
           opacity: 0.95;
         }
-        &.open {
-          @media (min-width: 720px) {
-            padding: 0 50px;
-          }
+        @media (min-width: 480px) {
+          min-width: 130px;
         }
       }
       p {
@@ -248,6 +254,7 @@
       xbackground-color: #424242;
       background-color: #EEEEEE;
       color: #616161;
+      opacity: 0.75;
 
       span {
         display: table-cell;

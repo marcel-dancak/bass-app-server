@@ -174,27 +174,19 @@ export default {
 <style lang="scss">
   @import 'variables.scss';
   @import 'animations.scss';
+  @import 'base.scss';
+
   $fa-font-path: "~font-awesome/fonts";
   @import "~font-awesome/scss/font-awesome.scss";
 
   $sizebar-size: 280px;
 
-  .md-subhead {
-    white-space:nowrap;
-  }
-  .r-pad {
-    padding-right: 16px;
-  }
   .md-chips.with-label {
     padding-top: 6px;
     label {
       top: -10px;
       opacity: 1;
     }
-  }
-
-  a:not(.md-button):not([disabled]) {
-    cursor: pointer;
   }
 
   .md-card.md-accent, .md-card.md-warn {
@@ -253,31 +245,6 @@ export default {
       /*opacity: 0.55;*/
     }
   }
-  i.fa {
-    font-size: 28px;
-    line-height: 28px;
-  }
-  /*
-  .active {
-    color: #3f51b5;
-  }*/
-  .md-button.icon-text {
-    min-width: 64px;
-    i.md-icon {
-      padding-bottom: 4px;
-    }
-    i.fa {
-      font-size: 22px;
-      vertical-align: middle;
-      padding-bottom: 4px;
-      width: 24px;
-    }
-    /*
-    &.active .md-icon {
-      color: #3f51b5;
-    }*/
-  }
-
 
   .md-toolbar.main {
     h1 {
@@ -416,13 +383,4 @@ export default {
     transition-delay: .2s;
   }
 
-  @media print {
-    body {
-      -webkit-print-color-adjust: exact;
-    }
-  }
-  @page {
-    margin: 0;
-    /*size: 1740px 820px;*/
-  }
 </style>
