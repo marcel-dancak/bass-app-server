@@ -9,14 +9,14 @@
     <rect x="32" y="0" width="1" height="16" fill="#212121" />
   </svg> -->
 
-  <svg class="level-meter" viewBox="0 0 42 16">
+<!--   <svg class="level-meter" viewBox="0 0 42 16">
     <rect x="0.5" y="0.5" width="41" height="15" stroke-width="1" stroke="#212121" fill="#f5f5f5" />
     <rect x="1" y="1" :width="width" height="14" fill="#424242" />
     <rect x="9" y="1" width="1" height="14" fill="#424242" opacity="0.4" />
     <rect x="17" y="0" width="1" height="16" fill="#424242" opacity="0.4" />
     <rect x="25" y="0" width="1" height="16" fill="#424242" opacity="0.4" />
     <rect x="33" y="0" width="1" height="16" fill="#424242" opacity="0.4" />
-  </svg>
+  </svg> -->
 
 <!-- LEVEL 3 -->
 <!--   <svg class="level-meter" viewBox="0 0 42 16">
@@ -31,6 +31,20 @@
     <rect x="0.5" y="0.5" width="41" height="15" stroke-width="1" stroke="#212121" fill="#f5f5f5" />
     <rect x="1" y="1" :width="level5" height="14" fill="#424242" />
   </svg> -->
+
+<!-- LEVEL 7 -->
+  <svg class="level-meter7" viewBox="0 0 37 16">
+    <rect x="0.5" y="0.5" width="36" height="15" stroke-width="1" stroke="#424242" fill="#f5f5f5" />
+    <rect x="1" y="1" :width="level7" height="14" fill="#616161" />
+    <!-- <line x1="6.5" x2="6.5" y1="1" y2="16" stroke="#424242" opacity="0.4" /> -->
+    <rect v-for="i in 5" :x="i*6" y="1" width="1" height="14" fill="#9E9E9E" opacity="0.5" />
+
+<!--     <rect x="6" y="1" width="1" height="14" fill="#9E9E9E" opacity="0.8" />
+    <rect x="12" y="0" width="1" height="16" fill="#BDBDBD" opacity="0.8" />
+    <rect x="18" y="0" width="1" height="16" fill="#424242" opacity="0.4" />
+    <rect x="24" y="0" width="1" height="16" fill="#424242" opacity="0.4" />
+    <rect x="30" y="0" width="1" height="16" fill="#424242" opacity="0.4" /> -->
+  </svg>
 
 <!--   <svg class="level-meter" viewBox="0 0 42 16">
     <rect x="0.5" y="0.5" width="41" height="15" stroke-width="1" stroke="#212121" fill="#f5f5f5" />
@@ -104,6 +118,9 @@ export default {
     level5() {
       return Math.round(41*(LEVEL_5[this.value]/5))
     },
+    level7() {
+      return Math.round(36*(this.value/6))
+    },
     test() {
       const coords = this.convert_to_svg(21, 24, 21, 18, -180, (180/6)*this.value, 0)
       const arc = coords.slice(2).join(' ')
@@ -146,6 +163,12 @@ export default {
     max-width: 42px;
     opacity: 0.75;
     border-radius: 2px;
+  }
+  .level-meter7 {
+    width: 37px;
+    height: 16px;
+    max-width: 37px;
+    opacity: 0.9;
   }
   .analog-meter {
     width: 42px;

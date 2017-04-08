@@ -1,30 +1,30 @@
 const constants = {
   Difficulties: {
-      1: {
-        numeric: 1,
+      0: {
+        numeric: 0,
         title: 'Very Easy'
       },
-      2: {
-        numeric: 1.5,
+      1: {
+        numeric: 1,
         title: 'Easy'
       },
-      3: {
+      2: {
         numeric: 2,
         title: 'Easy/Medium'
       },
+      3: {
+        numeric: 2.5,
+        title: 'Medium'
+      },
       4: {
         numeric: 3,
-        title: 'Medium'
+        title: 'Medium/Hard'
       },
       5: {
         numeric: 4,
-        title: 'Medium/Hard'
-      },
-      6: {
-        numeric: 4.5,
         title: 'Hard'
       },
-      7: {
+      6: {
         numeric: 5,
         title: 'Very Hard'
       }
