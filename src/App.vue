@@ -15,7 +15,8 @@
 
     <md-sidenav
       ref="sidenav"
-      class="main-sidebar md-left xmd-fixed">
+      class="main-sidebar md-left xmd-fixed"
+      @click.native="afterClick">
 
         <md-card class="my-card md-accent">
           <md-card-header>
@@ -135,8 +136,6 @@ export default {
     LoginDialog
   },
   created () {
-    // setTimeout(this.loadUserProfile, 1000)
-    // this.$client.loadUserProfile()
     this._historyStack = [this.$route.fullPath]
   },
   watch: {
@@ -166,6 +165,11 @@ export default {
         this.$router.go(0)
         // this.$router.replace({path: '/'}, e => {location.reload()})
       })
+    },
+    afterClick(evt) {
+      if (window.innerWidth < 1280) {
+        this.$refs.sidenav.close()
+      }
     }
   }
 }
@@ -257,8 +261,9 @@ export default {
       max-width: 360px;
       padding-top: 15px;
     }
-    @media (min-width: 1280px) {
-      .menu.md-button {
+    .menu.md-button {
+      margin-right: 0;
+      @media (min-width: 1280px) {
         display: none;
       }
     }

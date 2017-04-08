@@ -1,45 +1,44 @@
 <template>
   <div class="page-container author-detail">
     <md-card class="author detail md-warn">
-      <md-layout>
-        <div class="main-section">
-          <md-card-header>
-            <img
-              v-if="author.avatar"
-              class="md-avatar avatar"
-              :src="$http.options.root+author.avatar">
-            <md-icon v-else class="avatar">face</md-icon>
-            <md-card-header-text>
-              <div class="md-title">{{ author.username }}</div>
-              <div class="md-subhead">{{ author.first_name }} {{ author.last_name }}</div>
-            </md-card-header-text>
-          </md-card-header>
+      <md-card-header>
+        <md-layout md-row>
+          <img
+            v-if="author.avatar"
+            class="md-avatar avatar"
+            :src="$http.options.root+author.avatar">
+          <md-icon v-else class="avatar">face</md-icon>
+          <md-card-header-text>
+            <div class="md-title">{{ author.username }}</div>
+            <div class="md-subhead">{{ author.first_name }} {{ author.last_name }}</div>
+            <span class="date md-subhead md-hide-xsmall">Joined: {{ author.date_joined | todate }}</span>
+          </md-card-header-text>
+          <!-- <p class="md-flex text-right">
+            <span class="md-subhead">Joined: {{ author.date_joined | todate }}</span>
+          </p> -->
+        </md-layout>
+      </md-card-header>
 
-          <md-card-actions noauth-disable>
-            <md-button
-              class="icon-text"
-              :class="{'md-primary': subscribed}"
-              @click.native="toggleSubscribe(author)">
-                <i class="fa fa-eye"></i> Subscribe
-            </md-button>
+      <md-card-actions>
+        <md-button
+          noauth-disable
+          class="icon-text"
+          :class="{'md-primary': subscribed}"
+          @click.native="toggleSubscribe(author)">
+            <i class="fa fa-eye"></i> Subscribe
+        </md-button>
 
-            <div class="md-subhead">Uploads: {{ author.projects_count }}</div>
-          </md-card-actions>
-        </div>
+        <div class="md-subhead">Uploads: {{ author.projects_count }}</div>
         <div style="flex: 1"></div>
-        <div class="right-section">
-          <h4>Joined: {{ author.date_joined | todate }}</h4>
-          <div class="icon-links">
-            <md-button
-              v-for="link in author.links"
-              :href="link"
-              target="_blank"
-              class="md-icon-button">
-              <i class="fa" :class="extractSite(link)"></i>
-            </md-button>
-          </div>
-        </div>
-      </md-layout>
+
+        <md-button
+          v-for="link in author.links"
+          :href="link"
+          target="_blank"
+          class="md-icon-button">
+          <i class="fa" :class="extractSite(link)"></i>
+        </md-button>
+      </md-card-actions>
     </md-card>
 
     <md-theme md-name="light">
@@ -117,15 +116,22 @@ export default {
 </script>
 <style lang="scss">
 
+  .fa-patreon-square {
+    background-image: url('../assets/patreon-square.svg');
+    background-size: 24px;
+    width: 24px;
+    height: 24px;
+    margin: 2px 0;
+    xbackground-color: #e6461a;
+    border-radius: 5px;
+  }
+
   .md-card.author {
     box-shadow: none;
     border-radius: 0;
 
     .md-card-header {
-      padding-bottom: 0;
-      justify-content: flex-start;
-      flex-direction: row;
-      display: flex;
+      padding-bottom: 6px;
       .avatar {
         margin-left: 0;
         margin-right: 10px;
@@ -135,18 +141,25 @@ export default {
         flex: 0 0 auto;
       }
       .md-card-header-text {
-        flex: 0;
+        margin-top: 8px;
+        position: relative;
+        .date {
+          position: absolute;
+          right: 0;
+          top: 16px;
+        }
       }
     }
     .md-card-actions {
-      padding-top: 13px!important;
-      padding-bottom: 8px!important;
       justify-content: flex-start;
-      .md-button {
+      height: 52px;
+      .md-button.icon-text {
         padding-left: 8px;
+        min-width: 112px;
       }
       .md-subhead {
         margin-left: 16px;
+        margin-right: 12px;
         opacity: 0.74;
         position: relative;
         padding-left: 14px;
@@ -165,43 +178,14 @@ export default {
     .md-card-content {
       padding-bottom: 16px;
     }
-    .right-section {
-      margin: 16px 16px 10px 8px;
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      h4 {
-        opacity: 0.55;
-        font-weight: 500;
-      }
-      .icon-links {
-        margin-left: 16px;
-        .md-button {
-          padding: 4px;
-          margin: 0;
-          opacity: 0.7;
-          &:hover {
-            opacity: 0.9;
-          }
-        }
-        i.fa {
-          font-size: 28px;
-          color: #fff;
-        }
-        .fa-patreon-square {
-          background-image: url('../assets/patreon-square.svg');
-          background-size: 24px;
-          width: 24px;
-          height: 24px;
-          margin-top: 2px;
-          xbackground-color: #e6461a;
-          border-radius: 5px;
-        }
-      }
-      .md-subhead {
-        line-height: 30px;
-        font-weight: 500;
+
+    .md-button.md-icon-button {
+      padding: 4px;
+      margin: 0;
+      opacity: 0.7;
+      display: inline;
+      &:hover {
+        opacity: 0.9;
       }
     }
   }

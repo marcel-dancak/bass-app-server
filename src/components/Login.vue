@@ -171,7 +171,12 @@ export default {
   .login-dialog {
     .md-dialog {
       min-width: 320px;
-      max-width: 420px;
+      max-width: 380px;
+      min-height: 324px;
+      @media (max-width: 400px) {
+        min-width: 290px;
+        max-width: 290px;
+      }
     }
     .md-spinner {
       position: absolute;

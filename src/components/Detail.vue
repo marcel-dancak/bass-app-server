@@ -3,11 +3,36 @@
     <md-card class="header md-warn">
       <md-layout>
         <div class="header-section">
-
           <md-card-header>
-            <div class="md-title">{{ project.title }}</div>
-            <div class="md-subhead">{{ project.artist || '-'}}</div>
+            <md-layout md-row>
+              <div>
+                <div class="md-title">{{ project.title }}</div>
+                <div class="md-subhead">{{ project.artist || '-'}}</div>
+                <div class="md-show-xsmall author-alt">by
+                  <router-link class="md-title" :to="{ name: 'author', params: { id: project.author.id } }">
+                    {{ project.author.name }}
+                  </router-link>
+                </div>
+              </div>
+              <div style="flex:1"></div>
+              <div class="md-hide-xsmall author">
+                <span class="md-subhead">created by</span><br />
+                <router-link
+                  class="md-title"
+                  :to="{ name: 'author', params: { id: project.author.id } }">
+                  {{ project.author.name }}
+                </router-link>
+              </div>
+              <!-- <span>{{ project.author.name }}</span> -->
+              <md-avatar v-if="project.author.avatar" class="md-avatar-icon">
+                <img :src="$http.options.root+project.author.avatar">
+              </md-avatar>
+              <md-avatar v-else class="md-avatar-icon">
+                <md-icon>face</md-icon>
+              </md-avatar>
+            </md-layout>
           </md-card-header>
+
           <md-card-actions noauth-disable>
             <md-button
               class="icon-text"
@@ -28,35 +53,14 @@
               <!-- &nbsp;<span style="color:#fff">Like</span> -->
             </md-button>
 
-          </md-card-actions>
-        </div>
-        <div class="author-section">
-          <div class="text">
-            <span class="md-subhead">created by</span><br />
-            <router-link
-              class="md-title"
-              :to="{ name: 'author', params: { id: project.author.id } }">
-              {{ project.author.name }}
-            </router-link>
-          </div>
-          <md-avatar v-if="project.author.avatar" class="md-avatar-icon">
-            <img :src="$http.options.root+project.author.avatar">
-          </md-avatar>
-          <md-avatar v-else class="md-avatar-icon">
-            <md-icon>face</md-icon>
-          </md-avatar>
-
-          <md-card-actions noauth-disable>
-            <!-- <span class="counter">2</span> -->
+            <span style="flex:1"></span>
             <md-button
               class="icon-text"
               :class="{'md-primary': subscribed}"
               @click.native="toggleSubscribe(project.author)">
                 <i class="fa fa-eye"></i> Subscribe
             </md-button>
-
           </md-card-actions>
-
         </div>
       </md-layout>
     </md-card>
@@ -127,12 +131,6 @@
   }
 </script>
 <style lang="scss">
-/*
-  .counter {
-    padding-left: 6px;
-    padding-right: 4px;
-  }
-*/
   .page-container.md-column {
     display: flex;
     flex-direction: column;
@@ -149,43 +147,45 @@
 
   .md-card.header {
     border-radius: 0;
+
+    .md-card-header {
+      padding-top: 24px;
+      padding-bottom: 13px;
+    }
+
+    .author {
+      text-align: right;
+      padding-right: 12px;
+    }
+
     .header-section {
       flex: 1 0 auto;
       .md-subhead {
         margin-top: 1px;
       }
       .md-card-actions {
-        justify-content: flex-start;
+        height: 52px;
         .md-button {
           padding-left: 6px;
           padding-right: 6px;
           margin-right: 12px;
+          &:last-child {
+            margin-right: 6px;
+          }
         }
       }
     }
-    .author-section {
-      padding: 16px 0 0 16px;
-      flex: 0 0 auto;
-      .text {
-        text-align: right;
-        padding-top: 12px;
-        display: inline-block;
+    .author-alt {
+      margin-top: 8px;
+      a {
+        font-size: 16px;
+        font-weight: 500;
       }
-      .md-avatar {
-        float: right;
-        width: 56px;
-        height: 56px;
-        margin: 8px 16px 12px 10px;
-        background: none;
-        .md-icon {
-          width: 64px;
-          height: 64px;
-          font-size: 64px;
-        }
-      }
-      .md-card-actions {
-        width: 100%;
-      }
+    }
+    .md-avatar-icon {
+      width: 56px;
+      height: 56px;
+      margin-right: 0;
     }
   }
 </style>

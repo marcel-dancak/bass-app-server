@@ -47,7 +47,7 @@
       <md-layout
         md-row md-column-small
         class="main-layout">
-        <md-layout md-flex="45" md-column class="is-left">
+        <md-layout md-flex="45" md-column class="text-left">
           <h3>main goals</h3>
           <md-list>
 
@@ -142,12 +142,6 @@
 </script>
 
 <style lang="scss" scoped>
-  .is-left {
-    text-align: left;
-  }
-  .is-right {
-    text-align: right;
-  }
   .align-right {
     margin-left: auto;
     margin-right: 0;
@@ -251,7 +245,7 @@
     }
     .text-logo {
       margin-top: 10px;
-      height: 48px;
+      height: 42px;
     }
     .img-container {
       width: 630px;
@@ -260,6 +254,14 @@
       margin-right: auto;
       p {
         color: rgba(0,0,0,.54);
+      }
+    }
+    @media (max-width: 560px) {
+      .logo {
+        width: 64px;
+      }
+      .text-logo {
+        height: 32px;
       }
     }
     .screenshot {
