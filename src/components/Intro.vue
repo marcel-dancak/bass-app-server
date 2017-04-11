@@ -3,20 +3,9 @@
     <login-dialog ref="login" @login="afterLogin"></login-dialog>
     <div class="container">
       <header>
-        <!-- <h1>BassCloud <img class="logo" src="../assets/logo.svg"></h1> -->
         <h1>
-          <img class="text-logo" src="../assets/text_logo.svg">
           <img class="logo" src="../assets/logo.svg">
         </h1>
-        <!-- <div>
-          <img class="text_logo" src="../assets/text_logo.svg">
-          <img class="logo" src="../assets/logo.svg">
-        </div> -->
-<!--         <router-link
-          to="login"
-          class="md-button md-theme-default md-primary md-raised">
-          <span>Sign In</span>
-        </router-link> -->
         <h4>Online platform for creating and sharing audio compositions wih focus on bass guitar</h4>
 
         <md-button v-if="!user.username"
@@ -114,7 +103,7 @@
           to="registration"
           :class="{'md-primary': !user.username}"
           class="md-button md-raised md-theme-default">
-          <span>Create an account</span>
+          <span>Create account</span>
         </router-link>
       </div>
     </div>
@@ -240,12 +229,7 @@
       margin-bottom: 16px;
     }
     .logo {
-      width: 80px;
-      margin-left: 28px;
-    }
-    .text-logo {
-      margin-top: 10px;
-      height: 42px;
+      height: 58px;
     }
     .img-container {
       width: 630px;
@@ -254,14 +238,6 @@
       margin-right: auto;
       p {
         color: rgba(0,0,0,.54);
-      }
-    }
-    @media (max-width: 560px) {
-      .logo {
-        width: 64px;
-      }
-      .text-logo {
-        height: 32px;
       }
     }
     .screenshot {
@@ -294,17 +270,12 @@
         .md-icon {
           margin-right: 24px;
         }
-        @media (min-width: 560px) {
-          &:nth-child(1) {
-            padding-left: 0;
-          }
+        /*
+        @media (min-width: 1280px) {
           &:nth-child(2) {
             padding-left: 12px;
           }
-          &:nth-child(3) {
-            padding-left: 24px;
-          }
-        }
+        } */
       }
       .md-title {
         text-transform: uppercase;

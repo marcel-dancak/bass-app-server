@@ -92,14 +92,14 @@
           <md-list-item noauth-hide>
             <router-link :to="{ path: '/bookmarked', query: $route.query }">
               <md-icon>start</md-icon>
-              <span>Bookmarked</span>
+              <span>Bookmarks</span>
             </router-link>
           </md-list-item>
 
           <md-list-item noauth-hide>
             <router-link :to="{ path: '/subscribed', query: $route.query }">
               <md-icon>visibility</md-icon>
-              <span>From Subscribers</span>
+              <span>Watched</span>
             </router-link>
           </md-list-item>
 

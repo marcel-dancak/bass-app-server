@@ -11,12 +11,13 @@
                   @click.native="$router.back">
                   <md-icon>arrow_back</md-icon>
                 </md-button>&nbsp;&nbsp;
-                <span class="created">Created: {{ project.created | todate }}</span>
+                <span class="created">
+                  <!-- <md-icon>file_upload</md-icon>&nbsp; -->
+                  Published:&nbsp;
+                  {{ project.created | todate }}
+                </span>
               </md-layout>
-              <!-- <span class="md-title">{{ project.category }}</span> -->
-              <!-- <md-layout md-flex="true"></md-layout> -->
               <md-layout md-row md-align="end">
-                <!-- <md-layout style="flex:1" md-hide-small></md-layout> -->
                 <md-button
                   v-if="project.video_link"
                   class="fa icon-button md-warn"
@@ -39,7 +40,6 @@
               </md-layout>
             </md-layout>
 
-            <!-- <div class="created-block">Published on: {{ project.created | todate }}</div> -->
             <p>
               {{ project.description }}
             </p>
@@ -70,16 +70,15 @@
 
               <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
               <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
-
+              <p v-if="project.tags.length">
+                <label>Tags: </label> {{ project.tags.join(', ') }}
+              </p>
               <p>
                 <label>Tracks: </label>
                 <img
                   v-for="track in project.tracks"
                   class="md-icon md-size-1x"
                   :src="loadImg(track)">
-              </p>
-              <p v-if="project.tags.length">
-                <label>Tags: </label> {{ project.tags.join(', ') }}
               </p>
             </md-card>
             <!-- <div style="flex:1"></div> -->
@@ -127,19 +126,12 @@
   .md-card.detail {
     box-shadow: none;
     small {
-      opacity: 0.65;
-      font-size: 13px;
+      xopacity: 0.95;
+      font-size: 12px;
+      xfont-weight: normal;
     }
     .md-card-content {
       .created {
-        font-weight: bold;
-        opacity: 0.85;
-      }
-      .created-block {
-        margin-right: 16px;
-        margin-top: 8px;
-        padding-bottom: 4px;
-        border-bottom: 1px solid #ddd;
         font-weight: bold;
         opacity: 0.85;
       }
@@ -181,8 +173,10 @@
       line-height: 38px;
       border-bottom: 1px solid #ddd;
       flex: 0 0 auto;
+      justify-content: space-between;
       > .md-row {
         height: 48px;
+        flex: 0 0 auto;
       }
       .back.md-button {
         margin-left: 0!important;

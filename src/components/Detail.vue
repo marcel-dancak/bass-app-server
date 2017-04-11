@@ -5,7 +5,7 @@
         <div class="header-section">
           <md-card-header>
             <md-layout md-row>
-              <div>
+              <md-card-header-text>
                 <div class="md-title">{{ project.title }}</div>
                 <div class="md-subhead">{{ project.artist || '-'}}</div>
                 <div class="md-show-xsmall author-alt">by
@@ -13,8 +13,7 @@
                     {{ project.author.name }}
                   </router-link>
                 </div>
-              </div>
-              <div style="flex:1"></div>
+              </md-card-header-text>
               <div class="md-hide-xsmall author">
                 <span class="md-subhead">created by</span><br />
                 <router-link
@@ -28,7 +27,7 @@
                 <img :src="$http.options.root+project.author.avatar">
               </md-avatar>
               <md-avatar v-else class="md-avatar-icon">
-                <md-icon>face</md-icon>
+                <md-icon class="md-size-3x">face</md-icon>
               </md-avatar>
             </md-layout>
           </md-card-header>
@@ -148,20 +147,23 @@
   .md-card.header {
     border-radius: 0;
 
-    .md-card-header {
-      padding-top: 24px;
-      padding-bottom: 13px;
-    }
-
-    .author {
-      text-align: right;
-      padding-right: 12px;
-    }
 
     .header-section {
       flex: 1 0 auto;
       .md-subhead {
         margin-top: 1px;
+      }
+      .md-card-header {
+        padding-top: 21px;
+        padding-bottom: 10px;
+      }
+      .md-card-header-text {
+        margin-top: 2px;
+      }
+      .author {
+        text-align: right;
+        padding-right: 12px;
+        margin-top: 6px;
       }
       .md-card-actions {
         height: 52px;
@@ -183,8 +185,8 @@
       }
     }
     .md-avatar-icon {
-      width: 56px;
-      height: 56px;
+      width: 62px;
+      height: 62px;
       margin-right: 0;
     }
   }
