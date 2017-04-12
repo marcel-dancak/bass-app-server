@@ -34,7 +34,7 @@
 
 <!-- LEVEL 7 -->
   <svg class="level-meter7" viewBox="0 0 37 16">
-    <rect x="0.5" y="0.5" width="36" height="15" stroke-width="1" stroke="#424242" fill="#f5f5f5" />
+    <rect x="0.5" y="0.5" width="36" height="15" stroke-width="1" stroke="#616161" fill="#f5f5f5" />
     <rect x="1" y="1" :width="level7" height="14" fill="#616161" />
     <!-- <line x1="6.5" x2="6.5" y1="1" y2="16" stroke="#424242" opacity="0.4" /> -->
     <rect v-for="i in 5" :x="i*6" y="1" width="1" height="14" fill="#9E9E9E" opacity="0.5" />
@@ -169,6 +169,7 @@ export default {
     height: 16px;
     max-width: 37px;
     opacity: 0.9;
+    border-radius: 2px;
   }
   .analog-meter {
     width: 42px;

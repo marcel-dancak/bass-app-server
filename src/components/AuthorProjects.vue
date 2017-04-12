@@ -25,7 +25,8 @@
           class="icon-text"
           :class="{'md-primary': subscribed}"
           @click.native="toggleSubscribe(author)">
-            <i class="fa fa-eye"></i> Subscribe
+            <i class="fa fa-eye"></i> &nbsp;Subscribe
+            <small v-if="author.subscribers_count">&nbsp;/ {{ author.subscribers_count }}</small>
         </md-button>
 
         <div class="md-subhead">Uploads: {{ author.projects_count }}</div>

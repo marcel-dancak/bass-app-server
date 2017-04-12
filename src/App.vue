@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container" :class="{noauth: !user.username}">
+  <div class="app-container" :class="[user.username? 'auth' : 'noauth']">
     <div class="app">
       <login-dialog ref="login"></login-dialog>
       <div class="page-wrapper">
@@ -15,50 +15,41 @@
 
     <md-sidenav
       ref="sidenav"
-      class="main-sidebar md-left xmd-fixed"
+      class="main-sidebar md-left"
       @click.native="afterClick">
-
         <md-card class="my-card md-accent">
-          <md-card-header>
-            <template v-if="user.username">
-              <md-card-header-text>
-                <div class="md-title">
-                  <router-link to="/profile">
-                    {{ user.username }}
-                  </router-link>
-                </div>
-                <div class="md-subhead">{{ user.first_name}} {{ user.last_name }}</a></div>
-              </md-card-header-text>
-              <md-card-media>
-                <md-avatar v-if="user.avatar" class="md-large">
-                  <img :src="$http.options.root+user.avatar">
-                </md-avatar>
-                <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
-                <md-icon v-else class="md-size-3x">face</md-icon>
-              </md-card-media>
-            </template>
-            <template v-else>
-              <md-card-header-text class="welcome">
-                <div class="md-subhead">Welcome in the</div>
-                  <router-link class="md-title" to="/">BassCloud</router-link>
-                <div class="register-link">
-                  <router-link :to="{ name: 'registration' }">
-                    Create an account
-                  </router-link>
-                </div>
-              </md-card-header-text>
-
-              <md-card-media>
-                <md-icon class="md-size-3x">backup</md-icon>
-              </md-card-media>
-            </template>
+          <md-card-header v-if="user.username">
+            <md-card-header-text>
+              <div class="md-title">
+                <router-link to="/profile">
+                  {{ user.username }}
+                </router-link>
+              </div>
+              <div class="md-subhead">{{ user.first_name}} {{ user.last_name }}</a></div>
+            </md-card-header-text>
+            <md-card-media>
+              <md-avatar v-if="user.avatar" class="md-large">
+                <img :src="$http.options.root+user.avatar">
+              </md-avatar>
+              <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
+              <md-icon v-else class="md-size-3x">face</md-icon>
+            </md-card-media>
+          </md-card-header>
+          <md-card-header v-else class="logo">
+            <img src="./assets/logo-dark.svg">
+            <!-- <router-link
+              class="register-link"
+              :to="{ name: 'registration' }">Create Account
+            </router-link> -->
           </md-card-header>
 
           <md-divider></md-divider>
           <md-card-actions>
             <template v-if="user.username">
               <md-button @click.native="logout">
-                <md-icon>account_circle</md-icon> <span>Logout</span>
+                <md-icon>power_settings_new</md-icon>
+                <!-- <md-icon>account_circle</md-icon> -->
+                <span>Logout</span>
               </md-button>
             </template>
             <template v-else>
@@ -72,8 +63,7 @@
       <div class="main-sidebar-links">
         <md-list>
 
-          <!-- My projects -->
-
+          <md-subheader>Projects</md-subheader>
           <md-list-item>
             <!-- <md-icon>fiber_new</md-icon> <span>New</span> -->
             <router-link :to="{ path: '/projects', query: $route.query}" exact>
@@ -92,21 +82,36 @@
           <md-list-item noauth-hide>
             <router-link :to="{ path: '/bookmarked', query: $route.query }">
               <md-icon>start</md-icon>
-              <span>Bookmarks</span>
+              <span>Bookmarked</span>
             </router-link>
           </md-list-item>
 
           <md-list-item noauth-hide>
             <router-link :to="{ path: '/subscribed', query: $route.query }">
               <md-icon>visibility</md-icon>
-              <span>Watched</span>
+              <span>Subscribed</span>
             </router-link>
           </md-list-item>
 
+          <!-- <md-divider></md-divider> -->
+          <md-subheader>Links</md-subheader>
+          <md-list-item href="/app" target="_blank">
+            <!-- exit_to_app, queue_play_next, web, computer -->
+            <md-icon>queue_play_next</md-icon>
+            <span>BassApp</span>
+          </md-list-item>
           <md-list-item>
-            <router-link :to="{ path: '/liked', query: $route.query }">
-              <md-icon>thumb_up</md-icon>
-              <span>Highest Rated</span>
+            <router-link to="/" exact>
+              <md-icon>home</md-icon>
+              <span>Home Page</span>
+            </router-link>
+          </md-list-item>
+          <md-list-item auth-hide>
+            <router-link :to="{ name: 'registration' }">
+              <!-- <md-icon>account_box</md-icon> -->
+              <!-- <md-icon>assignment_ind</md-icon> -->
+              <md-icon>person_add</md-icon>
+              <span>Create Account</span>
             </router-link>
           </md-list-item>
         </md-list>
@@ -211,23 +216,20 @@ export default {
       /* fix for transition animation (destroyed() which
         removes flex layout is called before transition ends) */
       display: flex;
-      .welcome {
-        .md-subhead {
-          font-size: 11px;
-          line-height: 14px;
-          margin-top: -8px;
-          margin-left: -8px;
-          opacity: 0.5;
-        }
-        .md-title {
-          margin-top: 0;
-          margin-bottom: 10px;
-          font-size: 22px;
+
+      &.logo {
+        xflex-direction: column;
+        xpadding-top: 4px;
+        opacity: 0.8;
+        height: 96px;
+        img {
+          margin-top: 6px;
+          height: 48px;
+          object-position: 0 0;
+          object-fit: contain;
         }
         .register-link {
-          padding: 4px 0;
-          opacity: 0.75;
-          text-align: center;
+          padding: 14px 0 10px 24px;
         }
       }
     }
@@ -294,6 +296,8 @@ export default {
       bottom: 0;
       background-color: #fff;
       overflow: auto;
+      display: flex;
+      flex-direction: column;
     }
   }
 
@@ -311,6 +315,11 @@ export default {
         pointer-events: none;
       }
       .noauth-hide, [noauth-hide] {
+        display: none;
+      }
+    }
+    &.auth {
+      .auth-hide, [auth-hide] {
         display: none;
       }
     }
@@ -374,6 +383,15 @@ export default {
       .md-list-item-container {
         font-size: 14px;
         font-weight: 500;
+      }
+      .md-subheader {
+        font-size: 12px;
+        min-height: 36px;
+        height: 36px;
+        line-height: 42px;
+        vertical-align: bottom;
+        display: block;
+        opacity: 0.5;
       }
     }
   }

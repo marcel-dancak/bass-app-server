@@ -80,7 +80,7 @@
         <div class="space"></div>
 
         <md-layout class="img-container" md-column>
-          <img class="screenshot" src="../assets/app.svg">
+          <a href="/app"><img class="screenshot" src="../assets/app.svg"></a>
           <br />
           <p>
             BassCloud is build as an extension service for the

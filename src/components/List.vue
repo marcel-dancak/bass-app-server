@@ -48,13 +48,11 @@ export default {
       const path = to.path.split('/').pop()
       console.log(path)
       if (path === 'bookmarked') {
-        this.title = 'Bookmarks'
-      } else if (path === 'liked') {
-        this.title = 'Highest Rated'
+        this.title = 'Bookmarked'
       } else if (path === 'created') {
         this.title = 'My Projects'
       } else if (path === 'subscribed') {
-        this.title = 'Watched'
+        this.title = 'Subscribed'
       } else {
         this.title = 'All Projects'
       }
