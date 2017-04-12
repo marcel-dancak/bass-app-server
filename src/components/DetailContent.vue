@@ -4,7 +4,7 @@
       <md-card-content>
         <md-layout md-row md-column-xsmall>
           <md-layout
-            md-flex="65" md-column md-flex-small="60"
+            md-column md-flex="65" md-flex-small="60"
             class="left-block">
             <md-layout md-row md-column-small class="actions-toolbar">
               <md-layout md-row>
@@ -46,44 +46,41 @@
             <p class="description" v-html="compiledMarkdown"></p>
 
           </md-layout>
-
-          <md-layout md-flex="35" md-flex-small="40" md-column>
-            <md-card class="subcard md-align-center">
-<!--               <p><label>Difficulty: </label>
-                <span class="level"> {{ Difficulties[project.level] }}</span>
-              </p> -->
-              <!-- <div class="triangle-label" :level="project.level">{{ Difficulties[project.level] }}</div> -->
+          <!-- <span class="md-flex"></span> -->
+          <md-layout md-column md-flex>
+            <md-card class="subcard">
               <div class="triangle-label"><span>{{ project.category }}</span></div>
-
-              <!-- <p><label>Category: </label> {{ project.category }}</p> -->
-<!--               <p><label>Difficulty: </label>
-                {{ Difficulties[project.level].numeric }}
-                <small>({{ Difficulties[project.level].title }})</small>
-              </p> -->
-              <p style="margin-bottom:5px">
-                <label>Difficulty: </label>
-                <level-indicator :value="project.level"></level-indicator>
-              </p>
-              <!-- <p><label>Difficulty: </label>
-                {{ Difficulties[project.level].title }}
-                &nbsp;( {{ Difficulties[project.level].numeric }} / 5 )
-              </p> -->
-
-              <p><label>Genres: </label> {{ project.genres.join(', ') }}</p>
-              <p><label>Techniques: </label> {{ project.playing_styles.join(', ') }}</p>
-              <p v-if="project.tags.length">
-                <label>Tags: </label> {{ project.tags.join(', ') }}
-              </p>
-              <p>
-                <label>Tracks: </label>
-                <img
-                  v-for="track in project.tracks"
-                  class="md-icon md-size-1x"
-                  :src="loadImg(track)">
-              </p>
+              <table>
+                <col width="33%">
+                <tbody>
+                  <tr>
+                    <td>Difficulty</td>
+                    <td><level-indicator :value="project.level"></level-indicator></td>
+                  </tr>
+                  <tr>
+                    <td>Genres</td>
+                    <td>{{ project.genres.join(', ') }}</td>
+                  </tr>
+                  <tr>
+                    <td>Techniques</td>
+                    <td>{{ project.playing_styles.join(', ') }}</td>
+                  </tr>
+                  <tr v-if="project.tags.length">
+                    <td>Tags</td>
+                    <td>{{ project.tags.join(', ') }}</td>
+                  </tr>
+                  <tr>
+                    <td>Tracks</td>
+                    <td>
+                      <img
+                        v-for="track in project.tracks"
+                        class="md-icon md-size-1x"
+                        :src="loadImg(track)">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </md-card>
-            <!-- <div style="flex:1"></div> -->
-            <!-- <md-layout md-flex></md-layout> -->
           </md-layout>
 
         </md-layout>
@@ -176,8 +173,21 @@
       .subcard {
         padding: 6px 16px;
         width: 100%;
-        min-width: 240px;
         overflow-x: hidden;
+        table {
+          width: 100%;
+          tr {
+            line-height: 22px;
+            td {
+              padding: 11px 0;
+            }
+            > td:first-child {
+              min-width: 92px;
+              font-weight: 500;
+              color: #444;
+            }
+          }
+        }
         p {
           margin: 12px 0;
         }
@@ -194,14 +204,6 @@
           border-radius: 4px;
         }
       }
-    }
-    label {
-      font-weight: 500;
-      color: #444;
-      margin-right: 5px;
-      min-width: 92px;
-      width: 33%;
-      display: inline-block;
     }
     .actions-toolbar {
       min-height: 48px;
