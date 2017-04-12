@@ -189,6 +189,7 @@ export default {
     /* temporary workaround for auto-height issue until next Vue-Material version */
     textarea.md-input {
       min-height: 130px;
+      max-height: 500px;
     }
   }
 </style>

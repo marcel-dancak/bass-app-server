@@ -1,6 +1,6 @@
 <template>
-  <div class="page-container md-column">
-    <md-card class="header md-warn">
+  <div class="page-container detail">
+    <md-card class="header md-warn extra-padding-medium">
       <md-layout>
         <div class="header-section">
           <md-card-header>
@@ -146,7 +146,7 @@
 
   .md-card.header {
     border-radius: 0;
-
+    box-shadow: none;
 
     .header-section {
       flex: 1 0 auto;

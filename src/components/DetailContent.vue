@@ -1,9 +1,11 @@
 <template>
-  <div class="page-container">
+  <div class="page-container extra-padding-medium">
     <md-card class="detail md-transparent">
       <md-card-content>
         <md-layout md-row md-column-xsmall>
-          <md-layout md-flex="65" md-column md-flex-small="60" class="r-pad">
+          <md-layout
+            md-flex="65" md-column md-flex-small="60"
+            class="left-block">
             <md-layout md-row md-column-small class="actions-toolbar">
               <md-layout md-row>
                 <md-button
@@ -40,13 +42,12 @@
               </md-layout>
             </md-layout>
 
-            <p>
-              {{ project.description }}
-            </p>
+            <!-- <p style="white-space:pre-line">{{ project.description }}</p> -->
+            <p class="description" v-html="compiledMarkdown"></p>
 
           </md-layout>
 
-          <md-layout md-flex="35" md-flex-small="40" xmd-column>
+          <md-layout md-flex="35" md-flex-small="40" md-column>
             <md-card class="subcard md-align-center">
 <!--               <p><label>Difficulty: </label>
                 <span class="level"> {{ Difficulties[project.level] }}</span>
@@ -94,6 +95,9 @@
 <script>
   import Constants from '../constants.js'
   import LevelIndicator from './LevelIndicator.vue'
+
+  import marked from 'marked'
+
   export default {
     name: 'detail-content',
     components: {
@@ -108,6 +112,12 @@
       },
       user() {
         return this.$store.state.user
+      },
+      compiledMarkdown: function () {
+        if (this.project.description) {
+          return marked(this.project.description, { sanitize: true })
+        }
+        return marked('Go to http://google.sk')
       }
     },
     created() {
@@ -125,14 +135,39 @@
 
   .md-card.detail {
     box-shadow: none;
+    background: none;
     small {
       xopacity: 0.95;
       font-size: 12px;
       xfont-weight: normal;
     }
     .md-card-content {
+      .left-block {
+        @media (min-width: 600px) {
+          padding-right: 16px;
+        }
+        @media (min-width: 1024px) {
+          padding-right: 44px;
+        }
+      }
+      .description {
+        h3 {
+          margin-bottom: 0px;
+        }
+        h3 ~ p {
+          margin-top: 8px;
+        }
+        h4 {
+          margin: 0;
+          display: inline;
+          font-size: 17px;
+        }
+        h4 ~ p {
+          display: inline;
+        }
+      }
       .created {
-        font-weight: bold;
+        font-weight: 500;
         opacity: 0.85;
       }
       img.md-icon {
@@ -255,25 +290,6 @@
         vertical-align: middle;
         word-spacing: 120px;
       }
-    }
-    .triangle-label[level="1"] {
-      background-color: #689F38;
-      xline-height: 95px;
-    }
-    .triangle-label[level="2"] {
-      background-color: #AFB42B;
-    }
-    .triangle-label[level="3"] {
-      background-color: #FFA000;
-    }
-    .triangle-label[level="4"] {
-      background-color: #E64A19;
-    }
-    .triangle-label[level="5"] {
-      background-color: #d32f2f;
-    }
-    .triangle-label[level="6"] {
-      background-color: #5D4037;
     }
   }
 </style>

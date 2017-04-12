@@ -57,3 +57,10 @@ i.fa {
 .text-right {
   text-align: right;
 }
+
+@media (min-width: 1024px) {
+  .extra-padding-medium {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+}
