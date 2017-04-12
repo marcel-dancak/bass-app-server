@@ -55,7 +55,14 @@
 
         <md-table-head v-if="showLastEdit">Last Edit</md-table-head>
 
-        <md-table-head class="slim"><md-icon>thumb_up</md-icon></md-table-head>
+        <md-table-head class="slim" md-numeric>
+          <md-icon>thumb_up</md-icon>
+          <md-button
+            class="sort-toggle"
+            @click.native="sortEnabled = !sortEnabled ; updateFilter()">
+            <md-icon :class="{ 'md-primary': sortEnabled }">arrow_upward</md-icon>
+          </md-button>
+        </md-table-head>
       </md-table-row>
     </md-table-header>
 
@@ -89,7 +96,7 @@
           <div class="md-title">{{ item.modified | todate }}</div>
           <div class="md-subhead">{{ item.modified | timediff }}</div>
         </md-table-cell>
-        <md-table-cell>
+        <md-table-cell md-numeric>
           {{ item.likes }}
         </md-table-cell>
       </md-table-row>
@@ -115,6 +122,7 @@ export default {
   },
   data() {
     return {
+      sortEnabled: false,
       filter: {
         artists: [],
         genres: [],
@@ -155,13 +163,17 @@ export default {
       const query = Object.assign({}, this.$route.query)
       for (let key in this.filter) {
         const value = this.filter[key]
-        console.log(value)
         if (value && value.length) {
           // query[key] = value.join(',')
           query[key] = key.endsWith('s')? value.join(',') : value
         } else {
           delete query[key]
         }
+      }
+      if (this.sortEnabled) {
+        query['sort'] = '-likes'
+      } else {
+        delete query['sort']
       }
       this.$router.push({
         path: this.$route.path,
@@ -180,6 +192,7 @@ export default {
           this.filter[key] = route.query[key]
         }
       }
+      this.sortEnabled = route.query['sort']? true : false
     }
   },
   created() {
@@ -271,6 +284,18 @@ export default {
             }
           }
         }
+      }
+    }
+    .md-button.sort-toggle {
+      display: block;
+      padding: 0;
+      margin: 0;
+      min-width: 24px;
+      width: 24px;
+
+      opacity: 0.55;
+      .md-icon {
+        margin: 0;
       }
     }
     .md-chip {
