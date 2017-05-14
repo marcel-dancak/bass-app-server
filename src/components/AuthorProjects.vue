@@ -44,6 +44,7 @@
 
     <md-theme md-name="light">
       <responsive-list
+        :paginator="{}"
         :projects="projects"
         showLastEdit>
         <md-button

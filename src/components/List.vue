@@ -2,6 +2,7 @@
   <div class="page-container">
     <responsive-list
       :projects="projects"
+      :paginator="paginator"
       :showAuthor="showAuthor"
       :showLastEdit="!showAuthor">
       <md-button
@@ -28,7 +29,8 @@ export default {
   data () {
     return {
       title: 'Projects',
-      projects: []
+      projects: [],
+      paginator: {page: 1}
     }
   },
   watch: {
@@ -46,7 +48,6 @@ export default {
   methods: {
     route(to) {
       const path = to.path.split('/').pop()
-      console.log(path)
       if (path === 'bookmarked') {
         this.title = 'Bookmarked'
       } else if (path === 'created') {
@@ -61,11 +62,23 @@ export default {
     fetchProjects(path, query) {
       this.$client.fetchProjects(path, query)
         .then(response => {
-          this.projects = response.data
+          this.projects = response.data.projects || response.data
+          this.paginator = response.data.paginator || {page: 1, pages: 3}
         })
     },
     toggleMenu() {
       this.$emit('toggle-menu')
+    }
+  },
+  beforeRouteUpdate (to, from, next) {
+    // console.log('beforeRouteUpdate')
+    // auto-remove page parameter when changing query
+    if (to.query.page && (from.path !== to.path || from.query.page === to.query.page)) {
+
+      delete to.query.page
+      next({ path: to.path, query: to.query })
+    } else {
+      next()
     }
   }
 }

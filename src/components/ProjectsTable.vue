@@ -122,6 +122,7 @@ export default {
   },
   data() {
     return {
+      page: 1,
       sortEnabled: false,
       filter: {
         artists: [],
@@ -193,6 +194,14 @@ export default {
         }
       }
       this.sortEnabled = route.query['sort']? true : false
+    },
+    onPagination(paginator) {
+      const query = Object.assign({}, this.$route.query)
+      query.page = paginator.page
+      this.$router.push({
+        path: this.$route.path,
+        query: query
+      })
     }
   },
   created() {
@@ -220,6 +229,7 @@ export default {
 }
 
 .md-table {
+  border-bottom: 1px solid #ccc;
   .md-table-row:hover .md-table-cell {
     background-color: #FFF9C4!important;
   }
