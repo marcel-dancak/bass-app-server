@@ -22,7 +22,6 @@ DATABASES = {
     }
 }
 
-
 ### SECRET KEY
 SECRET_KEY = '{{ secret_key }}'
 
@@ -49,6 +48,15 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'media/')
 
 
 ### SYSTEM CONFIGURATION
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211'
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.forms import SimpleArrayField
 
@@ -20,15 +21,28 @@ class ProjectDataForm(forms.ModelForm):
     # data = AppDataField(required=False)
 
     def full_clean(self):
-        current_data = self.instance.data if self.instance else None
+        # assign user when saving a new project or updating
+        # a project without author (when user was deleted)
+        if not self.instance or not self.instance.user:
+            self.data['user'] = self.initial['user']
+
+        # when updating existing project and new author
+        # is not explicitly set, use current author
+        if self.instance and 'user' not in self.data:
+            self.data['user'] = self.instance.user.pk
+
         # when 'data' was not explicitly passed, do not modify it
         if 'data' not in self.data:
             self.fields.pop('data')
+        else:
+            # TODO: Save to History
+            self.instance.modified = timezone.now()
+            pass
         super(ProjectDataForm, self).full_clean()
 
     class Meta:
         model = Project
-        exclude = ('id', 'user', 'likes', 'data_public')
+        exclude = ('id', 'likes')
         field_classes = {
             'genres': ArrayField,
             'playing_styles': ArrayField,

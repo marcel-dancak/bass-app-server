@@ -1,3 +1,4 @@
+import os
 import random
 import string
 
@@ -5,17 +6,20 @@ from django.conf import settings
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django_resized import ResizedImageField
-
+# from django.utils import timezone
 
 from django.contrib.auth.models import AbstractUser
 
+
+def avatar_filename(instance, filename):
+    return 'images/avatars/{0}{1}'.format(instance.pk, os.path.splitext(filename)[1])
 
 class User(AbstractUser):
     avatar = ResizedImageField(
         'profile picture',
         size=[100, 100],
         crop=['middle', 'center'],
-        upload_to='images/avatars/',
+        upload_to=avatar_filename,
         null=True,
         blank=True
     )
@@ -24,14 +28,15 @@ class User(AbstractUser):
         blank=True,
         default=[]
     )
-    favourites = ArrayField(
+    bookmarks = ArrayField(
         models.CharField(max_length=8),
         blank=True,
         default=[]
     )
-    subscribers = models.ManyToManyField("self", blank=True)
 
-    # youtube, twitter, facebook, instagram, patreon
+    subscribed = models.ManyToManyField("self", blank=True, symmetrical=False, related_name='subscribers')
+
+    # link to profiles (youtube, twitter, facebook, instagram, patreon)
     links = ArrayField(
         models.CharField(max_length=100),
         blank=True,
@@ -45,6 +50,22 @@ class Project(models.Model):
         ('percussions', 'Percussions'),
         ('piano', 'Piano')
     )
+    CATEGORY_CHOICES = (
+        ('Cover', 'Cover'),
+        ('Lesson', 'Lesson'),
+        ('Arrangement', 'Arrangement'),
+        ('Original Composition', 'Original Composition'),
+        ('Backing Track', 'Backing Track')
+    )
+    LEVEL_CHOICES = (
+        (0, 'Very Easy'),
+        (1, 'Easy'),
+        (2, 'Easy/Medium'),
+        (3, 'Medium'),
+        (4, 'Medium/Hard'),
+        (5, 'Hard'),
+        (6, 'Very Hard')
+    )
     id = models.CharField(
         "id",
         max_length=8,
@@ -54,6 +75,7 @@ class Project(models.Model):
         settings.AUTH_USER_MODEL,
         verbose_name="user",
         on_delete=models.SET_NULL,
+        # blank=True,
         null=True
     )
     title = models.CharField("title", max_length=100, db_index=True, blank=False)
@@ -61,14 +83,13 @@ class Project(models.Model):
     description = models.TextField("description", blank=True)
     video_link = models.CharField("video link", max_length=100, blank=True)
     data = models.TextField("data")
-    data_public = models.TextField("public version", blank=True)
+    public = models.BooleanField("public", default=False)
 
-    # rename to created
     created = models.DateTimeField("created", auto_now_add=True)
-    # update manually on 'data' change
+    # created = models.DateTimeField("created", default=timezone.now, blank=True)
     modified = models.DateTimeField("last modified", auto_now_add=True)
+    # modified = models.DateTimeField("last modified", default=timezone.now, blank=True)
 
-    # rename to genres
     genres = ArrayField(
         models.CharField(max_length=16, blank=True),
         db_index=True,
@@ -91,12 +112,11 @@ class Project(models.Model):
         blank=True
     )
     # (cover/lesson/backing track/composition..)
-    category = models.CharField(max_length=20)
-    # difficulty = models.IntegerField("difficulty")
-    level = models.IntegerField("level", default=3)
+    category = models.CharField("category", max_length=20, choices=CATEGORY_CHOICES)
+    level = models.IntegerField("difficulty", default=3, choices=LEVEL_CHOICES)
     likes = models.IntegerField("likes", default=0)
 
-    # revision history?
+    # format = models.IntegerField("format", null=True)
 
     class Meta:
         ordering = ["-created"]
