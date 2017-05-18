@@ -6,7 +6,7 @@
           <img
             v-if="author.avatar"
             class="md-avatar avatar"
-            :src="$http.options.root+author.avatar">
+            :src="$http.options.media+author.avatar">
           <md-icon v-else class="avatar">face</md-icon>
           <md-card-header-text>
             <div class="md-title">{{ author.username }}</div>
@@ -78,7 +78,7 @@ export default {
   },
   computed: {
     subscribed() {
-      return this.$store.state.user.subscribers.indexOf(this.author.id) !== -1
+      return this.$store.state.user.subscribed.indexOf(this.author.id) !== -1
     }
   },
   created () {

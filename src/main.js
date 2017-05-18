@@ -17,7 +17,8 @@ Vue.use(VueResource)
 Vue.use(VueMaterial)
 Vue.use(Client)
 
-Vue.http.options.root = process.env.API_URL
+Vue.http.options.root = process.env.SERVER_URL+'/api'
+Vue.http.options.media = process.env.SERVER_URL
 
 function getCookie(name) {
   let cookieValue = null;

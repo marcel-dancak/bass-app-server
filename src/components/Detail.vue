@@ -24,7 +24,7 @@
               </div>
               <!-- <span>{{ project.author.name }}</span> -->
               <md-avatar v-if="project.author.avatar" class="md-avatar-icon">
-                <img :src="$http.options.root+project.author.avatar">
+                <img :src="$http.options.media+project.author.avatar">
               </md-avatar>
               <md-avatar v-else class="md-avatar-icon">
                 <md-icon class="md-size-3x">face</md-icon>
@@ -36,7 +36,7 @@
             <md-button
               class="icon-text"
               :class="{'md-primary': bookmarked}"
-              @click.native="toggleFavourite(project)">
+              @click.native="toggleBookmark(project)">
               <md-icon>star</md-icon>
               Bookmark
               <!-- &nbsp;<span style="color:#fff">Bookmark</span> -->
@@ -101,10 +101,10 @@
         return this.$store.state.user.likes.indexOf(this.id) !== -1
       },
       bookmarked() {
-        return this.$store.state.user.favourites.indexOf(this.id) !== -1
+        return this.$store.state.user.bookmarks.indexOf(this.id) !== -1
       },
       subscribed() {
-        return this.$store.state.user.subscribers.indexOf(this.project.author.id) !== -1
+        return this.$store.state.user.subscribed.indexOf(this.project.author.id) !== -1
       }
     },
     created() {
@@ -117,8 +117,8 @@
             this.project = response.data
           })
       },
-      toggleFavourite(project) {
-        this.$client.toggleFavourite(project)
+      toggleBookmark(project) {
+        this.$client.toggleBookmark(project)
       },
       toggleLike(project) {
         this.$client.toggleLike(project)

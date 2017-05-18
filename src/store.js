@@ -7,8 +7,8 @@ export default new Vuex.Store({
   state: {
     user: {
         likes: [],
-        favourites: [],
-        subscribers: [],
+        bookmarks: [],
+        subscribed: [],
         links: []
     }
   },

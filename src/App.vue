@@ -29,7 +29,7 @@
             </md-card-header-text>
             <md-card-media>
               <md-avatar v-if="user.avatar" class="md-large">
-                <img :src="$http.options.root+user.avatar">
+                <img :src="$http.options.media+user.avatar">
               </md-avatar>
               <!-- <img class="md-avatar" v-if="user.avatar" :src="user.avatar"> -->
               <md-icon v-else class="md-size-3x">face</md-icon>

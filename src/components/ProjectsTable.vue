@@ -73,7 +73,7 @@
           <md-icon>{{ bookmarks[index]? 'star' : 'star_border' }}</md-icon>
         </md-table-cell>
         <md-table-cell class="title">
-          <router-link :to="{ name: 'detail', params: { id: item.id }}">
+          <router-link :to="{ name: 'project', params: { id: item.id }}">
             <div class="md-title">{{ item.title }}</div>
             <div class="md-subhead">{{ item.artist || '-' }}</div>
           </router-link>
@@ -153,7 +153,7 @@ export default {
   },
   computed: {
     bookmarks() {
-      return this.projects.map(item => { return this.$store.state.user.favourites.indexOf(item.id) !== -1 })
+      return this.projects.map(item => { return this.$store.state.user.bookmarks.indexOf(item.id) !== -1 })
     }
   },
   methods: {

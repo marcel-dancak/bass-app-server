@@ -102,17 +102,17 @@ class Client {
     return q
   }
 
-  toggleFavourite (project) {
+  toggleBookmark (project) {
     const user = store.state.user
-    const index = user.favourites.indexOf(project.id)
+    const index = user.bookmarks.indexOf(project.id)
     const bookmarked = index === -1
     Vue.http
-      .post('star/', {project: project.id, value: bookmarked})
+      .post('bookmark/', {project: project.id, value: bookmarked})
       .then(response => {
           if (bookmarked) {
-            user.favourites.push(project.id)
+            user.bookmarks.push(project.id)
           } else {
-            user.favourites.splice(index, 1)
+            user.bookmarks.splice(index, 1)
           }
         }, response => {
 
@@ -146,21 +146,24 @@ class Client {
 
   toggleSubscribe(author) {
     const user = store.state.user
-    const index = user.subscribers.indexOf(author.id)
+    const index = user.subscribed.indexOf(author.id)
     const subscribed = index === -1
-    Vue.http
-      .post('subscribe/', {author: author.id, value: subscribed})
-      .then(response => {
-          if (subscribed) {
-            user.subscribers.push(author.id)
-          } else {
-            user.subscribers.splice(index, 1)
-          }
-          // invalidate cache
-          this.cache = {}
-        }, response => {
+    const q = Vue.http.post('subscribe/', {author: author.id, value: subscribed})
+    q.then(response => {
+        if (subscribed) {
+          user.subscribed.push(author.id)
+        } else {
+          user.subscribed.splice(index, 1)
+        }
+        if (author.subscribers_count !== undefined) {
+          author.subscribers_count += subscribed? 1 : -1
+        }
+        // invalidate cache
+        this.cache = {}
+      }, response => {
 
-        })
+      })
+    return q
   }
 
   loadUserProfile() {

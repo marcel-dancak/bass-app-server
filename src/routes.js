@@ -28,8 +28,8 @@ export default [
         component: List,
         props: (route) => ({ showAuthor: route.path !== '/created' })
       }, {
-        name: 'detail',
-        path: 'detail/:id',
+        name: 'project',
+        path: 'project/:id',
         component: Detail,
         props: true,
         children: [{
