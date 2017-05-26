@@ -112,9 +112,9 @@
       },
       compiledMarkdown: function () {
         if (this.project.description) {
-          return marked(this.project.description, { sanitize: true })
+          return marked(this.project.description, { sanitize: false })
         }
-        return marked('Go to http://google.sk')
+        return 'No description provided.'
       }
     },
     created() {
@@ -129,6 +129,31 @@
 </script>
 <style lang="scss">
   @import '../variables.scss';
+
+  .description {
+    div, p {
+      margin: 12px 0 8px 0;
+    }
+    h1 {
+      font-size: 20px;
+    }
+    h2, h3 {
+      font-size: 17px;
+    }
+    /*
+    h2 ~ p {
+      margin-top: 8px;
+    }*/
+
+    ul>li+li,
+    ol>li+li {
+      margin-top: 4px;
+    }
+    ul>li>p,
+    ol>li>p {
+      margin: 0;
+    }
+  }
 
   .md-card.detail {
     box-shadow: none;
@@ -145,22 +170,6 @@
         }
         @media (min-width: 1024px) {
           padding-right: 44px;
-        }
-      }
-      .description {
-        h3 {
-          margin-bottom: 0px;
-        }
-        h3 ~ p {
-          margin-top: 8px;
-        }
-        h4 {
-          margin: 0;
-          display: inline;
-          font-size: 17px;
-        }
-        h4 ~ p {
-          display: inline;
         }
       }
       .created {

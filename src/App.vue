@@ -36,7 +36,10 @@
             </md-card-media>
           </md-card-header>
           <md-card-header v-else class="logo">
-            <img src="./assets/logo-dark.svg">
+            <div>
+              <img src="./assets/logo-dark.svg">
+              <span class="subheader">Test version</span>
+            </div>
             <!-- <router-link
               class="register-link"
               :to="{ name: 'registration' }">Create Account
@@ -95,6 +98,12 @@
 
           <!-- <md-divider></md-divider> -->
           <md-subheader>Links</md-subheader>
+          <md-list-item>
+            <router-link to="/guide" exact>
+              <md-icon>help</md-icon>
+              <span>How To</span>
+            </router-link>
+          </md-list-item>
           <md-list-item href="/app" target="_blank">
             <!-- exit_to_app, queue_play_next, web, computer -->
             <md-icon>queue_play_next</md-icon>
@@ -218,8 +227,7 @@ export default {
       display: flex;
 
       &.logo {
-        xflex-direction: column;
-        xpadding-top: 4px;
+        padding-top: 4px;
         opacity: 0.8;
         height: 96px;
         img {
@@ -231,6 +239,14 @@ export default {
         .register-link {
           padding: 14px 0 10px 24px;
         }
+      }
+      .subheader {
+        font-size: 15px;
+        font-weight: 500;
+        position: relative;
+        top: 2px;
+        left: 24px;
+        opacity: 0.7;
       }
     }
     .md-card-actions {
@@ -253,7 +269,8 @@ export default {
   }
 
   .md-toolbar.main {
-    h1 {
+    h1.md-title {
+      margin-left: 0;
       padding-left: 8px;
       padding-right: 16px;
     }

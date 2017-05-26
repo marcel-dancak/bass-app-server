@@ -1,43 +1,46 @@
 <template>
   <div class="intro-page">
     <login-dialog ref="login" @login="afterLogin"></login-dialog>
+    <feedback-dialog ref="feedback" @sent="afterFeedback"></feedback-dialog>
     <div class="container">
-      <header>
-        <h1>
-          <img class="logo" src="../assets/logo.svg">
-        </h1>
-        <h4>Online platform for creating and sharing audio compositions wih focus on bass guitar</h4>
+      <div class="header-container">
+        <div class="label"><span>Test version</span></div>
+        <header>
+          <img class="logo" src="../assets/logo2.svg">
+          <h4>Online platform for creating and sharing audio compositions wih primary focus on the bass guitar</h4>
 
-        <md-button v-if="!user.username"
-          @click.native="$refs.login.open"
-          class="md-primary md-raised">
-          <span>Sign In</span>
-        </md-button>
+          <md-button v-if="!user.username"
+            @click.native="$refs.login.open"
+            class="md-primary md-raised">
+            <span>Sign In</span>
+          </md-button>
 
-        <div v-else class="user">
-          <div class="avatar">
-            <md-avatar v-if="user.avatar">
-              <img :src="$http.options.root+user.avatar">
-            </md-avatar>
-            <md-icon v-else class="md-size-2x">face</md-icon>
+          <div v-else class="user">
+            <div class="avatar">
+              <md-avatar v-if="user.avatar">
+                <img :src="$http.options.media+user.avatar">
+              </md-avatar>
+              <md-icon v-else class="md-size-2x">face</md-icon>
+            </div>
+            <router-link to="/profile">{{ user.username }}</router-link>
           </div>
-          <router-link to="/profile">{{ user.username }}</router-link>
-        </div>
-<!--         <md-button v-else
-          @click.native="$router.push('projects')"
-          class="md-primary md-raised">
-          <span>Sign Out</span>
-        </md-button> -->
-      </header>
+  <!--         <md-button v-else
+            @click.native="$router.push('projects')"
+            class="md-primary md-raised">
+            <span>Sign Out</span>
+          </md-button> -->
 
-      <hr />
+        </header>
+      </div>
+
       <br />
 
       <md-layout
         md-row md-column-small
-        class="main-layout">
+        class="main-layout content">
         <md-layout md-flex="45" md-column class="text-left">
-          <h3>main goals</h3>
+          <h3>It would be nice to achieve</h3>
+          <br />
           <md-list>
 
             <md-list-item>
@@ -54,10 +57,10 @@
             <md-list-item>
               <md-icon class="md-primary">share</md-icon>
               <div class="md-list-text-container">
-                <span class="md-title">Community of creators and followers</span>
+                <span class="md-title">Strong community of users</span>
                 <p>
-                  Provide mutually beneficial environment for authors and subscribers.
-                  Give authors great tools for creating bass tracks in easy to learn form, and so motivate followers in rewarding them.
+                  Find some skilled authors and keep them motivated for regular uploading of new projects.
+                  On the other side, there should be sufficient amount end users supporting this project.
                 </p>
               </div>
             </md-list-item>
@@ -67,8 +70,8 @@
               <div class="md-list-text-container">
                 <span class="md-title">Support for further development</span>
                 <p>
-                  Because <a href="http://marcel-dancak.github.io/drums-and-bass/">BassApp</a>
-                  is a free and open source application, one of the BassCloud's service goals
+                  Because <a href="http://marcel-dancak.github.io/bass-app/">BassApp</a>
+                  is a free and open source application, one of the BassCloud's goals
                   is to provide financial support for its further development and maintenance.
                 </p>
               </div>
@@ -84,14 +87,14 @@
           <br />
           <p>
             BassCloud is build as an extension service for the
-            <a href="http://marcel-dancak.github.io/drums-and-bass/">BassApp</a>
-            application, providing online storage space and catalog-like interface for projects created in it.
+            <a href="http://marcel-dancak.github.io/bass-app/">BassApp</a>
+            application, providing online storage space and interactive catalog interface for projects created in it.
           </p>
         </md-layout>
       </md-layout>
 
-      <hr />
       <div class="actions">
+        <hr style="margin: 0 0 16px 0"/>
         <router-link
           to="projects"
           :class="{'md-primary': user.username}"
@@ -106,16 +109,38 @@
           <span>Create account</span>
         </router-link>
       </div>
+      <div style="flex:1"></div>
+      <footer>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <!-- <md-icon class="xmd-size-2x">info</md-icon> -->
+        <a class="md-button" href="http://marcel-dancak.github.io/bass-app/">
+          <!-- <md-icon class="small">info</md-icon> -->
+          <img class="logo" src="../assets/bassapp_logo.svg">
+        </a>
+        <md-button @click.native="$refs.feedback.open">
+          <md-icon>message</md-icon>
+          Feedback
+        </md-button>
+      </footer>
     </div>
+    <md-snackbar
+      ref="snackbar"
+      md-position="bottom right"
+      md-duration="3000">
+      <span>Your feedback was successfully sent.</span>
+    </md-snackbar>
   </div>
 </template>
 
 <script>
   import LoginDialog from './Login'
+  import FeedbackDialog from './Feedback'
+
   export default {
     name: 'intro',
     components: {
-      LoginDialog
+      LoginDialog,
+      FeedbackDialog
     },
     computed: {
       user() {
@@ -125,6 +150,9 @@
     methods: {
       afterLogin () {
         this.$router.push({path: '/projects'})
+      },
+      afterFeedback () {
+        this.$refs.snackbar.open()
       }
     }
   }
@@ -138,6 +166,8 @@
 </style>
 
 <style lang="scss">
+  @import '../variables.scss';
+
   .intro-page {
     position: absolute;
     top: 0;
@@ -145,40 +175,105 @@
     height: 100%;
     width: 100%;
     overflow: auto;
-    xbackground-color: #f9f9f9;
-    background-color: #fff;
+    background-color: #f9f9f9;
     text-align: center;
-
-    @media (min-width: 560px) {
-      padding: 0 1em;
-    }
 
     a:not(.md-button) {
       color: #2196f3;
     }
-
     .container {
-      margin: 0 auto;
-      max-width: 1240px;
-      @media (max-width: 1280px) {
-        padding: 0 16px;
+      min-height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+
+      header, .content, .actions {
+        max-width: 1240px;
+        margin: 0 auto;
+        width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+        @media (min-width: 1280px) {
+          width: 1240px;
+        }
+      }
+      .header-container {
+        padding-top: 10px;
+        background-color: #607D8B;
+
+        .label {
+          color: #fff;
+          font-weight: 500;
+          position: absolute;
+          text-align: center;
+
+          transform: rotate(-35deg);
+          box-shadow: $material-shadow-3dp;
+
+          top: 0px;
+          left: -38px;
+          width: 136px;
+          height: 44px;
+          line-height: 18px;
+          font-size: 13px;
+          /*background-color: #EEEEEE;*/
+          background-color: #FFC400;
+          color: #616161;
+          opacity: 0.75;
+
+          span {
+            padding-top: 3px;
+            display: table-cell;
+            vertical-align: middle;
+            word-spacing: 120px;
+          }
+        }
+      }
+    }
+    footer {
+      height: 52px;
+      margin-top: 20px;
+      background-color: #B0BEC5;
+      color: #444;
+      line-height: 52px;
+      .md-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 32px;
+        &.small {
+          width: 26px;
+          font-size: 24px;
+        }
+      }
+      .logo {
+        height: 17px;
       }
     }
     header {
+      padding-top: 16px;
       position: relative;
+      color: #fff;
+      .logo {
+        height: 58px;
+      }
       .md-button {
         margin: auto 0;
         position: absolute;
-        right: 0;
+        right: 16px;
         top: 16px;
       }
       .user {
         position: absolute;
         right: 0;
-        top: -2px;
+        top: 8px;
         a {
-          opacity: 0.85;
+          opacity: 0.55;
           font-size: 15px;
+          color: #fff;
+          &:hover {
+            color: #fff;
+            opacity: 0.75;
+          }
         }
         .avatar {
           xdisplay: inline-block;
@@ -226,10 +321,15 @@
     }
     hr {
       opacity: 0.4;
-      margin-bottom: 16px;
     }
-    .logo {
-      height: 58px;
+
+    .subheader {
+      padding-top: 2px;
+      font-size: 17px;
+      font-weight: 500;
+      opacity: 0.55;
+      padding-right: 34px;
+      xpadding-right: 96px;
     }
     .img-container {
       width: 630px;
@@ -261,6 +361,7 @@
       }
     }
     .md-list {
+      background-color: transparent!important;
       .md-list-item {
         padding-bottom: 16px;
         max-width: 500px;

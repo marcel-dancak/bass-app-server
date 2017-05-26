@@ -6,6 +6,13 @@
     <md-theme md-name="form">
 
     <form class="profile-form">
+      <p>BassCloud account registration is free and it will allow you to better
+      keep track of your favorite content or upload your own projects.</p>
+      <p>Please note that BassCloud Service is currently in testing phase,
+      in which all content is available for free.
+      Later, in order to fulfil main goals of this project and keep it alive,
+      only a limited amount of content will be accessible for free.</p>
+
       <md-input-container :class="{ 'md-input-invalid': errors.username }">
         <label>Username</label>
         <md-input
