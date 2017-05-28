@@ -25,41 +25,6 @@ def encode_note(pitch):
     return str(pitch).replace('#', chr(9839)).replace('b', chr(9837))
 
 
-
-class Track(object):
-    name = ''
-
-    def __init__(self):
-        self.bars = {}
-        self.extra_data = {}
-
-    def add_sound(self, bar, beat, sound):
-        ibar = bar.number
-        if ibar not in  self.bars:
-            self.bars[ibar] = {
-                'bar': ibar,
-                'sounds': []
-            }
-        self.bars[ibar]['sounds'].append(sound)
-
-    def data(self):
-        data = {
-            'name': self.name,
-            'bars': list(self.bars.values())
-        }
-        data.update(self.extra_data)
-        return data
-
-
-class PercussionTrack(Track):
-    name = 'Percussions'
-
-    def note_sound(self, beat, note):
-        return {
-            'code': note.value,
-            'volume': note.velocity/100
-        }
-
 DRUMS = {
     44: ('hihat', ),
     35: ('kick', ),
@@ -96,12 +61,51 @@ BONGO_CONGA = {
     64: ('conga',)
 }
 
+
+class Track(object):
+    name = ''
+
+    def __init__(self):
+        self.bars = {}
+        self.extra_data = {}
+
+    def add_sound(self, bar, beat, note):
+        ibar = bar.number
+        if ibar not in  self.bars:
+            self.bars[ibar] = {
+                'bar': ibar,
+                'sounds': []
+            }
+        sound = self.convert_note(beat, note)
+        if sound:
+            self.bars[ibar]['sounds'].append(sound)
+        return sound
+
+    def data(self):
+        data = {
+            'name': self.name,
+            'bars': list(self.bars.values())
+        }
+        data.update(self.extra_data)
+        return data
+
+
+class PercussionTrack(Track):
+    name = 'Percussions'
+
+    def convert_note(self, beat, note):
+        return {
+            'code': note.value,
+            'volume': note.velocity/100
+        }
+
+
 class PercussionMultiTrack(PercussionTrack):
     def __init__(self, name='Percussions'):
         self.tracks = {}
 
-    def add_sound(self, bar, ibeat, sound):
-        code = sound['code']
+    def add_sound(self, bar, beat, note):
+        code = note.value
         if code in DRUMS:
             kit = 'drums'
             MAP = DRUMS
@@ -115,14 +119,18 @@ class PercussionMultiTrack(PercussionTrack):
             print('Unsupported drum code: ', code)
             return
 
-        sound['drum'] = MAP[code][0]
         if kit not in self.tracks:
             track = PercussionTrack()
             track.name = kit
             self.tracks[kit] = track
         else:
             track = self.tracks[kit]
-        track.add_sound(bar, ibeat, sound)
+        sound = track.add_sound(bar, beat, note)
+        value = MAP[code]
+        sound['drum'] = value[0]
+        if len(value) == 2:
+            sound['volume'] = value[1]
+        return sound
 
     def data(self):
         return [track.data() for track in self.tracks.values()]
@@ -133,6 +141,8 @@ class StringTrack(Track):
         super(StringTrack, self).__init__()
         self.track = track
         self.name = track.name
+        self._prevStringSound = {}
+        self._prevStringNote = {}
         
         strings_data = {
             string.number: {
@@ -142,20 +152,40 @@ class StringTrack(Track):
         }
         self.extra_data['strings'] = strings_data
 
-    def note_sound(self, beat, note):
-        pitch = PitchClass(note.realValue)
-        pitch = encode_note(pitch)
+    def isTie(self, note):
+        # note.type == NoteType.tie doesn't work in Python3
+        return note.type.value == NoteType.tie.value
+
+    def convert_note(self, beat, note):
+        if self.isTie(note):
+            # fix note value (maybe some bug in library)
+            prevNote = self._prevStringNote.get(note.string)
+            note.value = prevNote.value
+
+        name = encode_note(PitchClass(note.realValue))
         octave = divmod(note.realValue, 12)[0] - 1
         sound = {
             'volume': note.velocity/100,
             'note': {
-                'name': pitch,
+                'name': name,
                 'octave': octave,
                 'length': beat.duration.value,
                 'dotted': beat.duration.isDotted,
                 'staccato': note.effect.staccato,
             }
         }
+        if self.isTie(note):
+            sound['prev'] = True
+            prevSound = self._prevStringSound.get(note.string)
+            prevSound['next'] = True
+            # print('TIE ', self.track.name, sound)
+        return sound
+
+    def add_sound(self, bar, beat, note):
+        sound = super(StringTrack, self).add_sound(bar, beat, note)
+        if sound:
+            self._prevStringSound[note.string] = sound
+            self._prevStringNote[note.string] = note
         return sound
 
 
@@ -163,11 +193,10 @@ class PianoTrack(StringTrack):
     def __init__(self, track):
         super(PianoTrack, self).__init__(track)
 
-    def note_sound(self, beat, note):
-        sound = super(PianoTrack, self).note_sound(beat, note)
+    def convert_note(self, beat, note):
+        sound = super(PianoTrack, self).convert_note(beat, note)
         sound['string'] = '{0}{1}'.format(sound['note']['name'], sound['note']['octave'])
-        if note.type == NoteType.tie:
-            sound['prev'] = True
+
         return sound
 
 
@@ -175,15 +204,117 @@ class BassTrack(StringTrack):
     def __init__(self, track):
         super(BassTrack, self).__init__(track)
         self.stringsMap = {string.number: str(PitchClass(string.value)) for string in track.strings}
+        self.pendingNotes = {}
 
-    def note_sound(self, beat, note):
-        sound = super(BassTrack, self).note_sound(beat, note)
+    def isTie(self, note):
+        # return (note.isTiedNote or note.type.value == NoteType.tie.value) and not note.effect.slides
+        return (note.type.value == NoteType.tie.value) and not note.effect.slides
+
+    def convert_note(self, beat, note):
+        sound = super(BassTrack, self).convert_note(beat, note)
+
+        style = 'finger'
+        if beat.effect.isSlapEffect:
+            style = {
+                SlapEffect.slapping.value: 'slap',
+                SlapEffect.popping.value: 'pop',
+                SlapEffect.tapping.value: 'tap',
+            } [beat.effect.slapEffect.value]
+        if beat.effect.hasPickStroke:
+            style = 'pick'
+
+        if self.isTie(note):
+            style = 'ring'
+
+        noteType = {
+            NoteType.normal.value: 'regular',
+            NoteType.dead.value: 'ghost',
+        }.get(note.type.value, 'regular')
+
         sound.update({
-            'string': self.stringsMap[note.string]
+            'string': self.stringsMap[note.string],
+            'style': style
         })
-        sound['note'].update({
-            'fret': note.value
-        })
+
+        if noteType == 'ghost':
+            sound['note'] = {
+                'type': 'ghost',
+                'length': 16
+            }
+        else:
+            sound['note'].update({
+                'type': noteType,
+                'fret': note.value
+            })
+
+        if note.string in self.pendingNotes:
+            prevNote = self.pendingNotes[note.string]
+            prevSound = prevNote.sound
+            del self.pendingNotes[note.string]
+            if prevNote.effect.hammer:
+                prevSound['next'] = True
+                sound['prev'] = True
+                sound['style'] = 'hammer' if prevSound['note']['fret'] < sound['note']['fret'] else 'pull'
+            else:
+                # slide
+                SLIDE_LENGTHS = {
+                    4:  {'length': 4},
+                    6:  {'length': 4, 'dotted': True},
+                    8:  {'length': 8},
+                    12: {'length': 8, 'dotted': True},
+                    16: {'length': 16}
+                }
+                length = 1/(1/prevSound['note']['length'] + 1/sound['note']['length'])
+                print(prevSound['note']['length'], length)
+                if length in SLIDE_LENGTHS:
+                    # join two notes into the one sound
+                    prevSound['note'].update(SLIDE_LENGTHS[length])
+                    prevSound['endNote'] = {key: sound['note'][key] for key in ('name', 'octave', 'fret')}
+                    return # delete this note
+                else:
+                    print('let ring slide')
+                    prevSound['note']['type'] = 'regular'
+                    prevSound['next'] = True
+                    sound['prev'] = True
+                    sound['style'] = 'ring'
+                    sound['note']['type'] = 'slide'
+                    sound['note']['slide'] = {}
+                    sound['endNote'] = {key: sound['note'][key] for key in ('name', 'octave', 'fret')}
+                    sound['note'].update({key: prevSound['note'][key] for key in ('name', 'octave', 'fret')})
+                    return sound
+
+        if note.effect.hammer:
+            note.sound = sound
+            self.pendingNotes[note.string] = note
+
+        if note.effect.slides:
+            slide = note.effect.slides[0]
+            sound['note']['type'] = 'slide'
+            sound['note']['slide'] = {}
+            if slide.value in (SlideType.outDownwards.value, SlideType.outUpwards.value, SlideType.intoFromBelow.value, SlideType.intoFromAbove.value):
+                if slide.value in (SlideType.outDownwards.value, SlideType.intoFromBelow.value):
+                    step = -1 * min(3, sound['note']['fret']-1)
+                else:
+                    step = min(3, 24-sound['note']['fret'])
+                slideNoteVal = note.realValue + step
+                slidePitch = PitchClass(slideNoteVal)
+                slideNote = {
+                    'name': encode_note(slidePitch),
+                    'octave': divmod(slideNoteVal, 12)[0] - 1,
+                    'fret': sound['note']['fret'] + step
+                }
+                sound['endNote'] = slideNote
+
+                if slide.value in (SlideType.intoFromAbove.value, SlideType.intoFromBelow.value):
+                    copy = slideNote.copy()
+                    for attr in ('name', 'octave', 'fret'):
+                        slideNote[attr] = sound['note'][attr]
+                        sound['note'][attr] = copy[attr]
+            else:
+                # slide to the next note (process on next note)
+                note.sound = sound
+                self.pendingNotes[note.string] = note
+
         return sound
 
 
@@ -213,20 +344,18 @@ class Convertor(object):
                 instrument_track = percussions_track
 
 
-            for bar in track.measures:
+            for bar in track.measures[:8]:
                 barLength = bar.end - bar.start
                 beatLength = barLength / bar.timeSignature.numerator
                 for beat in bar.voices[0].beats:
                     beat.measure = bar
                     start = (beat.start - bar.start) / beatLength
                     for note in beat.notes:
-                        sound = instrument_track.note_sound(beat, note)
-                        ibeat = int(start) + 1
-                        sound['beat'] = ibeat
-                        sound['start'] = start - int(start)
-                        instrument_track.add_sound(bar, ibeat, sound)
-
-                break
+                        sound = instrument_track.add_sound(bar, beat, note)
+                        if sound:
+                            ibeat = int(start) + 1
+                            sound['beat'] = ibeat
+                            sound['start'] = start - int(start)
 
             # bar_data = {
             #     'timeSignature': {
