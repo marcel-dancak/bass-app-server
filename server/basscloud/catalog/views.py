@@ -4,13 +4,12 @@ import logging
 # from lzstring import LZString
 from django.conf import settings
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, Http404
 from django.views import View
 from django.views.decorators.gzip import gzip_page
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
-
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -18,6 +17,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
+# TODO move to accounts app
 from basscloud.decorators import login_required
 from basscloud.libs.lzstring import LZString
 from . import forms
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 @ensure_csrf_cookie
 def catalog(request):
-    logger.info('Catalog App touched!')
+    # logger.info('Catalog App touched!')
     data = {}
     if request.user.is_authenticated():
         data['userProfile'] = json.dumps(get_user_profile(request.user))
@@ -49,10 +49,10 @@ def get_user_profile(user):
         'last_name': user.last_name,
         'email': user.email,
         'avatar': user.avatar.url if user.avatar else '',
-        'favourites': user.favourites,
+        'bookmarks': user.bookmarks,
         'likes': user.likes,
         'links': user.links,
-        'subscribers': list(user.subscribers.values_list('pk', flat=True)),
+        'subscribed': list(user.subscribed.values_list('pk', flat=True)),
         'projectsCount': Project.objects.filter(user=user).count()
     }
 
@@ -86,6 +86,7 @@ def client_logout(request):
     return HttpResponse(" ", status=200)
 
 
+@ensure_csrf_cookie # just for development!
 def user_profile(request):
     if request.user and request.user.is_authenticated():
 
@@ -93,7 +94,6 @@ def user_profile(request):
             # data = json.loads(request.body.decode('utf-8'))
             form = forms.UserProfileForm(request.POST, request.FILES, instance=request.user)
             if form.is_valid():
-                print (form.cleaned_data)
                 user = form.save()
                 return JsonResponse(get_user_profile(user))
             else:
@@ -118,7 +118,7 @@ def get_projects_data(queryset):
                 'id': project.user.pk,
                 'name': project.user.username,
                 'avatar': project.user.avatar.url if project.user.avatar else ''
-            },
+            } if project.user else {},
             'playing_styles': project.playing_styles,
             'genres': project.genres,
             'tracks': project.tracks,
@@ -133,6 +133,13 @@ def get_projects_data(queryset):
 
 
 class ProjectsFilterMixin(object):
+    levels = {
+        'A': {'level__lte': 1},
+        'B': {'level__lte': 2},
+        'C': {'level__range': (1,4)},
+        'D': {'level__range': (2,5)},
+        'E': {'level__range': (4,6)}
+    }
     def filter(self, queryset, request):
         if 'q' in request.GET:
             queryset = admin.get_search_results(request, queryset, request.GET['q'])[0]
@@ -156,30 +163,48 @@ class ProjectsFilterMixin(object):
             for author in authors[1:]:
                 q = q | Q(user__username__icontains=author)
             queryset = queryset.filter(q)
+
+        if 'level' in request.GET:
+            queryset = queryset.filter(**self.levels[request.GET['level']])
+
+        if 'sort' in request.GET:
+            queryset = queryset.order_by(request.GET['sort'])
+
         return queryset
 
 
-class ProjectsList(ProjectsFilterMixin, View):
+from django.views.generic.list import MultipleObjectMixin
+
+class ProjectsList(ProjectsFilterMixin, MultipleObjectMixin, View):
 
     @method_decorator(gzip_page)
     def get(self, request, base_filter=None):
         # or select_related
         # queryset = Project.objects.all()
-        queryset = Project.objects.defer('data', 'data_public').prefetch_related('user')
+        queryset = Project.objects.defer('data').prefetch_related('user')
 
-        if base_filter == 'bookmarked' and request.user.is_authenticated():
-            queryset = queryset.filter(pk__in=request.user.favourites)
+        if base_filter and request.user.is_authenticated():
+            if base_filter == 'bookmarked' :
+                queryset = queryset.filter(pk__in=request.user.bookmarks)
 
-        if base_filter == 'subscribed':
-            queryset = queryset.filter(user__in=request.user.subscribers.all())
+            if base_filter == 'subscribed':
+                queryset = queryset.filter(user__in=request.user.subscribed.all())
 
-        if base_filter == 'created':
-            queryset = queryset.filter(user=request.user)
-
-        if base_filter == 'liked':
-            queryset = queryset.order_by('-likes')
+            if base_filter == 'created':
+                queryset = queryset.filter(user=request.user)
 
         queryset = self.filter(queryset, request)
+
+        paginator, page, queryset, has_other_pages = self.paginate_queryset(queryset, 25)
+        return JsonResponse({
+            'projects': get_projects_data(queryset),
+            'paginator': {
+                'has_other_pages': has_other_pages,
+                'page': page.number,
+                'pages': paginator.num_pages,
+                # 'total': queryset.count()
+            }
+        })
         return JsonResponse(get_projects_data(queryset), safe=False)
 
 
@@ -187,8 +212,8 @@ class AuthorProjects(ProjectsFilterMixin, View):
 
     @method_decorator(gzip_page)
     def get(self, request, author):
-        author = get_user_model().objects.get(id=author)
-        queryset = Project.objects.defer('data', 'data_public').filter(user=author)
+        author = get_object_or_404(get_user_model(), id=author)
+        queryset = Project.objects.defer('data').filter(user=author)
         queryset = self.filter(queryset, request)
 
         # use already fetched author model to avoid additional db queries
@@ -205,6 +230,7 @@ class AuthorProjects(ProjectsFilterMixin, View):
                 'last_name': author.last_name,
                 'date_joined': author.date_joined,
                 'projects_count': len(projects),
+                'subscribers_count': author.subscribers.count(),
                 'avatar': author.avatar.url if author.avatar else '',
                 'links': author.links
             },
@@ -224,25 +250,21 @@ class ProjectView(View):
         # data = json.loads(LZString.decompress(request.read()))
         # print (request.body)
         data = json.loads(request.body.decode('utf-8'))
+        initial = {'user': request.user.pk}
 
         # data = json.loads(LZString.decompressFromBase64(request.body))
         # data = json.loads(LZString.decompressFromUTF16(request.body.decode('utf-8')))
-
         instance = None
         if 'id' in data:
             instance = get_object_or_404(Project, pk=data['id'])
-            # TODO: check user permissions
+            if instance.user != request.user and not request.user.is_superuser:
+                return HttpResponseForbidden()
 
-        # for param in ('genres', 'playing_styles', 'tags')
-
-        form = forms.ProjectDataForm(data, instance=instance)
+        form = forms.ProjectDataForm(data, instance=instance, initial=initial)
         if form.is_valid():
-            print (form.cleaned_data)
+            # print (form.cleaned_data)
             # p = LZString.decompressFromBase64(data['data'])
             # print (p)
-            # raise Exception("Uploading not yet implemented!")
-            return HttpResponse("ok")
-            # project.user = request.user
             project = form.save()
             return HttpResponse(project.id)
         else:
@@ -266,7 +288,7 @@ class ProjectView(View):
 
 
 @login_required
-def star(request):
+def bookmark(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         form = forms.ProjectVoteForm(data)
@@ -274,10 +296,10 @@ def star(request):
             project = form.cleaned_data['project']
             value = form.cleaned_data['value']
 
-            if value and project.pk not in request.user.favourites:
-                request.user.favourites.append(project.pk)
+            if value and project.pk not in request.user.bookmarks:
+                request.user.bookmarks.append(project.pk)
             elif not value:
-                request.user.favourites.remove(project.pk)
+                request.user.bookmarks.remove(project.pk)
             request.user.save()
             return HttpResponse("ok")
         else:
@@ -318,7 +340,7 @@ def subscribe(request):
             author = form.cleaned_data['author']
             value = form.cleaned_data['value']
             if value:
-                request.user.subscribers.add(author)
+                request.user.subscribed.add(author)
             else:
-                request.user.subscribers.remove(author)
+                request.user.subscribed.remove(author)
     return HttpResponse("ok")
