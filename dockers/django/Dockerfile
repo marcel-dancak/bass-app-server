@@ -6,20 +6,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-setuptools \
     python3-pip \
     supervisor \
+    memcached \
     && rm -rf /var/lib/apt/lists/*
 
 
-
-COPY basscloud-dev.tar.gz /tmp/basscloud-dev.tar.gz
-
 # Install Gunicorn and BassCloud dependencies
+COPY tmp/requirements.txt /tmp/
+
 RUN pip3 install --no-cache-dir 'gunicorn>=19.7,<19.8' && \
-    pip3 install --no-cache-dir /tmp/basscloud-dev.tar.gz && \
-    rm /tmp/basscloud-dev.tar.gz
+    pip3 install --no-cache-dir python-memcached && \
+    pip3 install --no-cache-dir -r /tmp/requirements.txt
 
-# Install Gunicorn and BassCloud dependencies
-# RUN pip3 install --no-cache-dir 'gunicorn>=19.1.1,<19.2' && \
-#     pip3 install 'https://github.com/marcel-dancak/basscloud-server/zipball/master#egg=basscloud-server&subdirectory=server'
+COPY tmp/basscloud-dev.tar.gz /tmp/basscloud-dev.tar.gz
+
+RUN pip3 install --no-cache-dir /tmp/basscloud-dev.tar.gz && \
+    rm /tmp/basscloud-dev.tar.gz
 
 
 # Create BassCloud Django project
@@ -33,10 +34,7 @@ RUN mkdir -p /var/www/basscloud && \
 COPY settings_custom.py /var/www/basscloud/djproject/settings_custom.py
 ENV PYTHONPATH $PYTHONPATH:/var/www/basscloud/
 ENV DJANGO_SETTINGS_MODULE djproject.settings
-
-
-# ARG CACHEBUST=1
-# RUN django-admin collectstatic --no-input
+ENV LANG C.UTF-8
 
 
 VOLUME /var/www/basscloud/static/
