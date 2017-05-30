@@ -18,6 +18,7 @@ classifiers = [
 
 exclude_from_packages = [
     'basscloud.catalog.migrations',
+    'basscloud.feedback.migrations',
     # 'basscloud.conf.project_template'
 ]
 

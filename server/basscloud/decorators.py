@@ -24,11 +24,11 @@ def view_cache(func=None, timeout=60):
             key = request.path
             resp = cache.get(key)
             if resp:
-                print('loading from cache:', key)
+                # print('loading from cache:', key)
                 return resp
 
             resp = view_func(request, *args, **kwargs)
-            print('writting to cache', key)
+            # print('writting to cache', key)
             cache.set(key, resp, timeout)
             return resp
         return _wrapped_view
@@ -43,23 +43,23 @@ def indexed_cache(func=None, excluded=('page',), timeout=60):
         @wraps(view_func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
             use_cache = set(request.GET.keys()).issubset(set(excluded))
-            print('use_cache:', use_cache)
+            # print('use_cache:', use_cache)
             if use_cache:
                 version = request.META['QUERY_STRING']
                 key = version_key(request.path, version)
                 resp = cache.get(key)
                 if resp:
-                    print('loading from cache:', key)
+                    # print('loading from cache:', key)
                     return resp
 
             resp = view_func(request, *args, **kwargs)
             if use_cache:
-                print('writting to cache', key)
+                # print('writting to cache', key)
                 cache.set(key, resp, timeout)
                 index = cache.get(index_key(request.path), [])
                 if version not in index:
                     index.append(version)
-                    print('updating index:', index)
+                    # print('updating index:', index)
                     cache.set(index_key(request.path), index)
 
             return resp
@@ -77,7 +77,7 @@ def clear_cache(view_func):
     def _wrapped_view(request, *args, **kwargs):
         response = view_func(request, *args, **kwargs)
         if request.method == 'POST' and response.status_code == 200:
-            print('CLEAR CACHE')
+            # print('CLEAR CACHE')
             cache.clear()
         return response
     return _wrapped_view

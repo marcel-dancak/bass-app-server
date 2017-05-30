@@ -5,23 +5,26 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <title>Drums and Bass</title>
-    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
-    <link rel="stylesheet" type="text/css" href="https://rawgit.com/marcel-dancak/drums-and-bass/master/dist/latest/styles/styles.min.css">
+    <title>BassApp</title>
+    <link rel="icon" type="image/png" href="/static/app/favicon-16x16.png" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="/static/app/styles/styles.min.css?230517">
 
-    <script src="https://rawgit.com/marcel-dancak/drums-and-bass/master/dist/latest/js/app.min.js"></script>
+    <script src="/static/app/js/app.min.js?230517"></script>
     <script type="text/javascript">
       angular.module('bd.app')
         .config(function($mdIconProvider, $sceDelegateProvider) {
           $sceDelegateProvider.resourceUrlWhitelist([
             'self',
-            'https://rawgit.com/marcel-dancak/drums-and-bass/master/dist/latest/**',
             'https://s3.eu-central-1.amazonaws.com/bass-app/**'
           ]);
           $mdIconProvider
-            .defaultIconSet('https://rawgit.com/marcel-dancak/drums-and-bass/master/dist/latest/styles/icons.svg', 32)
+            .defaultIconSet('/static/app/styles/icons.svg', 32)
+            .iconSet('drums', '/static/app/styles/drums.svg', 512)
+            .icon('basscloud', '/static/app/styles/basscloud.svg')
         })
+        .constant('localSoundsUrl', 'http://127.0.0.1:8887/')
         .constant('soundsUrl', 'https://s3.eu-central-1.amazonaws.com/bass-app/')
+        .constant('uploadUrl', 'https://basscloud.net/api/')
         .constant('dataUrl', '/app/');
     </script>
   </head>

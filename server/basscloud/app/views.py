@@ -14,5 +14,4 @@ def app(request):
 
 def app_data(request, id, *args):
     project = get_object_or_404(Project, pk=id)
-    data = LZString.decompressFromBase64(project.data)
-    return HttpResponse(data, content_type='application/json')
+    return HttpResponse(project.data, content_type='text/plain')

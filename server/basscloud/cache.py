@@ -13,21 +13,20 @@ def version_key(key, version):
     return key+':'+version
 
 def clear_cache(key):
-    print('CLEAR CACHE')
     index = cache.get(index_key(key))
-    print(index)
+    # print('CLEAR CACHE', index)
     if index:
         keys = [version_key(key, v) for v in index]
         keys.append(index_key(key))
         cache.delete_many(keys)
-        print('delete', keys)
+        # print('delete', keys)
 
 
 @receiver(post_save, sender=Project)
 def project_edited(sender, instance, **kwargs):
-    print('Project Edited')
+    # print('Project Edited')
     clear_cache(reverse('catalog:projects'))
     clear_cache(reverse('catalog:author_projects', args=[instance.user.pk]))
     key = reverse('app:project_data', args=[instance.pk])+'.json/'
-    print(key)
+    # print(key)
     cache.delete(key)

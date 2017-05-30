@@ -19,7 +19,7 @@
 <p>
   <small>
     If you can't get the button to work, paste this link into your browser:
-    http://{{ site }}{% url 'registration_activate' activation_key %}
+    {{ protocol }}://{{ site }}{% url 'registration_activate' activation_key %}
 </small>
 </p>
 {% endblock %}
