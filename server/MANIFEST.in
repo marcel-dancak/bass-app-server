@@ -10,3 +10,4 @@ recursive-include basscloud/app/static *
 recursive-include basscloud/app/templates *
 recursive-include basscloud/accounts/static *
 recursive-include basscloud/accounts/templates *
+recursive-include basscloud/seo/templates *

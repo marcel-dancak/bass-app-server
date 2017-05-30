@@ -102,6 +102,8 @@ INSTALLED_APPS = (
     'basscloud.accounts',
     'basscloud.catalog',
     'basscloud.app',
+    'basscloud.feedback',
+    'basscloud.seo'
 )
 
 ROOT_URLCONF = '{{ project_name }}.urls'

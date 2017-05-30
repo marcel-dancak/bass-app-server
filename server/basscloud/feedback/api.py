@@ -4,5 +4,5 @@ from . import views
 
 
 urlpatterns = [
-    url(r"^$", views.catalog, name="index")
+    url(r"^feedback/$", views.Feedback.as_view(), name="feedback")
 ]

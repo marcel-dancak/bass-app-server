@@ -2,17 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="Description" content="Bass Covers with Tabs">
+    <meta name="keywords" content="bass,bass tab,bass cover,bass lesson,bass guitar,drum,backing track"></meta>
+
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>BassCloud</title>
+    <link rel="icon" type="image/png" href="/static/favicon-16x16.png" sizes="16x16">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
     <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- <script src='https://cdn.polyfill.io/v2/polyfill.min.js'></script> -->
 
     <script type="text/javascript">
       (function() {
         var userProfile = '{{ userProfile|default:"{}"|escapejs }}'
-        // when served by Django, userProfile string will be injected with JSON
-        if (!userProfile.startsWith('{{')) {
+        // this will make sense when served by Django
+        if (userProfile.substring(0, 2) !== '{{') {
           window.basscloud_user = JSON.parse(userProfile)
         }
       })()
