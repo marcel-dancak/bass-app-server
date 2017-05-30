@@ -73,7 +73,7 @@
           <md-icon>{{ bookmarks[index]? 'star' : 'star_border' }}</md-icon>
         </md-table-cell>
         <md-table-cell class="title">
-          <router-link :to="{ name: 'project', params: { id: item.id }}">
+          <router-link :to="{ path: '/project/'+item.id }">
             <div class="md-title">{{ item.title }}</div>
             <div class="md-subhead">{{ item.artist || '-' }}</div>
           </router-link>

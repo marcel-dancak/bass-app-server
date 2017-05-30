@@ -26,8 +26,7 @@ class Client {
   }
 
   fromCache (path, query) {
-    console.log('Searching in cache: '+path)
-    console.log(Object.keys(this.cache))
+    // console.log('Searching in cache: '+path)
     const key = path+JSON.stringify(query)
     const record = this.cache[path]
     if (record && record.key === key && Date.now()-record.time < CACHE_EXPIRATION) {
@@ -37,7 +36,7 @@ class Client {
 
   projectFromCache (id) {
     for (const key in this.cache) {
-      console.log('searching in cache: '+key)
+      // console.log('searching in cache: '+key)
       const projects = this.cache[key].data.projects || this.cache[key].data
       const project = projects.find(p => { return p.id === id })
       if (project) {
@@ -59,6 +58,10 @@ class Client {
   //   return list
   // }
 
+  markEdit () {
+    localStorage.setItem('lastEdit', Date.now())
+  }
+
   fetchProjects (path, query) {
     path = 'projects'+(PROJECTS_FILTERS[path] || path)
     const params = {}
@@ -67,10 +70,16 @@ class Client {
         params[key] = query[key]
       }
     }
+    var lastEdit = parseInt(localStorage.getItem('lastEdit'))
+    if (Number.isFinite(lastEdit) && Date.now()-lastEdit < CACHE_EXPIRATION) {
+      params['_ts'] = lastEdit
+    }
     const data = this.fromCache(path, params)
     if (data) {
+      // console.log('from local cache')
       return Vue.Promise.resolve({data: data})
     }
+
     const q = Vue.http.get(
       path,
       {params: params}
@@ -138,7 +147,9 @@ class Client {
           //   .forEach(item => { item.likes = project.likes })
 
           // or invalidate cache?
+
           this.cache = {}
+          this.markEdit()
         }, response => {
 
         })

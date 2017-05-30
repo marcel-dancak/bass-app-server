@@ -1,5 +1,6 @@
 import App from './App'
 import Intro from './components/Intro'
+import Guide from './components/Guide'
 import Detail from './components/Detail'
 import DetailContent from './components/DetailContent'
 import DetailEditor from './components/DetailEditor'
@@ -33,7 +34,7 @@ export default [
         component: Detail,
         props: true,
         children: [{
-            path: '/',
+            path: '',
             component: DetailContent
           }, {
             path: 'edit',
@@ -48,6 +49,9 @@ export default [
         name: 'registration',
         path: 'registration',
         component: AccountRegistration
+      }, {
+        path: 'guide',
+        component: Guide
       }
     ]
   }

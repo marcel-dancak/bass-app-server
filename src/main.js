@@ -1,5 +1,8 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+
+// import 'es6-promise/auto'
+
 import Vue from 'vue'
 
 import VueMaterial from 'vue-material'
@@ -19,6 +22,7 @@ Vue.use(Client)
 
 Vue.http.options.root = process.env.SERVER_URL+'/api'
 Vue.http.options.media = process.env.SERVER_URL
+Vue.http.options.server = process.env.SERVER_URL
 
 function getCookie(name) {
   let cookieValue = null;
@@ -121,7 +125,7 @@ Vue.filter('capitalize-list', list => {
 })
 
 Vue.filter('applink', value => {
-  const serverUrl = Vue.http.options.root
+  const serverUrl = Vue.http.options.server
   return `${serverUrl}/app#${value}`
 })
 
@@ -144,7 +148,7 @@ Vue.directive('chips-label', {
 window.app = new Vue({
   el: '#app',
   template: '<transition name="fade"><router-view></router-view></transition>',
-  router: new VueRouter({routes}),
+  router: new VueRouter({mode: 'history', routes}),
   store,
   beforeCreate () {
     if (window.basscloud_user) {
@@ -156,3 +160,7 @@ window.app = new Vue({
     }
   }
 })
+
+// document.addEventListener('DOMContentLoaded', function () {
+//   window.app.$mount('#app')
+// })

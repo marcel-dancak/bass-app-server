@@ -2,7 +2,7 @@
   <md-list class="projects">
     <md-list-item
       v-for="(item, index) in projects" :key="item.project">
-      <router-link :to="{ name: 'project', params: { id: item.id }}">
+      <router-link :to="{ path: '/project/'+item.id }">
         <div class="left-section noauth-hide">
           <md-icon>{{ bookmarks[index]? 'star' : 'star_border' }}</md-icon>
         </div>

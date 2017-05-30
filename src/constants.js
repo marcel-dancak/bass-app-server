@@ -47,6 +47,7 @@ const constants = {
     'Rock',
     'Pop',
     'Jazz',
+    'Acid Jazz',
     'Soul',
     'RnB',
     'Disco',
@@ -64,7 +65,9 @@ const constants = {
     'Alternative',
     'Metal',
     'Techno',
-    'Rock and Roll'
+    'Rock and Roll',
+    'Merengue',
+    'Salsa'
   ]
 }
 
