@@ -14,6 +14,28 @@
       </md-input>
     </md-input-container>
 
+    <md-input-container
+      :class="{
+        'md-has-value': form.description,
+        'md-input-focused': editorFocused
+      }">
+      <label>Description</label>
+      <input type="hidden"></input>
+      <div
+        @focus="editorFocused=true"
+        @blur="blur"
+        class="editor"
+        contenteditable="true"
+        v-html="compiledMarkdown">
+      </div>
+    </md-input-container>
+
+<!--     <md-input-container>
+      <label>Description</label>
+      <md-textarea v-model="form.description">
+      </md-textarea>
+    </md-input-container> -->
+
     <div class="field-group">
       <md-input-container>
         <label>Category</label>
@@ -62,12 +84,6 @@
       </md-input-container>
     </div>
 
-    <md-input-container>
-      <label>Description</label>
-      <md-textarea v-model="form.description">
-      </md-textarea>
-    </md-input-container>
-
     <md-chips
       v-chips-label="'Tags'"
       v-model="form.tags"
@@ -102,19 +118,35 @@
 
 <script>
 import Constants from '../constants.js'
+import marked from 'marked'
+import '../lib/pen/pen.css'
+import pen from '../lib/pen/pen'
 
 export default {
   name: 'detail-editor',
   data () {
     return {
       form: {
-        playing_styles: []
+        playing_styles: [],
+        description: ''
       },
+      editorFocused: false
     }
   },
   computed: {
     project() {
       return this.$parent.project
+    },
+    compiledMarkdown: function () {
+      /*
+      if (this.project.description) {
+        return marked(this.project.description, { sanitize: true })
+          // .replace(/<strong>/g, '<b>').replace(/<\/strong>/g, '</b>')
+      }*/
+      if (this.form.description) {
+        return marked(this.form.description, { sanitize: false })
+      }
+      return ''
     }
   },
   created () {
@@ -124,6 +156,15 @@ export default {
     if (this.project.id) {
       this.initializeForm()
     }
+  },
+  mounted () {
+    this.editor = new Pen({
+      class: 'description',
+      editor: document.querySelector('.editor'),
+      list: ['h1', 'h2', 'bold', 'italic', 'underline', 'insertorderedlist',
+            'insertunorderedlist', 'superscript', 'subscript', 'createlink'],
+      toolbarParent: document.querySelector('.editor').parentElement
+    });
   },
   watch: {
     project (newVal, oldVal) {
@@ -156,12 +197,23 @@ export default {
           }
           this.$router.back()
         })
+    },
+    blur() {
+      this.editorFocused = false
+      this.form.description = this.editor.toMd()
     }
   }
 }
 </script>
 <style lang="scss">
-
+  .md-input-container.md-has-value .pen-menu input.pen-input {
+    color: #fff;
+    font-size: 14px;
+    &::-webkit-input-placeholder {
+      color: #bbb;
+      font-size: 14px;
+    }
+  }
   .md-menu-content {
     min-width: 200px;
   }
@@ -190,6 +242,14 @@ export default {
     textarea.md-input {
       min-height: 130px;
       max-height: 500px;
+    }
+    .editor {
+      padding-top: 6px;
+      outline: none;
+      width: 100%;
+      > p:first-child {
+        margin: 0;
+      }
     }
   }
 </style>
