@@ -1,20 +1,41 @@
+{% load markdown %}
 <!DOCTYPE html>
 
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="Description" content="{{ project.artist }} - {{ project.title }} Bass {{ project.category }} Tab">
-    <meta name="keywords" content="{{ project.artist }},{{ project.title }},bass,bass tab,bass cover,bass lesson,bass guitar,drum,backing track"></meta>
-    <title>{{ project.artist }} - {{ project.title }} Bass Tab</title>
+    <meta name="description" content="{{ project.artist }} - {{ project.title }} - Bass TAB &amp; Backing Track">
+    <meta name="keywords" content="{{ project.artist }},{{ project.title }},bass,bass tab,bass {{ project.category }},bass guitar,drum,backing track,basscloud"></meta>
+    <title>{{ project.artist }} - {{ project.title }} - Bass TAB &amp; Backing Track</title>
+
+    <script type="application/ld+json">
+    {
+      "@context":"http://schema.org",
+      "@type":"MusicRecording",
+      "byArtist": {
+        "@context":"http://schema.org",
+        "@type":"MusicGroup",
+        "name":"{{ project.artist }}",
+        "url":"https://basscloud.net/projects?artists={{ project.artist }}"
+      },
+      "name":"{{ project.title }}",
+      "@id": "https://basscloud.net/project/{{ project.id }}",
+      "url":"https://basscloud.net/project/{{ project.id }}",
+      "headline": "{{ project.title }} - Bass TAB & Backing Track",
+      "description": "Play-along Bass TAB & Backing Track of {{ project.title }} by {{ project.artist }}",
+      "datePublished": "{{ project.created|date:"Y-m-d" }}",
+      "dateModified": "{{ project.modified|date:"Y-m-d" }}"
+    }
+    </script>
   </head>
   <body>
     <h3>
       {{ project.artist }} - {{ project.title }}
     </h3>
     <h4>
-      Bass {{ project.category }} with Tabs
+      Bass TAB &amp; Backing Track
     </h4>
-    <p>{{ project.description }}</p>
+    <p>{{ project.description|md2html|safe }}</p>
   </body>
 </html>

@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="Description" content="Bass Covers with Tabs">
-    <meta name="keywords" content="bass,bass tab,bass cover,bass lesson,bass guitar,drum,backing track"></meta>
-    <title>Bass Tabs</title>
+    <meta name="description" content="Play-along Bass Tabs + Backing Tracks">
+    <meta name="keywords" content="basscloud,bass,bass tab,bass cover,bass lesson,bass guitar,drum,backing track"></meta>
+    <title>Bass Tabs &amp; Backing Tracks</title>
   </head>
   <body>
     {% for project in projects %}
     <h3>
       <a href="/project/{{ project.id }}">
-        {{ project.artist }} - {{ project.title }}</a>
-      bass tab
-    </h3>
-    {% endfor %}
+        {{ project.artist }} - {{ project.title }}</a> (Bass Tab)
+    </h3>{% endfor %}
   </body>
 </html>
