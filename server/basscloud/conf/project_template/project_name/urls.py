@@ -9,11 +9,11 @@ from basscloud.catalog import views
 
 urlpatterns = [
     url(r'', include('basscloud.catalog.urls', namespace='catalog')),
-    url(r'api/', include('basscloud.catalog.api', namespace='catalog')),
+    url(r'api/', include('basscloud.catalog.api', namespace='api')),
     url(r'', include('basscloud.app.urls', namespace='app')),
-    url(r'api/', include('basscloud.feedback.api')),
+    url(r'api/', include('basscloud.feedback.api', namespace='api')),
     url(r'^accounts/', include('basscloud.accounts.urls')),
-    url(r'^api/accounts/', include('basscloud.accounts.api')),
+    url(r'^api/accounts/', include('basscloud.accounts.api', namespace='api')),
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'seo/', include('basscloud.seo.urls', namespace='seo'))
