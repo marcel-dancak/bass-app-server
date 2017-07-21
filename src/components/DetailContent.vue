@@ -1,6 +1,6 @@
 <template>
   <div class="page-container extra-padding-medium">
-    <md-card class="detail md-transparent">
+    <md-card class="detail md-transparent" style="overflow:visible">
       <md-card-content>
         <md-layout md-row md-column-xsmall>
           <md-layout
