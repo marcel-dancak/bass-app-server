@@ -16,9 +16,11 @@ def instrument_type(track):
     if track.isPercussionTrack:
         return 'drums'
     id = track.channel.instrument
-    if id in (0, 1, 2, 4, 5):
+    if id in (0, 1, 2, 3, 4, 5):
         return 'piano'
     if id > 31 and id < 40:
+        return 'bass'
+    if 'bass' in track.name.lower():
         return 'bass'
 
 def encode_note(pitch):
@@ -28,10 +30,12 @@ def encode_note(pitch):
 DRUMS = {
     44: ('hihat', ),
     35: ('kick', ),
+    36: ('kick', ),
     41: ('tom3', ),
     43: ('tom3', ), # Tom low
     45: ('tom2', ), # Tom medium
     38: ('snare', ),
+    40: ('snare', ),
     42: ('hihat', 0.5),
     46: ('hihat-open', 0.5),
     55: ('hihat-open', ),
@@ -43,10 +47,10 @@ PERCUSSIONS = {
     39: ('clap', ),
     54: ('tambourine', 0.5),
     56: ('cowbell', ),
-    60: ('bongo', ),
-    61: ('conga', ), # should be bongo low
-    63: ('bongo', ),
-    61: ('conga', 0.75),
+    # 60: ('bongo', ),
+    # 61: ('conga', ), # should be bongo low
+    # 63: ('bongo', ),
+    # 61: ('conga', 0.75),
 
     69: ('cabasa', ),
     70: ('maracas', ),
@@ -61,9 +65,17 @@ BONGO_CONGA = {
     64: ('conga',)
 }
 
+BONGO_CONGA = {
+    60: ('bongo_h',),
+    61: ('bongo_l',),
+    62: ('conga_hs',),
+    63: ('conga_h',),
+    64: ('conga_l',)
+}
 
 class Track(object):
     name = ''
+    type = ''
 
     def __init__(self):
         self.bars = {}
@@ -84,6 +96,7 @@ class Track(object):
     def data(self):
         data = {
             'name': self.name,
+            'type': self.type,
             'bars': list(self.bars.values())
         }
         data.update(self.extra_data)
@@ -93,6 +106,11 @@ class Track(object):
 class PercussionTrack(Track):
     name = 'Percussions'
 
+    def __init__(self, kit):
+        super(PercussionTrack, self).__init__()
+        self.name = kit.title()
+        self.type = kit
+
     def convert_note(self, beat, note):
         return {
             'code': note.value,
@@ -101,11 +119,12 @@ class PercussionTrack(Track):
 
 
 class PercussionMultiTrack(PercussionTrack):
-    def __init__(self, name='Percussions'):
+    def __init__(self):
         self.tracks = {}
 
     def add_sound(self, bar, beat, note):
         code = note.value
+        print(code)
         if code in DRUMS:
             kit = 'drums'
             MAP = DRUMS
@@ -120,11 +139,16 @@ class PercussionMultiTrack(PercussionTrack):
             return
 
         if kit not in self.tracks:
-            track = PercussionTrack()
-            track.name = kit
+            track = PercussionTrack(kit)
             self.tracks[kit] = track
         else:
             track = self.tracks[kit]
+        sounds = track.bars.get(bar.number, {}).get('sounds')
+        # if sounds:
+            # for sound in sounds:
+            #     if sound['beat'] == 
+            # print(sounds)
+
         sound = track.add_sound(bar, beat, note)
         value = MAP[code]
         sound['drum'] = value[0]
@@ -169,7 +193,9 @@ class StringTrack(Track):
             'note': {
                 'name': name,
                 'octave': octave,
-                'length': beat.duration.value,
+                # 'length': beat.duration.value,
+                'length': beat.duration.value * (beat.duration.tuplet.enters / beat.duration.tuplet.times),
+                # 'length': beat.duration.tuplet.convertTime(beat.duration.value),
                 'dotted': beat.duration.isDotted,
                 'staccato': note.effect.staccato,
             }
@@ -190,6 +216,7 @@ class StringTrack(Track):
 
 
 class PianoTrack(StringTrack):
+    type = 'piano'
     def __init__(self, track):
         super(PianoTrack, self).__init__(track)
 
@@ -201,6 +228,7 @@ class PianoTrack(StringTrack):
 
 
 class BassTrack(StringTrack):
+    type = 'bass'
     def __init__(self, track):
         super(BassTrack, self).__init__(track)
         self.stringsMap = {string.number: str(PitchClass(string.value)) for string in track.strings}
@@ -324,14 +352,23 @@ class Convertor(object):
         self.song = guitarpro.parse(f)
 
 
-    def convert(self):
+    def convert(self, bars_range=None, tracks_list=None):
         song = self.song
-        # percussions_track = PercussionTrack()
         percussions_track = PercussionMultiTrack()
+
         tracks = [percussions_track]
-        for track in song.tracks:
+        for track_index, track in enumerate(song.tracks):
+
             instrument = instrument_type(track)
+            if tracks_list and track_index not in tracks_list:
+                print('excluding', track.name)
+                continue
+            elif not instrument:
+                print('converting to piano')
+                instrument = 'piano'
+
             if not instrument:
+                print('skipping', track.name, track.channel.instrument)
                 continue
 
             if instrument == 'bass':
@@ -344,13 +381,18 @@ class Convertor(object):
                 instrument_track = percussions_track
 
 
-            for bar in track.measures[:8]:
+            measures = track.measures[bars_range[0]-1:bars_range[1]] if bars_range else track.measures
+            for bar in measures:
                 barLength = bar.end - bar.start
                 beatLength = barLength / bar.timeSignature.numerator
                 for beat in bar.voices[0].beats:
                     beat.measure = bar
                     start = (beat.start - bar.start) / beatLength
+                    # print(beat.duration)
+                    # print(beat.duration.value, beat.duration.tuplet.convertTime(beat.duration.value))
                     for note in beat.notes:
+                        # print(vars(note))
+                        # break
                         sound = instrument_track.add_sound(bar, beat, note)
                         if sound:
                             ibeat = int(start) + 1
@@ -365,7 +407,22 @@ class Convertor(object):
             #     'bpm': bar.tempo.value,
             # }
 
+
+        for track in percussions_track.tracks.values():
+            for bar in track.bars.values():
+                keys = []
+                for sound in list(bar['sounds']):
+                    key = '{0}:{1}:{2}'.format(sound['beat'], sound['start'], sound['drum'])
+                    if key in keys:
+                        print('duplicit')
+                        bar['sounds'].remove(sound)
+                    keys.append(key)
+
         return [track.data() for track in tracks]
+
+    def tracks_list(self):
+        return [track.name for track in self.song.tracks]
+
 
 @csrf_exempt
 def upload(request):
@@ -378,8 +435,30 @@ def upload(request):
 
 @gzip_page
 def get(request):
-    filename = os.path.join(settings.MEDIA_ROOT, 'gp5', request.GET['file']+'.gp5')
-    c = Convertor(filename)
-    return JsonResponse({
-        'tracks': c.convert()
-    })
+    filename = os.path.join(settings.MEDIA_ROOT, 'gp5', request.GET['file'])
+    opts = {}
+    if 'range' in request.GET:
+        opts['bars_range'] = list(map(int, request.GET['range'].split(',')))
+    if 'tracks' in request.GET:
+        opts['tracks_list'] = list(map(int, request.GET['tracks'].split(',')))
+
+    gp = Convertor(filename)
+    tracks = gp.convert(**opts)
+    return JsonResponse({'tracks': tracks})
+
+
+def info(request):
+    filename = os.path.join(settings.MEDIA_ROOT, 'gp5', request.GET['file'])
+    gp = Convertor(filename)
+    tracks = gp.tracks_list()
+    return JsonResponse({'tracks': tracks})
+
+def get_files(request):
+    files = []
+    root_path = os.path.join(settings.MEDIA_ROOT, 'gp5')
+    for dirpath, dirnames, filenames in os.walk(root_path):
+        print (dirpath, filenames)
+        folder = dirpath.replace(root_path, '').lstrip('/')
+        files.extend([os.path.join(folder, f) for f in filenames])
+        print('-----')
+    return JsonResponse(files, safe=False)
