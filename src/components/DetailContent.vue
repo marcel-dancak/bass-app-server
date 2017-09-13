@@ -164,7 +164,12 @@
       xfont-weight: normal;
     }
     .md-card-content {
+      height: auto;
       .left-block {
+        /* fixes height on safari */
+        @media (max-width: 600px) {
+          flex: 1 1 auto;
+        }
         @media (min-width: 600px) {
           padding-right: 16px;
         }

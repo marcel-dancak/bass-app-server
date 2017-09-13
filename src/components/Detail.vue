@@ -8,11 +8,6 @@
               <md-card-header-text>
                 <div class="md-title">{{ project.title }}</div>
                 <div class="md-subhead">{{ project.artist || '-'}}</div>
-                <div class="md-show-xsmall author-alt">by
-                  <router-link class="md-title" :to="{ name: 'author', params: { id: project.author.id } }">
-                    {{ project.author.name }}
-                  </router-link>
-                </div>
               </md-card-header-text>
               <div class="md-hide-xsmall author">
                 <span class="md-subhead">created by</span><br />
@@ -22,13 +17,16 @@
                   {{ project.author.name }}
                 </router-link>
               </div>
-              <!-- <span>{{ project.author.name }}</span> -->
-              <md-avatar v-if="project.author.avatar" class="md-avatar-icon">
-                <img :src="$http.options.media+project.author.avatar">
-              </md-avatar>
-              <md-avatar v-else class="md-avatar-icon">
-                <md-icon class="md-size-3x">face</md-icon>
-              </md-avatar>
+              <router-link :to="{ name: 'author', params: { id: project.author.id } }">
+                <md-avatar v-if="project.author.avatar" class="md-avatar-icon">
+                  <img :src="$http.options.media+project.author.avatar">
+                </md-avatar>
+                <md-avatar v-else class="md-avatar-icon">
+                  <md-icon class="md-size-3x">face</md-icon>
+                </md-avatar>
+                <div class="md-show-xsmall text-center">{{ project.author.name }}</div>
+              </router-link>
+
             </md-layout>
           </md-card-header>
 
@@ -154,39 +152,39 @@
         margin-top: 1px;
       }
       .md-card-header {
-        padding-top: 21px;
-        padding-bottom: 10px;
+        padding-top: 1.313rem;
+        padding-bottom: 0.625rem;
       }
       .md-card-header-text {
         margin-top: 2px;
       }
       .author {
         text-align: right;
-        padding-right: 12px;
-        margin-top: 6px;
+        padding-right: 0.75rem;
+        margin-top: 0.375rem;;
       }
       .md-card-actions {
-        height: 52px;
+        height: 3.25rem;
+        padding: 0.5rem;
         .md-button {
-          padding-left: 6px;
-          padding-right: 6px;
-          margin-right: 12px;
+          padding-left: 0.375rem;
+          padding-right: 0.375rem;
+          margin-right: 0.75rem;
           &:last-child {
-            margin-right: 6px;
+            margin-right: 0.375rem;;
           }
         }
       }
     }
-    .author-alt {
-      margin-top: 8px;
-      a {
-        font-size: 16px;
-        font-weight: 500;
+    a {
+      text-align: right;
+      .md-avatar {
+        float: none;
       }
     }
     .md-avatar-icon {
-      width: 62px;
-      height: 62px;
+      width: 3.875rem;
+      height: 3.875rem;
       margin-right: 0;
     }
   }

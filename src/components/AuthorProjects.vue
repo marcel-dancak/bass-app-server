@@ -131,30 +131,31 @@ export default {
   .md-card.author {
     box-shadow: none;
     border-radius: 0;
+    flex-shrink: 0;
 
     .md-card-header {
-      padding-bottom: 6px;
+      padding-bottom: 0.375rem;
       .avatar {
         margin-left: 0;
         margin-right: 10px;
-        width: 72px;
-        height: 72px;
-        font-size: 72px;
+        width: 4.5rem;
+        height: 4.5rem;
+        font-size: 4.5rem;
         flex: 0 0 auto;
       }
       .md-card-header-text {
-        margin-top: 8px;
+        margin-top: 0.5rem;
         position: relative;
         .date {
           position: absolute;
           right: 0;
-          top: 16px;
+          top: 1rem;
         }
       }
     }
     .md-card-actions {
       justify-content: flex-start;
-      height: 52px;
+      height: 3.25rem;
       .md-button.icon-text {
         padding-left: 8px;
         min-width: 112px;
@@ -178,7 +179,7 @@ export default {
       }
     }
     .md-card-content {
-      padding-bottom: 16px;
+      padding-bottom: 1rem;
     }
 
     .md-button.md-icon-button {

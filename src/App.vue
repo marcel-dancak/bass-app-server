@@ -270,21 +270,29 @@ export default {
 
   .md-toolbar.main {
     h1.md-title {
+      font-size: 1.25rem;
+      line-height: 1.625rem;
       margin-left: 0;
-      padding-left: 8px;
-      padding-right: 16px;
+      padding-left: 0.5rem;
+      padding-right: 1rem;
     }
     .md-input-container {
       margin-left: auto;
-      margin-bottom: 12px;
+      margin-top: auto;
+      margin-bottom: 0.6rem;
+      margin-top: 0;
       max-width: 360px;
-      padding-top: 15px;
+      padding-top: 0.7rem;
+      min-height: 3rem;
     }
     .menu.md-button {
       margin-right: 0;
       @media (min-width: 1280px) {
         display: none;
       }
+    }
+    .md-icon {
+      margin: 0.5rem;
     }
   }
 
@@ -299,6 +307,32 @@ export default {
     overflow: hidden;
     xdisplay: flex;
     xjustify-content: center;
+    font-size: 1em;
+  }
+
+  @media (max-width: 800px) {
+    html, body {
+      font-size: 0.85em;
+    }
+  }
+
+  .md-card {
+    .md-title {
+      font-size: 1.5rem;
+    }
+    .md-card-header {
+      padding: 1rem;
+    }
+  }
+  .md-button {
+    min-width: 4rem;
+    min-height: 2.25rem;
+    font-size: 0.85rem;
+    line-height: 2.25rem;
+  }
+  .md-toolbar {
+    min-height: 4em;
+    padding: 0 0.5rem;
   }
 
   .page-wrapper {
