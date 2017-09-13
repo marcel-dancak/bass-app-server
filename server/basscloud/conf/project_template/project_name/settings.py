@@ -113,6 +113,7 @@ AUTH_USER_MODEL = 'catalog.User'
 
 
 # Accounts Registration
+ACCOUNT_SITE_NAME = 'BassCloud'
 ACCOUNT_ACTIVATION_DAYS = 3
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -128,8 +129,23 @@ except ImportError:
 
 
 ### ENVIRONMENT VARIABLES SETTINGS
-for k,v in os.environ.items():
+for k, v in os.environ.items():
     if k.startswith("DJANGO_"):
+        if v:
+            if v[0] in ("'", '"'):
+                v = v[1:-1]
+            else:
+                try:
+                    if v in ('True', 'False'):
+                        v = True if v == 'True' else False
+                    elif '.' in v:
+                        v = float(v)
+                    else:
+                        v = int(v)
+                except ValueError:
+                    # let it be a string
+                    if k != 'DJANGO_SETTINGS_MODULE':
+                        logger.warn('Warning: {0} - Invalid number value, converting to string'.format(k))
         key = k.split('_', 1)[1]
         globals()[key] = v
 

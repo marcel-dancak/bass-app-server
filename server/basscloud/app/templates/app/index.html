@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Drums and Bass</title>
+    <title>Bass App</title>
     <link rel="icon" type="image/png" href="/static/app/favicon-16x16.png" sizes="16x16">
-    <link rel="stylesheet" type="text/css" href="/static/app/styles/styles.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/app/styles/styles.css?13092017">
 
-    <script src="/static/app/js/app.min.js"></script>
+    <script src="/static/app/js/app.js?13092017"></script>
     <script type="text/javascript">
       angular.module('bd.app')
         .config(function($mdIconProvider, $sceDelegateProvider) {
@@ -22,10 +23,17 @@
             .iconSet('drums', '/static/app/styles/drums.svg', 512)
             .icon('basscloud', '/static/app/styles/basscloud.svg')
         })
-        .constant('localSoundsUrl', 'http://127.0.0.1:8887/')
-        .constant('soundsUrl', 'https://s3.eu-central-1.amazonaws.com/bass-app/')
-        .constant('uploadUrl', 'http://localhost:8000/api/')
-        .constant('dataUrl', '/app/');
+        .constant('Config', {
+          localSoundsUrl: 'http://127.0.0.1:8887/samples/',
+          soundsUrl: 'https://s3.eu-central-1.amazonaws.com/bass-app/samples/',
+          apiUrl: 'https://basscloud.net/api/',
+          dataUrl: '/app/',
+          appModules: {
+            'help': '/static/app/js/help.js',
+            'upload': '/static/app/js/upload.js',
+            'oggvorbis': '/static/app/js/oggvorbis.js'
+          }
+        })
     </script>
   </head>
   <body
