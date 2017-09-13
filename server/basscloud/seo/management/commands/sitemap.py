@@ -7,6 +7,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         site = 'https://basscloud.net'
-        # self.stdout.write(site+'/projects')
-        for project in Project.objects.all():
+        for project in Project.objects.filter(public=True):
             self.stdout.write(site+'/project/'+project.id)

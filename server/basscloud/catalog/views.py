@@ -64,7 +64,7 @@ def get_user_profile(user):
         'likes': user.likes,
         'links': user.links,
         'subscribed': list(user.subscribed.values_list('pk', flat=True)),
-        'projectsCount': Project.objects.filter(user=user).count()
+        'projectsCount': Project.objects.filter(public=True, user=user).count()
     }
 
 
@@ -193,7 +193,7 @@ class ProjectsList(ProjectsFilterMixin, MultipleObjectMixin, View):
     def get(self, request, base_filter=None):
         # or select_related
         # queryset = Project.objects.all()
-        queryset = Project.objects.defer('data').prefetch_related('user')
+        queryset = Project.objects.defer('data').prefetch_related('user').filter(public=True)
 
         if base_filter and request.user.is_authenticated():
             if base_filter == 'bookmarked' :
@@ -225,7 +225,7 @@ class AuthorProjects(ProjectsFilterMixin, View):
     @method_decorator(gzip_page)
     def get(self, request, author):
         author = get_object_or_404(get_user_model(), id=author)
-        queryset = Project.objects.defer('data').filter(user=author)
+        queryset = Project.objects.defer('data').filter(public=True, user=author)
         queryset = self.filter(queryset, request)
 
         # use already fetched author model to avoid additional db queries
