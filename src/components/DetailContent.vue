@@ -29,7 +29,7 @@
                 </md-button>
                 <md-button
                   class="md-primary md-raised open md-flex-small"
-                  :href="project.id | applink"
+                  :href="project | applink"
                   target="_blank">
                   OPEN
                 </md-button>

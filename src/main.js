@@ -124,9 +124,10 @@ Vue.filter('capitalize-list', list => {
   return list.map(item => { return item[0].toUpperCase() + item.slice(1) }).join(', ')
 })
 
-Vue.filter('applink', value => {
+Vue.filter('applink', project => {
   const serverUrl = Vue.http.options.server
-  return `${serverUrl}/app#${value}`
+  const params = project.options? '?'+project.options : ''
+  return `${serverUrl}/app${params}#${project.id}`
 })
 
 Vue.filter('videolink', value => {
