@@ -5,3 +5,4 @@ Pillow
 django_resized
 django-registration
 markdown2
+youtube-dl
