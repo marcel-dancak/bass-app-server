@@ -8,7 +8,7 @@ from .models import Project, User
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     fieldsets = BaseUserAdmin.fieldsets[0:2] + (
-        ('Profile', {'fields': ('likes', 'favourites', 'avatar')}),
+        ('Profile', {'fields': ('likes', 'bookmarks', 'avatar')}),
     ) + BaseUserAdmin.fieldsets[2:]
 
 

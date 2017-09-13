@@ -7,7 +7,7 @@ from . import views
 urlpatterns = [
     url(r"^profile/$", views.user_profile, name="user_profile"),
     url(r"^project/$", views.ProjectView.as_view(), name="project"),
-    url(r"^projects/?$", indexed_cache(timeout=60*5)(views.ProjectsList.as_view())),
+    url(r"^projects/?$", indexed_cache(timeout=60*5)(views.ProjectsList.as_view()), name="projects"),
     # url(r"^projects/$", views.ProjectsList.as_view()),
 
     url(r"^projects/author/([0-9]+)/$",

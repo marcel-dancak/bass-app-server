@@ -25,8 +25,8 @@ def clear_cache(key):
 @receiver(post_save, sender=Project)
 def project_edited(sender, instance, **kwargs):
     # print('Project Edited')
-    clear_cache(reverse('catalog:projects'))
-    clear_cache(reverse('catalog:author_projects', args=[instance.user.pk]))
+    clear_cache(reverse('api:projects'))
+    clear_cache(reverse('api:author_projects', args=[instance.user.pk]))
     key = reverse('app:project_data', args=[instance.pk])+'.json/'
     # print(key)
     cache.delete(key)

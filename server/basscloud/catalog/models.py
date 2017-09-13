@@ -116,6 +116,8 @@ class Project(models.Model):
     level = models.IntegerField("difficulty", default=3, choices=LEVEL_CHOICES)
     likes = models.IntegerField("likes", default=0)
 
+    options = models.CharField("startup options", max_length=255, blank=True)
+
     # format = models.IntegerField("format", null=True)
 
     class Meta:

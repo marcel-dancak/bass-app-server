@@ -127,7 +127,8 @@ def get_projects_data(queryset):
             'level': project.level,
             'category': project.category,
             'created': project.created,
-            'modified': project.modified
+            'modified': project.modified,
+            'options': project.options
         })
     return projects
 
