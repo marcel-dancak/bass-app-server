@@ -86,7 +86,7 @@ Vue.material.registerTheme({
 import differenceInMinutes from 'date-fns/difference_in_minutes'
 import differenceInHours from 'date-fns/difference_in_hours'
 import differenceInDays from 'date-fns/difference_in_days'
-import differenceInWeeks from 'date-fns/difference_in_weeks'
+import differenceInMonths from 'date-fns/difference_in_months'
 import format from 'date-fns/format'
 
 Vue.filter('positive', value => {
@@ -105,6 +105,10 @@ Vue.filter('timediff', value => {
       return minutes+' minutes ago'
     }
     return hours+' hours ago'
+  }
+  if (days > 30) {
+    const months = differenceInMonths(now, time)
+    return months + (months === 1? ' month ago' : ' months ago')
   }
   return days+' days ago'
 })
