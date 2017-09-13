@@ -4,6 +4,7 @@ import logging
 # from lzstring import LZString
 from django.conf import settings
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, Http404
 from django.views import View
 from django.views.decorators.gzip import gzip_page
@@ -16,6 +17,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.core.cache import cache
 
 # TODO move to accounts app
 from basscloud.decorators import login_required
@@ -34,8 +36,17 @@ logger = logging.getLogger(__name__)
 
 @ensure_csrf_cookie
 def catalog(request):
-    # logger.info('Catalog App touched!')
     data = {}
+
+    structured_meta = cache.get('structured_meta:index')
+    if not structured_meta:
+        structured_meta = render_to_string(
+            'catalog/json_meta',
+            {'projects': Project.objects.filter(public=True)[:50]}
+        )
+        cache.set('structured_meta:index', structured_meta, 60*60)
+    data['structured_meta'] = structured_meta
+
     if request.user.is_authenticated():
         data['userProfile'] = json.dumps(get_user_profile(request.user))
     return render(request, "catalog/index.html", data)

@@ -1,0 +1,13 @@
+{
+  "@context":"http://schema.org",
+  "@type":"ItemList",
+  "itemListElement":[
+    {% for project in projects %}
+    {
+      "@type":"ListItem",
+      "position": {{ forloop.counter }},
+      "url":"https://basscloud.net/project/{{ project.id }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
