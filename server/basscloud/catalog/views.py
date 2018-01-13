@@ -23,7 +23,7 @@ from django.core.cache import cache
 from basscloud.decorators import login_required
 from basscloud.libs.lzstring import LZString
 from . import forms
-from .models import Project
+from .models import Project, ForkedProject
 
 from django.contrib import admin
 admin = admin.site._registry[Project]
@@ -295,7 +295,36 @@ class ProjectView(View):
                 # data = LZString.decompressFromBase64(project.data)
                 project_data['data'] = project.data
 
+            forks = ForkedProject.objects.defer('data').filter(project=project)
+            project_data['forks'] = list(forks.values('tag', 'user', 'created', 'modified'))
+
             return JsonResponse(project_data)
+        raise Http404
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ForkedProjectView(View):
+
+    @method_decorator(login_required)
+
+    def post(self, request):
+        data = json.loads(request.body.decode('utf-8'))
+        data['user'] = request.user.pk
+
+        fork = None
+        project = data['project']
+        tag = data.get('tag')
+        if project and tag:
+            fork = ForkedProject.objects.filter(project=project, tag=tag).first()
+        if fork and fork.user != request.user:
+            return HttpResponseForbidden()
+
+        form = forms.ProjectForkForm(data, instance=fork)
+        if form.is_valid():
+            fork = form.save()
+            return HttpResponse(fork.pk)
+        else:
+            print (form.errors)
         raise Http404
 
 

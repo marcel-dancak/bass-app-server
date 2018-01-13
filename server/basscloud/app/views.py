@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from basscloud.catalog.models import Project
+from basscloud.catalog.models import Project, ForkedProject
 from basscloud.libs.lzstring import LZString
 
 
@@ -11,10 +11,13 @@ from basscloud.libs.lzstring import LZString
 def app(request):
     return render(request, "app/index.html")
 
-
 def app_data(request, id, *args):
     project = get_object_or_404(Project, pk=id)
     return HttpResponse(project.data, content_type='text/plain')
+
+def forked_project_data(request, id, *args):
+    fork = get_object_or_404(ForkedProject, id=id)
+    return HttpResponse(fork.data, content_type='text/plain')
 
 
 class YtLogger(object):

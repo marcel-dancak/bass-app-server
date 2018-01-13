@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.forms import SimpleArrayField
 
-from .models import Project
+from .models import Project, ForkedProject
 
 
 class ArrayField(SimpleArrayField):
@@ -49,6 +49,17 @@ class ProjectDataForm(forms.ModelForm):
             'tags': ArrayField,
             'tracks': ArrayField
         }
+
+class ProjectForkForm(forms.ModelForm):
+    tag = forms.IntegerField(required=False)
+
+    # def __init__(self, *args, **kwargs):
+    #     super(ProjectForkForm, self).__init__(*args, **kwargs)
+    #     self.fields['tag'].required = False
+
+    class Meta:
+        model = ForkedProject
+        fields = ['project', 'tag', 'user', 'data']
 
 
 class GetProjectForm(forms.Form):

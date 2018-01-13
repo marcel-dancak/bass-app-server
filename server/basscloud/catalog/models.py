@@ -4,6 +4,7 @@ import string
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from django_resized import ResizedImageField
 # from django.utils import timezone
@@ -78,6 +79,8 @@ class Project(models.Model):
         # blank=True,
         null=True
     )
+    # collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
     title = models.CharField("title", max_length=100, db_index=True, blank=False)
     artist = models.CharField("artist", max_length=100, db_index=True, blank=True)
     description = models.TextField("description", blank=True)
@@ -137,3 +140,49 @@ class Project(models.Model):
             self.id = random_id
         return super(Project, self).save(*args, **kwargs)
 
+
+class ForkedProject(models.Model):
+    id = models.CharField("id", max_length=16, primary_key=True)
+    project = models.ForeignKey(Project, verbose_name="project")
+    tag = models.IntegerField("tag")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name="user",
+        on_delete=models.SET_NULL,
+        # blank=True,
+        null=True
+    )
+    data = models.TextField("data")
+    created = models.DateTimeField("created", auto_now_add=True)
+    modified = models.DateTimeField("last modified", auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.tag:
+            existing_tags = ForkedProject.objects.filter(project=self.project).values_list('tag', flat=True)
+            self.tag = max(list(existing_tags) + [0]) + 1
+        if not self.id:
+            self.id = '{0}-v{1}'.format(self.project_id, self.tag)
+        self.modified = timezone.now()
+        return super(ForkedProject, self).save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ("tag", "project")
+
+"""
+class ProjectHistory(models.Model):
+    project = models.ForeignKey(Project, verbose_name="project")
+    data = models.TextField("data")
+    change_desc = models.CharField("description", max_length=255, blank=True)
+    timestamp = models.DateTimeField("timestamp")
+
+    @classmethod
+    def create_snapshot(cls, project, desc):
+        record = cls(
+            project=project,
+            data=project.data,
+            timestamp=project.modified,
+            change_desc=desc
+        )
+        record.save()
+        return record
+"""
